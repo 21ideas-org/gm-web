@@ -1,0 +1,16 @@
+---
+interface Props { path: string; meta?: string; }
+const { path, meta } = Astro.props;
+const parts = path.split('/');
+---
+<header class="path-strip">
+  <span class="path">[ <span class="sep">~/</span>{
+    parts.map((p, i) => (
+      <>
+        {i > 0 && <span class="sep">/</span>}
+        {p}
+      </>
+    ))
+  } ]</span>
+  {meta && <span class="meta">{meta}</span>}
+</header>

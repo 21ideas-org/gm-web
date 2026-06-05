@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const pathMeta = `${projects.length} проектов`;
+---
+<Base
+  title="проекты — gm ₿"
+  description="Экосистема 21ideas — связанные биткоин-онли проекты."
+  path="projects"
+  pathMeta={pathMeta}
+  activeNav="projects"
+>
+  <section class="section" aria-label="Projects">
+    <div class="section-header">
+      <h2>проекты</h2>
+      <span class="more">экосистема 21ideas</span>
+    </div>
+    <div class="project-list">
+      {projects.map(p => <ProjectCard {...p.data} />)}
+    </div>
+  </section>
+</Base>

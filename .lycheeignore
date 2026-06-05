@@ -1,0 +1,2 @@
+# External URLs excluded from link checking (CI runs --offline, this file
+# is for local lychee runs or if --offline is ever removed)

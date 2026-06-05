@@ -1,0 +1,16 @@
+<button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">[light]</button>
+<script>
+  const btn = document.getElementById('theme-toggle') as HTMLButtonElement;
+  const update = () => {
+    const t = document.documentElement.dataset.theme ?? 'dark';
+    btn.textContent = t === 'light' ? '[dark]' : '[light]';
+  };
+  update();
+  btn?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme ?? 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+    update();
+  });
+</script>

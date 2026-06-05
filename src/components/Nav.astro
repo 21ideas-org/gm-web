@@ -1,0 +1,15 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  active?: 'home' | 'digests' | 'projects' | 'about' | 'tags';
+}
+const { active } = Astro.props;
+---
+<nav class="nav" aria-label="Primary">
+  <a href="/" aria-current={active === 'home' ? 'page' : undefined}>главная</a>
+  <a href="/digests" aria-current={active === 'digests' ? 'page' : undefined}>дайджесты</a>
+  <a href="/projects" aria-current={active === 'projects' ? 'page' : undefined}>проекты</a>
+  <a href="/about" aria-current={active === 'about' ? 'page' : undefined}>о проекте</a>
+  <ThemeToggle />
+</nav>

@@ -1,0 +1,97 @@
+---
+// Comments are deferred for v1 (this component is not imported anywhere yet).
+// Fill REPO_ID / CATEGORY_ID from the gm-web repo's Giscus config before enabling.
+const REPO = '21ideas-org/gm-web';
+const REPO_ID = ''; // TODO: set when enabling Giscus on the gm-web repo
+const CATEGORY = 'Announcements';
+const CATEGORY_ID = ''; // TODO: set when enabling Giscus on the gm-web repo
+const SITE = 'https://gm.21ideas.org';
+---
+<section class="comments" aria-label="Comments">
+  <hr />
+  <h2 class="comments-heading"><span class="hash">##</span> comments</h2>
+  <div id="giscus-host" class="giscus-host" data-loaded="false"></div>
+</section>
+
+<script is:inline define:vars={{ REPO, REPO_ID, CATEGORY, CATEGORY_ID, SITE }}>
+  (() => {
+    const host = document.getElementById('giscus-host');
+    if (!host) return;
+
+    const themeUrl = (mode) => `${SITE}/giscus-${mode}.css`;
+    const mode = () =>
+      document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+
+    const load = () => {
+      if (host.dataset.loaded === 'true') return;
+      host.dataset.loaded = 'true';
+      const s = document.createElement('script');
+      s.src = 'https://giscus.app/client.js';
+      s.async = true;
+      s.crossOrigin = 'anonymous';
+      s.setAttribute('data-repo', REPO);
+      s.setAttribute('data-repo-id', REPO_ID);
+      s.setAttribute('data-category', CATEGORY);
+      s.setAttribute('data-category-id', CATEGORY_ID);
+      s.setAttribute('data-mapping', 'pathname');
+      s.setAttribute('data-strict', '1');
+      s.setAttribute('data-reactions-enabled', '1');
+      s.setAttribute('data-emit-metadata', '0');
+      s.setAttribute('data-input-position', 'top');
+      s.setAttribute('data-theme', themeUrl(mode()));
+      s.setAttribute('data-lang', 'ru');
+      s.setAttribute('data-loading', 'lazy');
+      host.appendChild(s);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              load();
+              io.disconnect();
+              break;
+            }
+          }
+        },
+        { rootMargin: '200px 0px' }
+      );
+      io.observe(host);
+    } else {
+      load();
+    }
+
+    const mo = new MutationObserver(() => {
+      const iframe = host.querySelector('iframe.giscus-frame');
+      if (!iframe || !iframe.contentWindow) return;
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: themeUrl(mode()) } } },
+        'https://giscus.app'
+      );
+    });
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  })();
+</script>
+
+<style>
+  .comments { margin-top: 48px; }
+  .comments-heading {
+    font-size: var(--fs-h2);
+    font-weight: 500;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+  .comments-heading .hash { color: var(--muted); font-weight: 400; }
+  .giscus-host { min-height: 160px; }
+  .giscus-host[data-loaded="false"]::before {
+    content: "// loading comments…";
+    color: var(--dim);
+    font-size: var(--fs-sm);
+    display: block;
+    padding: 12px 0;
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const posts = (await getCollection('digests', p => !p.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const pathMeta = `${posts.length} дайджестов`;
+---
+<Base
+  title="дайджесты — gm ₿"
+  description="Все выпуски. В хронологическом порядке."
+  path="digests"
+  pathMeta={pathMeta}
+  activeNav="digests"
+>
+  <section class="section">
+    <div class="section-header">
+      <h2>дайджесты</h2>
+    </div>
+
+    <ul class="post-list">
+      {posts.map(post => (
+        <li>
+          <PostCard
+            href={`/digests/${post.id}`}
+            date={post.data.pubDate}
+            title={post.data.title}
+          />
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

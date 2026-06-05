@@ -1,0 +1,83 @@
+---
+import Base from './Base.astro';
+import { formatDate } from '../lib/date';
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  prevPost?: { id: string; title: string };
+  nextPost?: { id: string; title: string };
+}
+const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
+const dateStr = formatDate(pubDate);
+---
+<Base
+  title={`${title} — gm ₿`}
+  description={description}
+  path={`digests/${id}`}
+  pathMeta="cat post.md"
+  activeNav="digests"
+  image={new URL(`/og/${id}.png`, Astro.site).href}
+>
+  <header class="post-header">
+    <article class="prose">
+      <h1>{title}</h1>
+    </article>
+    <div class="meta">
+      <span class="date">{dateStr}</span>
+    </div>
+  </header>
+
+  <article class="prose">
+    <slot />
+  </article>
+
+  {(prevPost || nextPost) && (
+    <nav class="post-nav" aria-label="Adjacent posts">
+      {prevPost ? (
+        <a href={`/digests/${prevPost.id}`} class="prev">
+          <span class="label">← пред</span>
+          <span class="title">{prevPost.title}</span>
+        </a>
+      ) : <div />}
+      {nextPost ? (
+        <a href={`/digests/${nextPost.id}`} class="next">
+          <span class="label">след →</span>
+          <span class="title">{nextPost.title}</span>
+        </a>
+      ) : <div />}
+    </nav>
+  )}
+</Base>
+
+<script>
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const btn = target.closest('.code-copy');
+    if (!(btn instanceof HTMLButtonElement)) return;
+    const wrap = btn.closest('.code-wrap');
+    const pre = wrap?.querySelector('pre');
+    if (!pre) return;
+    const text = pre.innerText;
+    const restore = () => {
+      btn.removeAttribute('data-state');
+      btn.textContent = 'copy';
+    };
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        btn.dataset.state = 'copied';
+        btn.textContent = 'copied';
+        window.setTimeout(restore, 1600);
+      })
+      .catch(() => {
+        btn.dataset.state = 'error';
+        btn.textContent = 'error';
+        window.setTimeout(restore, 1600);
+      });
+  });
+</script>

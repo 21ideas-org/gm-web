@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { tagCounts } from '../../lib/tags';
+
+const counts = await tagCounts();
+const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+const max = sorted.length > 0 ? Math.max(...counts.values()) : 1;
+---
+<Base
+  title="теги — gm ₿"
+  description="Все теги, отсортированы по количеству выпусков."
+  path="tags"
+  pathMeta="ls tags/"
+  activeNav="tags"
+>
+  <section class="section">
+    <div class="section-header">
+      <h2>теги</h2>
+      <span class="more">{sorted.length}</span>
+    </div>
+
+    <ul class="tag-index">
+      {sorted.map(([tag, count]) => (
+        <li>
+          <a class="tag-row" href={`/tags/${tag}`}>
+            <span class="name"><span class="hash">#</span>{tag}</span>
+            <span class="count">
+              <span class="bar" style={`width:${Math.round((count / max) * 80)}px`}></span>
+              {count} {count === 1 ? 'post' : 'posts'}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

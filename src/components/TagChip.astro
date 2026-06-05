@@ -1,0 +1,5 @@
+---
+interface Props { tag: string; }
+const { tag } = Astro.props;
+---
+<a href={`/tags/${tag}`}>#{tag}</a>

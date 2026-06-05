@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="о проекте — gm ₿"
+  description="Что такое gm ₿, как устроены дайджесты и как за ними следить."
+  path="about"
+  pathMeta="cat about.md"
+  activeNav="about"
+>
+  <section class="about-section">
+    <h2>что это</h2>
+    <p><strong>gm ₿</strong> — ежедневный биткоин-онли дайджест на русском языке. Каждый день — короткая сводка главного: сеть, Lightning, разработка, экономика. Только биткоин, без шумихи и альткоинов.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>как это работает</h2>
+    <p>Выпуски собираются автоматически: бот отбирает значимые новости за сутки, формирует дайджест и публикует его сюда, а затем анонсирует свежий выпуск в Telegram. Сайт — открытый и статический.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>как следить</h2>
+    <article class="project-card" style="margin-top:8px">
+      <div class="head">
+        <span class="name">подписаться</span>
+        <span class="tag-bracket live">[LIVE]</span>
+      </div>
+      <div class="links">
+        <div><span class="branch">├──</span> <span class="k">telegram</span>&nbsp; <a href="https://t.me/bitcoin21ideas" rel="noopener">t.me/bitcoin21ideas</a></div>
+        <div><span class="branch">└──</span> <span class="k">rss</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/rss.xml">/rss.xml</a></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="about-section">
+    <h2>часть экосистемы 21ideas</h2>
+    <p>gm ₿ — часть образовательного биткоин-онли проекта <a href="https://21ideas.org" rel="noopener">21ideas</a>. Другие проекты экосистемы можно посмотреть на странице <a href="/projects">проекты</a>.</p>
+  </section>
+</Base>

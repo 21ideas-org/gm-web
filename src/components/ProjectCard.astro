@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+type Props = CollectionEntry<'projects'>['data'];
+const { name, description, status, stack, url } = Astro.props;
+
+const statusClass = status.toLowerCase();
+---
+<article class="project-card">
+  <div class="head">
+    <span class="name">{name}</span>
+    <span class={`tag-bracket ${statusClass}`}>[{status}]</span>
+  </div>
+  {description && <p class="desc">{description}</p>}
+  {stack && stack.length > 0 && (
+    <div class="stack"><span class="k">стек:</span> <span class="v">{stack.join(', ')}</span></div>
+  )}
+  {url && (
+    <div class="links">
+      <div>
+        <span class="branch">└──</span>{' '}
+        <span class="k">ссылка</span>{' '}
+        <a href={url} rel="noopener">{url.replace(/^https?:\/\//, '')}</a>
+      </div>
+    </div>
+  )}
+</article>

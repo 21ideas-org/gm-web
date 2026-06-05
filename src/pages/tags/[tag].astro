@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getAllTags } from '../../lib/tags';
+
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+  return tags.map(tag => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const allPosts = (await getCollection('digests', p => !p.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const posts = allPosts.filter(p => p.data.tags.includes(tag!));
+const otherTags = (await getAllTags()).filter(t => t !== tag);
+---
+<Base
+  title={`#${tag} — gm ₿`}
+  description={`Все выпуски с тегом #${tag}.`}
+  path={`tags/${tag}`}
+  pathMeta={`grep -r '#${tag}' digests/`}
+  activeNav="digests"
+>
+  <section class="section">
+    <div class="tag-intro">
+      <span class="hash">#</span>{tag}
+      <span class="count">// {posts.length}</span>
+    </div>
+
+    <ul class="post-list">
+      {posts.map(post => (
+        <li>
+          <PostCard
+            href={`/digests/${post.id}`}
+            date={post.data.pubDate}
+            title={post.data.title}
+            meta={post.data.tags.filter(t => t !== tag).map(t => `#${t}`).join(' ')}
+          />
+        </li>
+      ))}
+    </ul>
+
+    {otherTags.length > 0 && (
+      <p style="margin-top:32px;font-size:var(--fs-sm);color:var(--muted)">
+        другие теги:
+        {otherTags.map(t => (
+          <a href={`/tags/${t}`} style="color:var(--accent);margin-left:12px">#{t}</a>
+        ))}
+      </p>
+    )}
+  </section>
+</Base>
