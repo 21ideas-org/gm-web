@@ -2,9 +2,13 @@
 import type { CollectionEntry } from 'astro:content';
 
 type Props = CollectionEntry<'projects'>['data'];
-const { name, description, status, stack, url } = Astro.props;
+const { name, description, status, stack, url, repo } = Astro.props;
 
 const statusClass = status.toLowerCase();
+const links = [
+  ...(url ? [{ k: 'ссылка', href: url }] : []),
+  ...(repo ? [{ k: 'repo', href: repo }] : []),
+];
 ---
 <article class="project-card">
   <div class="head">
@@ -15,13 +19,15 @@ const statusClass = status.toLowerCase();
   {stack && stack.length > 0 && (
     <div class="stack"><span class="k">стек:</span> <span class="v">{stack.join(', ')}</span></div>
   )}
-  {url && (
+  {links.length > 0 && (
     <div class="links">
-      <div>
-        <span class="branch">└──</span>{' '}
-        <span class="k">ссылка</span>{' '}
-        <a href={url} rel="noopener">{url.replace(/^https?:\/\//, '')}</a>
-      </div>
+      {links.map((link, i) => (
+        <div>
+          <span class="branch">{i === links.length - 1 ? '└──' : '├──'}</span>{' '}
+          <span class="k">{link.k}</span>{' '}
+          <a href={link.href} rel="noopener">{link.href.replace(/^https?:\/\//, '')}</a>
+        </div>
+      ))}
     </div>
   )}
 </article>

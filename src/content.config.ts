@@ -5,7 +5,7 @@ import { z } from 'astro/zod';
 const digests = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/digests' }),
 	schema: z.object({
-		title: z.string(), // "gm ₿ — 5 июня 2025"
+		title: z.string(), // "Доброе утро, биткоинер — 5 июня 2026"
 		description: z.string(), // teaser → Discord/Telegram
 		pubDate: z.coerce.date(),
 		draft: z.boolean().default(false),
@@ -20,6 +20,7 @@ const projects = defineCollection({
 		description: z.string(),
 		status: z.enum(['LIVE', 'WIP', 'ARCHIVED']),
 		url: z.url().optional(), // canonical link to the project / channel
+		repo: z.url().optional(), // source repository (optional second link)
 		stack: z.array(z.string()).optional(), // ecosystem links don't need a tech stack
 		featured: z.boolean().default(false),
 		order: z.number().default(0),

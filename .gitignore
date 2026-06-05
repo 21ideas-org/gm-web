@@ -23,6 +23,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# local-only agent files — not tracked in the public repo
+# local-only working files (plans, agent config) — not tracked in the public repo
 CLAUDE.md
 .claude/
+plans/
+memory/
