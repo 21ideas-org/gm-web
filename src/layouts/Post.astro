@@ -8,8 +8,8 @@ interface Props {
   description: string;
   pubDate: Date;
   tags: string[];
-  prevPost?: { id: string; title: string };
-  nextPost?: { id: string; title: string };
+  prevPost?: { id: string; label: string };
+  nextPost?: { id: string; label: string };
 }
 const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
 const dateStr = formatDate(pubDate);
@@ -40,13 +40,13 @@ const dateStr = formatDate(pubDate);
       {prevPost ? (
         <a href={`/digests/${prevPost.id}`} class="prev">
           <span class="label">← пред</span>
-          <span class="title">{prevPost.title}</span>
+          <span class="title">{prevPost.label}</span>
         </a>
       ) : <div />}
       {nextPost ? (
         <a href={`/digests/${nextPost.id}`} class="next">
           <span class="label">след →</span>
-          <span class="title">{nextPost.title}</span>
+          <span class="title">{nextPost.label}</span>
         </a>
       ) : <div />}
     </nav>

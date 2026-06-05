@@ -18,3 +18,9 @@ export function formatDate(date: Date): string {
 export function formatRuDate(date: Date): string {
 	return `${date.getUTCDate()} ${RU_MONTHS_GENITIVE[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
+
+// "D месяца" (e.g. "5 июня") — short day+month, no year. Used for adjacent-post nav labels,
+// where consecutive daily digests make the year redundant.
+export function formatRuDayMonth(date: Date): string {
+	return `${date.getUTCDate()} ${RU_MONTHS_GENITIVE[date.getUTCMonth()]}`;
+}
