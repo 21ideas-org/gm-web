@@ -616,9 +616,11 @@ hr {
   font-size: var(--fs-base);
   line-height: 1.85;
   color: var(--text);
-  white-space: pre;
+  display: grid;
+  gap: 4px;
   font-variant-ligatures: none;
 }
+.tree .row .branch,
 .tree .branch { color: var(--dim); }
 .tree .label  { color: var(--muted); }
 .tree .val    { color: var(--text); }

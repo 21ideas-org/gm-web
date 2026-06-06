@@ -8,15 +8,23 @@ import Base from '../layouts/Base.astro';
   pathMeta="exit 127"
 >
   <section class="notfound">
-    <div class="prompt-line"><span class="prompt">$</span> cat <span style="color:var(--accent)">/var/www<span style="color:var(--dim)">$REQUEST_PATH</span></span></div>
-    <div class="err">cat: no such file or directory</div>
+    <div class="prompt-line"><span class="prompt">$</span> cat <span style="color:var(--accent)">/var/www<span class="req-path" style="color:var(--dim)">$REQUEST_PATH</span></span></div>
+    <div class="err">cat: /var/www<span class="req-path">$REQUEST_PATH</span>: No such file or directory</div>
     <div class="prompt-line"><span class="prompt">$</span> echo $?</div>
     <div style="color:var(--text)">404</div>
     <div class="hint" style="margin-top:24px">того, что вы искали, здесь нет. возможно, страница переехала или никогда не существовала. так или иначе, путь ничего не вернул.</div>
     <div class="hint">попробуйте одну из этих ссылок:</div>
-    <div class="tree" style="margin-top:8px"><span class="branch">├──</span> <a href="/">/ </a>
-<span class="branch">├──</span> <a href="/digests">/digests</a>
-<span class="branch">├──</span> <a href="/projects">/projects</a>
-<span class="branch">└──</span> <a href="/about">/about</a></div>
+    <div class="tree" style="margin-top:8px">
+      <div class="row"><span class="branch">├──</span> <a href="/">/</a></div>
+      <div class="row"><span class="branch">├──</span> <a href="/digests">/digests</a></div>
+      <div class="row"><span class="branch">├──</span> <a href="/projects">/projects</a></div>
+      <div class="row"><span class="branch">└──</span> <a href="/about">/about</a></div>
+    </div>
   </section>
+  <script is:inline>
+    (function () {
+      var p = location.pathname || '/';
+      document.querySelectorAll('.req-path').forEach(function (el) { el.textContent = p; });
+    })();
+  </script>
 </Base>
