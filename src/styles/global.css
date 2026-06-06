@@ -15,7 +15,6 @@
   --muted:    #8a8a96;
   --text:     #e6e6ea;
 
-  --green:    #3fb950;
   --red:      #f85149;
   --accent:   #ffb000;
 
@@ -50,7 +49,6 @@
   --muted:    #5b5a52;
   --text:     #1a1a1a;
 
-  --green:    #1a7f37;
   --red:      #b32626;
   --accent:   #9a6700;
 }
@@ -136,8 +134,8 @@ hr {
   color: var(--dim);
 }
 .nav a:hover { color: var(--text); }
-.nav a[aria-current="page"] { color: var(--green); }
-.nav a[aria-current="page"]::before { color: var(--green); }
+.nav a[aria-current="page"] { color: var(--accent); }
+.nav a[aria-current="page"]::before { color: var(--accent); }
 
 /* ─── Hero (home) ─── */
 .hero {
@@ -174,18 +172,18 @@ hr {
   line-height: 1.5;
   font-weight: 400;
 }
-.hero-stack .prompt { color: var(--green); }
+.hero-stack .prompt { color: var(--accent); }
 .hero-stack .arrow  { color: var(--dim); }
 .hero-stack .line   { display: block; color: var(--text); }
 .hero-stack .line + .line { margin-top: 6px; }
-.hero-stack .about-link { color: var(--green); border-bottom: none; }
+.hero-stack .about-link { color: var(--accent); border-bottom: none; }
 
 .cursor {
   display: inline-block;
   width: 0.55em;
   height: 1.18em;
-  background: var(--green);
-  color: var(--green);
+  background: var(--accent);
+  color: var(--accent);
   margin-left: 2px;
   animation: blink 1.05s steps(1, end) infinite;
   vertical-align: -0.05em;
@@ -220,7 +218,7 @@ hr {
 }
 .section-header h2::before {
   content: "$ ";
-  color: var(--green);
+  color: var(--accent);
   font-weight: 400;
 }
 .section-header .more {
@@ -281,7 +279,7 @@ hr {
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
-.tag-bracket.live     { color: var(--green); }
+.tag-bracket.live     { color: var(--accent); }
 .tag-bracket.wip      { color: var(--accent); }
 .tag-bracket.archived { color: var(--dim); }
 .tag-bracket.error    { color: var(--red); }
@@ -308,7 +306,7 @@ hr {
 }
 .featured-card .name::before {
   content: "$ ";
-  color: var(--green);
+  color: var(--accent);
   font-weight: 400;
 }
 .featured-card .desc {
@@ -361,7 +359,7 @@ hr {
 }
 .project-card .name::before {
   content: "$ ";
-  color: var(--green);
+  color: var(--accent);
   font-weight: 400;
 }
 .project-card .desc {
@@ -538,8 +536,8 @@ hr {
   color: var(--text);
 }
 .code-copy[data-state="copied"] {
-  color: var(--green);
-  border-color: var(--green);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 .code-copy[data-state="error"] {
   color: var(--red);
@@ -653,7 +651,7 @@ hr {
 .notfound .err { color: var(--red); }
 .notfound .hint { color: var(--muted); font-size: var(--fs-base); }
 .notfound .prompt-line { color: var(--text); }
-.notfound .prompt-line .prompt { color: var(--green); }
+.notfound .prompt-line .prompt { color: var(--accent); }
 
 /* ─── Tag intro (single-tag page) ─── */
 .tag-intro {

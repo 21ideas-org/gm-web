@@ -10,7 +10,6 @@ const COLORS = {
 	dim: '#44444f',
 	border: '#2a2a33',
 	accent: '#ffb000',
-	green: '#3fb950',
 };
 
 let fontCache: { regular: Buffer; bold: Buffer } | null = null;
