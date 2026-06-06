@@ -8,14 +8,12 @@ const DAY_MS = 86_400_000;
 export const getStaticPaths: GetStaticPaths = async () => {
 	const posts = await getCollection('digests', p => !p.data.draft);
 	return posts.map(post => {
-		// The digest is published in the morning and covers the previous 24h,
-		// so the cover dates the news to the day before pubDate.
 		const covered = new Date(post.data.pubDate.getTime() - DAY_MS);
 		return {
 			params: { slug: post.id },
 			props: {
 				title: 'Доброе утро, биткоинер',
-				description: `Главные биткоин-новости за ${formatRuDate(covered)} года`,
+				description: post.data.description || `Главные биткоин-новости за ${formatRuDate(covered)} года`,
 			},
 		};
 	});
