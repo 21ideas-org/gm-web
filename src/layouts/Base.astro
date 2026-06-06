@@ -19,8 +19,9 @@ const { title, description, path, pathMeta, activeNav, image } = Astro.props;
   <head>
     <script is:inline>
       (() => {
-        const t = localStorage.getItem('theme') ?? 'light';
-        document.documentElement.dataset.theme = t;
+        const saved = localStorage.getItem('theme');
+        const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved ?? system;
       })();
     </script>
     <BaseHead title={title} description={description} image={image} />
