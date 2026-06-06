@@ -54,7 +54,7 @@ const featured = (await getCollection('projects', p => p.data.featured))
     </div>
     <div class="featured-list">
       {featured.map(p => (
-        <a class="featured-card" href="/projects">
+        <a class="featured-card" href={p.data.url ?? p.data.repo ?? '/projects'} rel="noopener">
           <span class={`status tag-bracket ${p.data.status.toLowerCase()}`}>[{p.data.status}]</span>
           <span>
             <span class="name">{p.data.name}</span>
