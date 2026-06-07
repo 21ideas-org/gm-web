@@ -3,13 +3,15 @@ import { resolve } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
+// Light-theme tokens, mirrored from :root[data-theme="light"] in global.css.
+// The card renders light regardless of site theme.
 const COLORS = {
-	bg: '#0a0a0c',
-	text: '#e6e6ea',
-	muted: '#8a8a96',
-	dim: '#44444f',
-	border: '#2a2a33',
-	accent: '#ffb000',
+	bg: '#f6f4ef',
+	text: '#1a1a1a',
+	muted: '#5b5a52',
+	dim: '#a8a190',
+	border: '#cfc8b6',
+	accent: '#9a6700',
 };
 
 let fontCache: { regular: Buffer; bold: Buffer } | null = null;
@@ -58,7 +60,7 @@ function template(title: string, description: string): Node {
 			right: 0,
 			bottom: 0,
 			backgroundImage:
-				'repeating-linear-gradient(to bottom, rgba(230,230,234,0.08) 0px, rgba(230,230,234,0.08) 1px, transparent 1px, transparent 2px)',
+				'repeating-linear-gradient(to bottom, rgba(26,26,26,0.05) 0px, rgba(26,26,26,0.05) 1px, transparent 1px, transparent 2px)',
 		},
 	});
 
@@ -71,7 +73,7 @@ function template(title: string, description: string): Node {
 			right: 0,
 			bottom: 0,
 			backgroundImage:
-				'radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.65) 100%)',
+				'radial-gradient(ellipse at center, transparent 45%, rgba(70,60,40,0.10) 100%)',
 		},
 	});
 
