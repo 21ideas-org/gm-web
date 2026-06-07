@@ -13,6 +13,13 @@ export function formatDate(date: Date): string {
 	return `${dd}-${mm}-${date.getUTCFullYear()}`;
 }
 
+// "DD.MM.YYYY" (e.g. "05.06.2025") — dotted date stamp shown in the OG card's top-right corner.
+export function formatDotDate(date: Date): string {
+	const dd = String(date.getUTCDate()).padStart(2, '0');
+	const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
+	return `${dd}.${mm}.${date.getUTCFullYear()}`;
+}
+
 // "D месяца YYYY" (e.g. "5 июня 2025") — natural Russian, used in the OG cover
 // subtitle sentence ("…за 4 июня 2025 года").
 export function formatRuDate(date: Date): string {

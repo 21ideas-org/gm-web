@@ -48,7 +48,7 @@ function el(type: string, props: Record<string, unknown> & { children?: unknown 
 	return { type, props };
 }
 
-function template(title: string, description: string): Node {
+function template(title: string, description: string, stamp: string): Node {
 	const titleSize = titleFontSize(title);
 
 	// Scanlines layer (replaces ::before)
@@ -95,7 +95,7 @@ function template(title: string, description: string): Node {
 			}),
 			el('div', {
 				style: { display: 'flex', color: COLORS.muted, fontSize: 18 },
-				children: 'og-image · 1200×630',
+				children: stamp,
 			}),
 		],
 	});
@@ -199,9 +199,13 @@ function template(title: string, description: string): Node {
 	});
 }
 
-export async function renderOgPng(title: string, description: string): Promise<Buffer> {
+export async function renderOgPng(
+	title: string,
+	description: string,
+	stamp = 'og-image · 1200×630',
+): Promise<Buffer> {
 	const { regular, bold } = await loadFonts();
-	const svg = await satori(template(title, description) as unknown as never, {
+	const svg = await satori(template(title, description, stamp) as unknown as never, {
 		width: 1200,
 		height: 630,
 		fonts: [

@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import { renderOgPng } from '../../lib/og';
-import { formatRuDate } from '../../lib/date';
+import { formatRuDate, formatDotDate } from '../../lib/date';
 
 const DAY_MS = 86_400_000;
 
@@ -14,14 +14,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 			props: {
 				title: 'Доброе утро, биткоинер',
 				description: post.data.description || `Главные биткоин-новости за ${formatRuDate(covered)} года`,
+				stamp: formatDotDate(post.data.pubDate),
 			},
 		};
 	});
 };
 
 export const GET: APIRoute = async ({ props }) => {
-	const { title, description } = props as { title: string; description: string };
-	const png = await renderOgPng(title, description);
+	const { title, description, stamp } = props as { title: string; description: string; stamp: string };
+	const png = await renderOgPng(title, description, stamp);
 	return new Response(new Uint8Array(png), {
 		headers: {
 			'Content-Type': 'image/png',
