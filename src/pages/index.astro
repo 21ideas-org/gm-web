@@ -7,7 +7,7 @@ const buildDate = new Date().toISOString().slice(0, 10);
 
 const posts = (await getCollection('digests', p => !p.data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 5);
+  .slice(0, 3);
 
 const featured = (await getCollection('projects', p => p.data.featured))
   .sort((a, b) => a.data.order - b.data.order);
