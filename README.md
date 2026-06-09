@@ -1,67 +1,88 @@
-# gm ₿
+# gm_₿
 
-Daily, Russian-language, Bitcoin-only news digest — *«Доброе утро, биткоинер»*.
-Published as a static site at [gm.21ideas.org](https://gm.21ideas.org), part of the
-[21ideas](https://21ideas.org) ecosystem.
+[![English](https://img.shields.io/badge/lang-English-blue)](README.en.md)
+[![Deploy](https://github.com/21ideas-org/gm-web/actions/workflows/deploy.yml/badge.svg)](https://github.com/21ideas-org/gm-web/actions/workflows/deploy.yml)
+[![Сайт](https://img.shields.io/website?url=https%3A%2F%2Fgm.21ideas.org&label=gm.21ideas.org&up_color=orange)](https://gm.21ideas.org)
+[![Лицензия: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Each digest summarizes the previous 24 hours of Bitcoin news. New digests are produced by
-a **separate bot** (not in this repo) that writes a Markdown file into
-`src/content/digests/`, commits, and pushes — GitHub Pages then rebuilds and publishes
-automatically, and the bot announces the published URL to Telegram/Discord.
+![Главная страница gm_₿](docs/main.png)
 
-## Stack
+> **Только биткоин, только сигнал — без шума и щиткоинов.**
 
-- **[Astro 6](https://astro.build)** — static site generator (`output: 'static'`)
-- **MDX** — Markdown content collections
-- **@astrojs/sitemap** — sitemap at `/sitemap-index.xml`
-- **@astrojs/rss** — RSS feed at `/rss.xml`
-- **Shiki** — syntax highlighting via custom dual themes that swap on dark/light toggle
-- **Satori + @resvg/resvg-js** — 1200×630 Open Graph cards prerendered at build time
-  (`src/lib/og.ts`): per-digest cards at `src/pages/og/[...slug].png.ts`, default card at
-  `src/pages/og/default.png.ts`. Fonts (JetBrains Mono) are vendored under `src/assets/fonts/`.
+**gm_₿** — *«Доброе утро, биткоинер»* — ежедневный биткоин-онли дайджест на русском. Каждое
+утро — короткая сводка главных событий за прошедшие 24 часа: сеть, майнинг, Lightning,
+регулирование, институционалы. Без альткоинов, пампов и шума.
 
-## Commands
+Сайт живёт по адресу [gm.21ideas.org](https://gm.21ideas.org) и входит в экосистему
+[21ideas](https://21ideas.org).
 
-| Command               | Action                            |
-| :-------------------- | :-------------------------------- |
-| `npm install`         | Install dependencies              |
-| `npm run dev`         | Dev server at `localhost:4321`    |
-| `npm run build`       | Production build to `./dist/`     |
-| `npm run preview`     | Preview the production build      |
-| `npm run check`       | Type-check (`astro check`)        |
+Дайджесты пишет **отдельный бот** (его нет в этом репозитории): он создаёт Markdown-файл в
+`src/content/digests/`, коммитит и пушит — GitHub Pages пересобирает и публикует сайт, после
+чего бот анонсирует ссылку в Telegram/Discord.
 
-## Content
+## Подписаться
+
+- **Telegram** — [@bitcoin21ideas](https://t.me/bitcoin21ideas)
+- **RSS** — [gm.21ideas.org/rss.xml](https://gm.21ideas.org/rss.xml)
+
+## Архитектура
+
+Технологический стек, маршрутизация, генерация OG-карточек и SEO-механика описаны
+отдельно — см. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Запуск локально
+
+Нужен Node >= 22.12.0 (версия закреплена в `.nvmrc`).
+
+```sh
+git clone https://github.com/21ideas-org/gm-web.git
+cd gm-web
+nvm use            # подхватит версию Node из .nvmrc
+npm install
+npm run dev        # дев-сервер на localhost:4321
+```
+
+## Команды
+
+| Команда           | Действие                          |
+| :---------------- | :-------------------------------- |
+| `npm install`     | Установить зависимости            |
+| `npm run dev`     | Дев-сервер на `localhost:4321`    |
+| `npm run build`   | Продакшен-сборка в `./dist/`      |
+| `npm run preview` | Предпросмотр собранного сайта     |
+| `npm run check`   | Проверка типов (`astro check`)    |
+
+## Контент
 
 ### `digests`
 
-Files in `src/content/digests/*.md`, conventionally named `YYYY-MM-DD.md`. Frontmatter:
+Файлы в `src/content/digests/*.md`, по соглашению именуются `YYYY-MM-DD.md`. Frontmatter:
 
 ```yaml
-title: "gm ₿ — 5 июня 2025"   # used for <title>, the digest index, and RSS
-description: "<teaser>"        # teaser → RSS + the bot's Telegram/Discord announcement
-pubDate: 2025-06-05            # publish date; the OG cover dates the news to pubDate − 1 day
-draft: false                  # optional (default false); drafts are excluded at build time
-tags: [сеть, lightning]       # optional; collected but not surfaced in v1
+title: "Доброе утро, биткоинер — 5 июня 2025"   # идёт в <title>, индекс дайджестов и RSS
+description: "<тизер>"         # тизер → RSS + анонс бота в Telegram/Discord
+pubDate: 2025-06-05           # дата публикации; OG-обложка датирует новости как pubDate − 1 день
+draft: false                  # опционально (по умолчанию false); черновики исключаются при сборке
+tags: [сеть, lightning]       # опционально; собираются, но в v1 не отображаются
 ```
 
-> The OG cover uses a **fixed** brand title ("Доброе утро, биткоинер") and a date-stamped
-> subtitle derived from `pubDate`; it does not render the `title` frontmatter.
+> OG-обложка использует **фиксированный** бренд-заголовок («Доброе утро, биткоинер») и подпись с
+> датой, выведенной из `pubDate`; поле `title` на обложку не попадает.
 
 ### `projects`
 
-Files in `src/content/projects/*.md` power the 21ideas ecosystem section:
-`name`, `description`, `status` (`LIVE` | `WIP` | `ARCHIVED`), optional `url`, optional
-`stack`, `featured`, `order`.
+Файлы в `src/content/projects/*.md` наполняют секцию экосистемы 21ideas: `name`, `description`, `status` (`LIVE` | `WIP` | `ARCHIVED`), опционально `url`, `stack`, `featured`, `order`.
 
-## Deployment
+## Деплой
 
-Static build deployed to GitHub Pages on push to `main` (see `.github/workflows/`), served
-from the custom domain in `public/CNAME` (`gm.21ideas.org`).
+Статическая сборка деплоится на GitHub Pages при пуше в `main` (см. `.github/workflows/`), отдаётся с домена из `public/CNAME` (`gm.21ideas.org`).
 
-## Requirements
+## Как помочь
 
-Node >= 22.12.0 (see `.nvmrc` / `package.json`).
+Нашли ошибку в дайджесте или на сайте? Откройте issue или pull request. Дайджесты генерирует бот, поэтому правки по содержанию — это фактические уточнения; улучшения самого сайта (вёрстка,
+доступность, производительность, SEO) приветствуются в виде PR.
 
-## License
+## Лицензия
 
-[MIT](LICENSE)
+- **Код** — [MIT](LICENSE).
+- **Контент дайджестов** — © проект gm_₿; лицензией на код не покрывается.

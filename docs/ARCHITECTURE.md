@@ -1,0 +1,108 @@
+# Architecture
+
+Technical reference for the gm_₿ site. For what the project is and how to run it, see the
+[README](../README.md).
+
+## Overview
+
+gm_₿ is a static site built with **Astro 6** (`output: 'static'`), deployed to GitHub Pages at
+`https://gm.21ideas.org` (custom domain via `public/CNAME`). All routing is file-based under
+`src/pages/`, and everything — pages, feeds, sitemaps, OG images — is generated at build time;
+there is no server runtime.
+
+Digests are authored by a **separate bot** (not in this repo) that drops a Markdown file into
+`src/content/digests/` and pushes; Pages rebuilds and publishes. Keep the content-collection shape
+compatible with that bot.
+
+## Naming
+
+- **Wordmark** — `gm_₿` (underscore; canonical). Used in display/chrome: nav, footer, the
+  page-`<title>` suffix, the OG path strip. The underscore matches the site's terminal aesthetic.
+- **Editorial / publisher name** — «Доброе утро, биткоинер». Used in machine-read metadata
+  (`schema.org` `name`, `og:site_name`, RSS/Yandex feed titles) that engines and feed readers
+  display literally, and as the OG card title.
+- **Plain identifier** — `gm`. Used wherever a glyph can't go: the `gm.21ideas.org` subdomain, the
+  `gm-web` repo, social handles. This is the spoken/searchable name.
+
+Defined once in `src/consts.ts` — `SITE_TITLE` (wordmark) and `SITE_NAME` (editorial name). Avoid
+the spaced form `gm ₿`.
+
+## Stack
+
+- **[Astro 6](https://astro.build)** — static site generator (`output: 'static'`)
+- **MDX** — Markdown content collections
+- **@astrojs/sitemap** — sitemap at `/sitemap-index.xml` (per-URL `lastmod`; hidden `/tags` excluded)
+- **@astrojs/rss** — full-content RSS feed at `/rss.xml`
+- **markdown-it + sanitize-html** — render digest Markdown to HTML for the RSS and Yandex feeds
+- **Shiki** — syntax highlighting via custom dual themes that swap on dark/light toggle
+- **Satori + @resvg/resvg-js** — 1200×630 Open Graph cards prerendered at build time (`src/lib/og.ts`)
+
+## Routing
+
+`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/tags` · `/tags/[tag]` (hidden in
+v1) · `/rss.xml` · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/og/*.png` ·
+`robots.txt`.
+
+## Layouts & components
+
+- **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `PathStrip` → `Nav` →
+  `<slot>` → `Footer`.
+- **`Post.astro`** — wraps `Base`, adds the post header + prev/next nav. (The Giscus `<Comments />`
+  slot exists but is not imported in v1.)
+
+## Content collections (`src/content.config.ts`)
+
+- **`digests`** — `glob` over `src/content/digests/*.md`. Fields: `title`, `description`, `pubDate`,
+  `draft` (default `false`, filtered at query time), `tags` (default `[]`, collected but not
+  surfaced in v1). Filenames `YYYY-MM-DD.md`.
+- **`projects`** — the 21ideas ecosystem section: `name`, `description`, `status`
+  (`LIVE | WIP | ARCHIVED`), optional `url`, `stack`, `featured`, `order`.
+
+Draft posts are excluded at the collection-query level, not the file level.
+
+## Theme
+
+Follows the system preference. CSS `:root` holds the dark tokens; `:root[data-theme="light"]` the
+light tokens. An inline `<script>` in `Base.astro` resolves the theme before first paint, with the
+precedence: explicit toggle (`localStorage.theme`) → system (`prefers-color-scheme`) → light
+fallback. Styling is plain CSS only (no framework), all in `src/styles/global.css`; custom
+properties (`--accent`, `--green`, `--muted`, …) are the design-token system.
+
+## Code blocks & syntax highlighting
+
+Shiki dual themes live in `src/themes/shiki-gm.mjs` (`gm-dark` / `gm-light`), wired in
+`astro.config.mjs`. `src/plugins/rehype-code-copy.mjs` wraps each Markdown `<pre>` in a `.code-wrap`
+with a language label + copy button; the delegated click handler lives at the bottom of `Post.astro`.
+
+## OG images
+
+1200×630 PNGs prerendered via Satori + `@resvg/resvg-js`; template in `src/lib/og.ts` (plain object
+trees, no JSX). JetBrains Mono is vendored under `src/assets/fonts/`. The card is light-themed
+regardless of site theme. Two endpoints: `src/pages/og/[...slug].png.ts` (per digest, fixed brand
+title + date-stamped subtitle) and `src/pages/og/default.png.ts` (fallback).
+
+## SEO & discoverability
+
+- **Meta** — `BaseHead.astro` emits `robots` (`max-image-preview:large`…), `og:locale`,
+  `og:site_name`, `og:type` (`article` on digests), `article:*`, and the public Yandex verification
+  token.
+- **Structured data** — JSON-LD `@graph` built in `src/lib/schema.ts`: `NewsMediaOrganization` +
+  `WebSite` site-wide, `NewsArticle` + `BreadcrumbList` per digest.
+- **Sitemap** — `@astrojs/sitemap` with per-URL `lastmod`/`changefreq`/`priority`; hidden `/tags`
+  pages excluded. (Use `ChangeFreqEnum`, not bare strings — bare strings fail `npm run check`.)
+- **News feeds** — Google News sitemap at `/news-sitemap.xml` (rolling 48-hour window) and a Yandex
+  fresh-content RSS feed at `/yandex-news.xml` (full `<yandex:full-text>`). Both render digest
+  Markdown to HTML via `markdown-it` + `sanitize-html`.
+- **RSS** — `/rss.xml` carries full `<content:encoded>`, `<language>ru-ru</language>`, and a self
+  `atom:link`.
+- **IndexNow** — an `indexnow` job in `.github/workflows/deploy.yml` pings the shared
+  `api.indexnow.org` endpoint (Yandex + Bing) for new/changed digests after each deploy. The key
+  file in `public/` is public by protocol design — not a secret. Google does not participate; it
+  relies on the news sitemap instead.
+
+## Build & deploy
+
+`npm run build` → static output in `dist/`. Pushing to `main` triggers
+`.github/workflows/deploy.yml` (build → lychee internal-link check → deploy to GitHub Pages), then
+the `indexnow` job. CI gates that every change must pass: `npm ci`, `npm run check`, `npm run
+build`, and the lychee internal-link check.
