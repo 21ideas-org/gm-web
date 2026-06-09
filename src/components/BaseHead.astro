@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE_TITLE } from '../consts';
+import { organizationNode, websiteNode, graph } from '../lib/schema';
 
 interface Props {
 	title: string;
@@ -10,6 +11,7 @@ interface Props {
 	publishedTime?: string; // ISO 8601, articles only
 	modifiedTime?: string;  // ISO 8601, articles only
 	section?: string;       // e.g. "Биткоин"
+	schema?: object | object[]; // extra JSON-LD nodes (article, breadcrumb)
 }
 
 const {
@@ -20,9 +22,14 @@ const {
 	publishedTime,
 	modifiedTime,
 	section,
+	schema,
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
+
+// Site-wide nodes on every page, plus any page-specific nodes (digests pass NewsArticle + Breadcrumb).
+const extraNodes = Array.isArray(schema) ? schema : schema ? [schema] : [];
+const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
 ---
 
 <!-- Global Metadata -->
@@ -50,6 +57,9 @@ const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+
+<!-- Structured data (schema.org JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>

@@ -15,6 +15,7 @@ interface Props {
   publishedTime?: string;
   modifiedTime?: string;
   section?: string;
+  schema?: object | object[];
 }
 const {
   title,
@@ -27,6 +28,7 @@ const {
   publishedTime,
   modifiedTime,
   section,
+  schema,
 } = Astro.props;
 ---
 <!doctype html>
@@ -47,6 +49,7 @@ const {
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
       section={section}
+      schema={schema}
     />
     <script defer src="https://cloud.umami.is/script.js" data-website-id="f78f89fd-4254-4f5a-a727-de07928747ed" is:inline></script>
   </head>

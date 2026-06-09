@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
-import { formatDate } from '../lib/date';
+import { formatDate, formatRuDate } from '../lib/date';
+import { newsArticleNode, breadcrumbNode } from '../lib/schema';
 
 interface Props {
   id: string;
@@ -14,6 +15,11 @@ interface Props {
 const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
 const dateStr = formatDate(pubDate);
 const pubIso = pubDate.toISOString();
+const ogImage = new URL(`/og/${id}.png`, Astro.site).href;
+const schema = [
+  newsArticleNode({ title, description, slug: id, pubDate, image: ogImage }),
+  breadcrumbNode({ slug: id, dateLabel: formatRuDate(pubDate) }),
+];
 ---
 <Base
   title={`${title} — gm ₿`}
@@ -21,11 +27,12 @@ const pubIso = pubDate.toISOString();
   path={`digests/${id}`}
   pathMeta="cat post.md"
   activeNav="digests"
-  image={new URL(`/og/${id}.png`, Astro.site).href}
+  image={ogImage}
   ogType="article"
   publishedTime={pubIso}
   modifiedTime={pubIso}
   section="Биткоин"
+  schema={schema}
 >
   <header class="post-header">
     <article class="prose">
