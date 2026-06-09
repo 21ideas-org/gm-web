@@ -94,7 +94,7 @@ function template(title: string, description: string, stamp: string): Node {
 				children: '[ ~/gm_₿ ]',
 			}),
 			el('div', {
-				style: { display: 'flex', color: COLORS.muted, fontSize: 18 },
+				style: { display: 'flex', color: COLORS.muted, fontSize: 36 },
 				children: stamp,
 			}),
 		],
