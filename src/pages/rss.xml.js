@@ -2,7 +2,7 @@ import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { SITE_DESCRIPTION, SITE_NAME } from '../consts';
 
 const md = new MarkdownIt();
 
@@ -21,7 +21,7 @@ export async function GET(context) {
 	const posts = (await getCollection('digests', p => !p.data.draft))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 	return rss({
-		title: SITE_TITLE,
+		title: SITE_NAME,
 		description: SITE_DESCRIPTION,
 		site: context.site,
 		xmlns: { atom: 'http://www.w3.org/2005/Atom' },

@@ -44,7 +44,7 @@ export async function GET() {
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:yandex="http://news.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
-    <title>gm ₿ — Доброе утро, биткоинер</title>
+    <title>Доброе утро, биткоинер</title>
     <link>${SITE}/</link>
     <description>Ежедневные биткоин-онли дайджесты на русском</description>
     <language>ru</language>${items}

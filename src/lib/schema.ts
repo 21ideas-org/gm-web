@@ -1,4 +1,4 @@
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, SITE_NAME } from '../consts';
 
 const SITE = 'https://gm.21ideas.org';
 const LOGO = `${SITE}/android-chrome-512x512.png`; // 512x512, in public/
@@ -8,7 +8,7 @@ export function organizationNode() {
 	return {
 		'@type': 'NewsMediaOrganization',
 		'@id': ORG_ID,
-		name: 'gm ₿ — Доброе утро, биткоинер',
+		name: SITE_NAME,
 		alternateName: SITE_TITLE,
 		url: SITE,
 		logo: { '@type': 'ImageObject', url: LOGO, width: 512, height: 512 },
@@ -25,7 +25,7 @@ export function websiteNode() {
 		'@type': 'WebSite',
 		'@id': `${SITE}/#website`,
 		url: SITE,
-		name: SITE_TITLE,
+		name: SITE_NAME,
 		inLanguage: 'ru-RU',
 		publisher: { '@id': ORG_ID },
 	};

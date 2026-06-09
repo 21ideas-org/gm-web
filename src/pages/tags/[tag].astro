@@ -17,7 +17,7 @@ const posts = allPosts.filter(p => p.data.tags.includes(tag!));
 const otherTags = (await getAllTags()).filter(t => t !== tag);
 ---
 <Base
-  title={`#${tag} — gm ₿`}
+  title={`#${tag} — gm_₿`}
   description={`Все выпуски с тегом #${tag}.`}
   path={`tags/${tag}`}
   pathMeta={`grep -r '#${tag}' digests/`}

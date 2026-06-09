@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE_TITLE } from '../consts';
+import { SITE_NAME } from '../consts';
 import { organizationNode, websiteNode, graph } from '../lib/schema';
 
 interface Props {
@@ -44,7 +44,7 @@ const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
 <link
 	rel="alternate"
 	type="application/rss+xml"
-	title={SITE_TITLE}
+	title={SITE_NAME}
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
@@ -70,7 +70,7 @@ const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={ogType} />
 <meta property="og:locale" content="ru_RU" />
-<meta property="og:site_name" content="gm ₿" />
+<meta property="og:site_name" content={SITE_NAME} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
