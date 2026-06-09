@@ -6,9 +6,21 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	ogType?: 'website' | 'article';
+	publishedTime?: string; // ISO 8601, articles only
+	modifiedTime?: string;  // ISO 8601, articles only
+	section?: string;       // e.g. "Биткоин"
 }
 
-const { title, description, image } = Astro.props;
+const {
+	title,
+	description,
+	image,
+	ogType = 'website',
+	publishedTime,
+	modifiedTime,
+	section,
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
 ---
@@ -29,6 +41,9 @@ const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Search-engine ownership verification (public token, safe to commit) -->
+<meta name="yandex-verification" content="5b5fcc7cde989fe6" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
@@ -40,13 +55,19 @@ const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:site_name" content="gm ₿" />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{section && <meta property="article:section" content={section} />}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />

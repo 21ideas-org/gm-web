@@ -11,8 +11,23 @@ interface Props {
   pathMeta?: string;
   activeNav?: 'home' | 'digests' | 'projects' | 'about' | 'tags';
   image?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+  section?: string;
 }
-const { title, description, path, pathMeta, activeNav, image } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  pathMeta,
+  activeNav,
+  image,
+  ogType,
+  publishedTime,
+  modifiedTime,
+  section,
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="ru" data-theme="light">
@@ -24,7 +39,15 @@ const { title, description, path, pathMeta, activeNav, image } = Astro.props;
         document.documentElement.dataset.theme = saved ?? system;
       })();
     </script>
-    <BaseHead title={title} description={description} image={image} />
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      ogType={ogType}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      section={section}
+    />
     <script defer src="https://cloud.umami.is/script.js" data-website-id="f78f89fd-4254-4f5a-a727-de07928747ed" is:inline></script>
   </head>
   <body>

@@ -13,6 +13,7 @@ interface Props {
 }
 const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
 const dateStr = formatDate(pubDate);
+const pubIso = pubDate.toISOString();
 ---
 <Base
   title={`${title} — gm ₿`}
@@ -21,6 +22,10 @@ const dateStr = formatDate(pubDate);
   pathMeta="cat post.md"
   activeNav="digests"
   image={new URL(`/og/${id}.png`, Astro.site).href}
+  ogType="article"
+  publishedTime={pubIso}
+  modifiedTime={pubIso}
+  section="Биткоин"
 >
   <header class="post-header">
     <article class="prose">

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+# /tags/ is hidden in v1 (thin/empty) — keep it out of the index
+Disallow: /tags/
+
+Sitemap: https://gm.21ideas.org/sitemap-index.xml
+Sitemap: https://gm.21ideas.org/news-sitemap.xml

@@ -3,8 +3,6 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Cursor from '../components/Cursor.astro';
 import PostCard from '../components/PostCard.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-
 const buildDate = new Date().toISOString().slice(0, 10);
 
 const posts = (await getCollection('digests', p => !p.data.draft))
@@ -15,8 +13,8 @@ const featured = (await getCollection('projects', p => p.data.featured))
   .sort((a, b) => a.data.order - b.data.order);
 ---
 <Base
-  title={SITE_TITLE}
-  description={SITE_DESCRIPTION}
+  title="Доброе утро, биткоинер — ежедневный биткоин-дайджест на русском"
+  description="Доброе утро, биткоинер. Каждый день — короткая сводка главных биткоин-новостей на русском: сеть, майнинг, Lightning, регулирование, институционалы. Только биткоин, только сигнал — без шума и щиткоинов."
   path="site"
   pathMeta={`последняя сборка: ${buildDate}`}
   activeNav="home"
