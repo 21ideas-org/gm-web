@@ -404,20 +404,10 @@ hr {
   line-height: 1.35;
   margin-top: 2em;
 }
-.prose h2::before {
-  content: "## ";
-  color: var(--muted);
-  font-weight: 400;
-}
 .prose h3 {
   font-size: var(--fs-h3);
   font-weight: 500;
   margin-top: 1.6em;
-}
-.prose h3::before {
-  content: "### ";
-  color: var(--muted);
-  font-weight: 400;
 }
 .prose p { margin: 0; }
 .prose p + p { margin-top: 1.1em; }
@@ -710,11 +700,6 @@ hr {
   font-size: var(--fs-h2);
   font-weight: 500;
   margin: 0 0 12px;
-}
-.about-section h2::before {
-  content: "## ";
-  color: var(--muted);
-  font-weight: 400;
 }
 .about-section p {
   max-width: var(--maxw-prose);
