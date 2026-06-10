@@ -210,13 +210,15 @@ hr {
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
-.section-header h2 {
+.section-header h2,
+.section-header h1 {
   font-size: var(--fs-lg);
   font-weight: 500;
   margin: 0;
   color: var(--text);
 }
-.section-header h2::before {
+.section-header h2::before,
+.section-header h1::before {
   content: "$ ";
   color: var(--accent);
   font-weight: 400;
@@ -782,6 +784,29 @@ hr {
   margin-right: 10px;
   opacity: 0.6;
 }
+
+/* ─── Tag hub (/tags/<slug>) ─── */
+.hub-desc {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  margin: -8px 0 24px;
+}
+.hub-empty {
+  font-size: var(--fs-base);
+  color: var(--dim);
+  margin: 24px 0;
+}
+.other-tags {
+  margin-top: 32px;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.other-tags a {
+  color: var(--accent);
+  margin-left: 12px;
+  border-bottom: 1px solid transparent;
+}
+.other-tags a:hover { border-bottom-color: var(--accent); }
 
 /* ─── About sections ─── */
 .about-section { padding-top: 28px; }

@@ -2,6 +2,7 @@
 import Base from './Base.astro';
 import { formatDate, formatRuDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
+import { tagBySlug } from '../lib/tags';
 import Subscribe from '../components/Subscribe.astro';
 
 interface Props {
@@ -13,7 +14,8 @@ interface Props {
   prevPost?: { id: string; label: string };
   nextPost?: { id: string; label: string };
 }
-const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
+const { id, title, description, pubDate, tags = [], prevPost, nextPost } = Astro.props;
+const chips = tags.map((s) => tagBySlug(s)).filter(Boolean);
 const dateStr = formatDate(pubDate);
 const dateLabel = formatRuDate(pubDate);
 const pubIso = pubDate.toISOString();
@@ -51,6 +53,11 @@ const schema = [
     <div class="meta">
       <span class="date">{dateStr}</span>
     </div>
+    {chips.length > 0 && (
+      <nav class="tag-chips" aria-label="Темы выпуска">
+        {chips.map((t) => <a href={`/tags/${t!.slug}`}>#{t!.label}</a>)}
+      </nav>
+    )}
   </header>
 
   <article class="prose">

@@ -1,54 +1,48 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
-import { getAllTags } from '../../lib/tags';
+import { TAGS, tagBySlug, buildTagIndex, type NewsRef } from '../../lib/tags';
 
 export async function getStaticPaths() {
-  const tags = await getAllTags();
-  return tags.map(tag => ({ params: { tag } }));
+  const index = await buildTagIndex();
+  return TAGS.map((t) => ({
+    params: { tag: t.slug },
+    props: { items: (index.get(t.slug) ?? []) as NewsRef[] },
+  }));
 }
 
 const { tag } = Astro.params;
-const allPosts = (await getCollection('digests', p => !p.data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const posts = allPosts.filter(p => p.data.tags.includes(tag!));
-const otherTags = (await getAllTags()).filter(t => t !== tag);
+const { items } = Astro.props as { items: NewsRef[] };
+const def = tagBySlug(tag!)!;
 ---
 <Base
-  title={`#${tag} — gm_₿`}
-  description={`Все выпуски с тегом #${tag}.`}
-  path={`tags/${tag}`}
-  pathMeta={`grep -r '#${tag}' digests/`}
-  activeNav="digests"
+  title={`${def.hubTitle} — gm_₿`}
+  description={def.hubDesc}
+  path={`tags/${def.slug}`}
+  pathMeta={`grep -rl '#${def.slug}' digests/`}
+  activeNav="tags"
 >
   <section class="section">
-    <div class="tag-intro">
-      <span class="hash">#</span>{tag}
-      <span class="count">// {posts.length}</span>
-    </div>
+    <div class="section-header"><h1>{def.hubTitle}</h1><span class="more">{items.length}</span></div>
+    <p class="hub-desc">{def.hubDesc}</p>
 
-    <ul class="post-list">
-      {posts.map(post => (
-        <li>
-          <PostCard
-            href={`/digests/${post.id}`}
-            date={post.data.pubDate}
-            title={post.data.title}
-            meta={post.data.tags.filter(t => t !== tag).map(t => `#${t}`).join(' ')}
-          />
-        </li>
-      ))}
-    </ul>
-
-    {otherTags.length > 0 && (
-      <p style="margin-top:32px;font-size:var(--fs-sm);color:var(--muted)">
-        другие теги:
-        {otherTags.map(t => (
-          <a href={`/tags/${t}`} style="color:var(--accent);margin-left:12px">#{t}</a>
+    {items.length === 0 ? (
+      <p class="hub-empty">Пока нет новостей по этой теме.</p>
+    ) : (
+      <ul class="post-list">
+        {items.map((it) => (
+          <li>
+            <PostCard href={`/digests/${it.digestId}/#${it.anchor}`} date={it.date} title={it.ru_title} />
+          </li>
         ))}
-      </p>
+      </ul>
     )}
+
+    <p class="other-tags">
+      другие темы:
+      {TAGS.filter((t) => t.slug !== def.slug).map((t) => (
+        <a href={`/tags/${t.slug}`}>#{t.label}</a>
+      ))}
+    </p>
   </section>
 </Base>

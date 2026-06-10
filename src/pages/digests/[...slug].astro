@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 import { formatRuDayMonth } from '../../lib/date';
+import { tagsFromHeadings } from '../../lib/tags';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('digests', p => !p.data.draft))
@@ -26,14 +27,14 @@ interface Props {
 }
 
 const { post, prevPost, nextPost } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 <Post
   id={post.id}
   title={post.data.title}
   description={post.data.description}
   pubDate={post.data.pubDate}
-  tags={post.data.tags}
+  tags={tagsFromHeadings(headings)}
   prevPost={prevPost}
   nextPost={nextPost}
 >
