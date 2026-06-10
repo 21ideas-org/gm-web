@@ -226,6 +226,48 @@ hr {
   color: var(--muted);
 }
 
+/* ─── Subscribe CTA (home + digest foot) ─── */
+.subscribe { padding-top: 48px; }
+.subscribe--bare {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.subscribe-lead {
+  max-width: var(--maxw-prose);
+  font-size: var(--fs-body);
+  line-height: var(--lh-prose);
+  color: var(--text);
+  margin: 0;
+}
+.subscribe-lead .arrow { color: var(--dim); }
+.subscribe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  transition: border-color 120ms linear, color 120ms linear;
+}
+.cta-btn .arrow { color: var(--dim); transition: color 120ms linear; }
+.cta-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cta-btn:hover .arrow { color: var(--accent); }
+.cta-btn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ─── Post list (used on home, digests index, tag page) ─── */
 .post-list {
   list-style: none;

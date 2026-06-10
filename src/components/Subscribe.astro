@@ -1,0 +1,23 @@
+---
+// Subscribe CTA — Telegram + RSS, terminal-idiom ghost buttons.
+// Home renders it with a `$ подписаться` header; digests pass no `heading`
+// (the `subscribe--bare` variant adds a top separator instead).
+interface Props {
+  heading?: string;
+  text: string;
+}
+const { heading, text } = Astro.props;
+const TELEGRAM = 'https://t.me/bitcoin21ideas';
+---
+<section class:list={["subscribe", { "subscribe--bare": !heading }]} aria-label="Подписка на дайджест">
+  {heading && (
+    <div class="section-header">
+      <h2>{heading}</h2>
+    </div>
+  )}
+  <p class="subscribe-lead"><span class="arrow">&gt;</span> {text}</p>
+  <div class="subscribe-actions">
+    <a class="cta-btn" href={TELEGRAM} rel="noopener">telegram <span class="arrow">→</span></a>
+    <a class="cta-btn" href="/rss.xml">rss <span class="arrow">→</span></a>
+  </div>
+</section>

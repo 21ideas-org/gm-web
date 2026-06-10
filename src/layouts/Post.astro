@@ -2,6 +2,7 @@
 import Base from './Base.astro';
 import { formatDate, formatRuDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
+import Subscribe from '../components/Subscribe.astro';
 
 interface Props {
   id: string;
@@ -46,6 +47,8 @@ const schema = [
   <article class="prose">
     <slot />
   </article>
+
+  <Subscribe text="Свежий дайджест каждое утро. Не пропустите следующий выпуск." />
 
   {(prevPost || nextPost) && (
     <nav class="post-nav" aria-label="Adjacent posts">
