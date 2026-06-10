@@ -624,6 +624,31 @@ hr {
 }
 .tag-chips a:hover { border-bottom-color: var(--accent); }
 
+/* ─── Breadcrumbs (digest pages) ─── */
+.breadcrumbs {
+  padding: 4px 0 0;
+  font-size: var(--fs-sm);
+}
+.breadcrumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.breadcrumbs a {
+  color: var(--muted);
+  border-bottom: none;
+}
+.breadcrumbs a:hover { color: var(--accent); }
+.breadcrumbs li + li::before {
+  content: "/";
+  color: var(--dim);
+  margin: 0 8px;
+}
+.breadcrumbs [aria-current="page"] { color: var(--dim); }
+
 /* ─── Post header (in post layout) ─── */
 .post-header { padding: 16px 0 12px; }
 .post-header .meta {

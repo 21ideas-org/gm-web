@@ -15,11 +15,12 @@ interface Props {
 }
 const { id, title, description, pubDate, prevPost, nextPost } = Astro.props;
 const dateStr = formatDate(pubDate);
+const dateLabel = formatRuDate(pubDate);
 const pubIso = pubDate.toISOString();
 const ogImage = new URL(`/og/${id}.png`, Astro.site).href;
 const schema = [
   newsArticleNode({ title, description, slug: id, pubDate, image: ogImage }),
-  breadcrumbNode({ slug: id, dateLabel: formatRuDate(pubDate) }),
+  breadcrumbNode({ slug: id, dateLabel }),
 ];
 ---
 <Base
@@ -35,6 +36,14 @@ const schema = [
   section="Биткоин"
   schema={schema}
 >
+  <nav class="breadcrumbs" aria-label="Хлебные крошки">
+    <ol>
+      <li><a href="/">главная</a></li>
+      <li><a href="/digests">дайджесты</a></li>
+      <li aria-current="page">{dateLabel}</li>
+    </ol>
+  </nav>
+
   <header class="post-header">
     <article class="prose">
       <h1>{title}</h1>
