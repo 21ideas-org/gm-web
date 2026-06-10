@@ -22,7 +22,11 @@ const pubIso = pubDate.toISOString();
 const ogImage = new URL(`/og/${id}.png`, Astro.site).href;
 const schema = [
   newsArticleNode({ title, description, slug: id, pubDate, image: ogImage }),
-  breadcrumbNode({ slug: id, dateLabel }),
+  breadcrumbNode([
+    { name: 'Главная', path: '' },
+    { name: 'Дайджесты', path: 'digests/' },
+    { name: dateLabel, path: `digests/${id}/` },
+  ]),
 ];
 ---
 <Base

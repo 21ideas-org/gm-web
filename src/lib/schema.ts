@@ -58,15 +58,17 @@ export function newsArticleNode(o: {
 	};
 }
 
-export function breadcrumbNode(o: { slug: string; dateLabel: string }) {
-	const url = `${SITE}/digests/${o.slug}/`;
+// Generic BreadcrumbList. Each crumb's `path` is site-relative ('' = home,
+// 'digests/', `tags/${slug}/`, …); the trailing slash matches our canonical URLs.
+export function breadcrumbNode(crumbs: { name: string; path: string }[]) {
 	return {
 		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Главная', item: `${SITE}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Дайджесты', item: `${SITE}/digests/` },
-			{ '@type': 'ListItem', position: 3, name: o.dateLabel, item: url },
-		],
+		itemListElement: crumbs.map((c, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			name: c.name,
+			item: `${SITE}/${c.path}`,
+		})),
 	};
 }
 

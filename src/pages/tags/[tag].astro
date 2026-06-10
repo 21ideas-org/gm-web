@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { TAGS, tagBySlug, buildTagIndex, HUB_MIN_ITEMS, type NewsRef } from '../../lib/tags';
+import { breadcrumbNode } from '../../lib/schema';
 
 export async function getStaticPaths() {
   const index = await buildTagIndex();
@@ -14,6 +15,17 @@ export async function getStaticPaths() {
 const { tag } = Astro.params;
 const { items } = Astro.props as { items: NewsRef[] };
 const def = tagBySlug(tag!)!;
+const indexable = items.length >= HUB_MIN_ITEMS;
+// Breadcrumb structured data only on indexable hubs (mirrors the noindex/sitemap gate).
+const schema = indexable
+  ? [
+      breadcrumbNode([
+        { name: 'Главная', path: '' },
+        { name: 'Топики', path: 'tags/' },
+        { name: def.hubTitle, path: `tags/${def.slug}/` },
+      ]),
+    ]
+  : undefined;
 ---
 <Base
   title={`${def.hubTitle} — gm_₿`}
@@ -21,8 +33,17 @@ const def = tagBySlug(tag!)!;
   path={`tags/${def.slug}`}
   pathMeta={`grep -rl '#${def.slug}' digests/`}
   activeNav="tags"
-  noindex={items.length < HUB_MIN_ITEMS}
+  noindex={!indexable}
+  schema={schema}
 >
+  <nav class="breadcrumbs" aria-label="Хлебные крошки">
+    <ol>
+      <li><a href="/">главная</a></li>
+      <li><a href="/tags">топики</a></li>
+      <li aria-current="page">{def.label}</li>
+    </ol>
+  </nav>
+
   <section class="section">
     <div class="section-header"><h1>{def.hubTitle}</h1><span class="more">{items.length}</span></div>
     <p class="hub-desc">{def.hubDesc}</p>
@@ -39,11 +60,24 @@ const def = tagBySlug(tag!)!;
       </ul>
     )}
 
-    <p class="other-tags">
-      другие темы:
-      {TAGS.filter((t) => t.slug !== def.slug).map((t) => (
-        <a href={`/tags/${t.slug}`}>#{t.label}</a>
-      ))}
-    </p>
+    {(() => {
+      const others = TAGS.filter((t) => t.slug !== def.slug);
+      return (
+        <article class="project-card other-tags">
+          <div class="head">
+            <span class="name">другие темы</span>
+            <span class="tag-bracket">[{others.length}]</span>
+          </div>
+          <nav class="links" aria-label="Другие темы">
+            {others.map((t, i) => (
+              <div>
+                <span class="branch">{i === others.length - 1 ? '└──' : '├──'}</span>{' '}
+                <a href={`/tags/${t.slug}`}>#{t.label}</a>
+              </div>
+            ))}
+          </nav>
+        </article>
+      );
+    })()}
   </section>
 </Base>

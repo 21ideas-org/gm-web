@@ -798,15 +798,9 @@ hr {
 }
 .other-tags {
   margin-top: 32px;
-  font-size: var(--fs-sm);
-  color: var(--muted);
 }
-.other-tags a {
-  color: var(--accent);
-  margin-left: 12px;
-  border-bottom: 1px solid transparent;
-}
-.other-tags a:hover { border-bottom-color: var(--accent); }
+.other-tags .tag-bracket { color: var(--muted); }
+.other-tags .links a:hover { color: var(--text); }
 
 /* ─── About sections ─── */
 .about-section { padding-top: 28px; }
