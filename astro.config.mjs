@@ -16,7 +16,7 @@ export default defineConfig({
 	integrations: [
 		mdx(),
 		sitemap({
-			filter: (page) => !page.includes('/tags'), // hidden, empty in v1
+			filter: (page) => !page.includes('/tags'), // main sitemap stays tag-free; hubs ride tags-sitemap.xml (never lists a noindex thin hub)
 			serialize(item) {
 				const m = item.url.match(/\/digests\/(\d{4}-\d{2}-\d{2})\/?$/);
 				if (m) {

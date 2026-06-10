@@ -31,7 +31,8 @@ the spaced form `gm ₿`.
 
 - **[Astro 6](https://astro.build)** — static site generator (`output: 'static'`)
 - **MDX** — Markdown content collections
-- **@astrojs/sitemap** — sitemap at `/sitemap-index.xml` (per-URL `lastmod`; hidden `/tags` excluded)
+- **@astrojs/sitemap** — sitemap at `/sitemap-index.xml` (per-URL `lastmod`; tag hubs are covered
+  by a separate `/tags-sitemap.xml` instead)
 - **@astrojs/rss** — full-content RSS feed at `/rss.xml`
 - **markdown-it + sanitize-html** — render digest Markdown to HTML for the RSS and Yandex feeds
 - **Shiki** — syntax highlighting via custom dual themes that swap on dark/light toggle
@@ -39,22 +40,22 @@ the spaced form `gm ₿`.
 
 ## Routing
 
-`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/tags` · `/tags/[tag]` (hidden in
-v1) · `/rss.xml` · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/og/*.png` ·
-`robots.txt`.
+`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/tags` · `/tags/[tag]` ·
+`/rss.xml` · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
+· `/og/*.png` · `robots.txt`.
 
 ## Layouts & components
 
 - **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `PathStrip` → `Nav` →
   `<slot>` → `Footer`.
-- **`Post.astro`** — wraps `Base`, adds the post header + prev/next nav. (The Giscus `<Comments />`
-  slot exists but is not imported in v1.)
+- **`Post.astro`** — wraps `Base`, adds the post header (date + clickable topic chips) + prev/next
+  nav. (The Giscus `<Comments />` slot exists but is not imported in v1.)
 
 ## Content collections (`src/content.config.ts`)
 
 - **`digests`** — `glob` over `src/content/digests/*.md`. Fields: `title`, `description`, `pubDate`,
-  `draft` (default `false`, filtered at query time), `tags` (default `[]`, collected but not
-  surfaced in v1). Filenames `YYYY-MM-DD.md`.
+  `draft` (default `false`, filtered at query time), `tags` (default `[]`, the digest's topic slugs
+  in section order). Filenames `YYYY-MM-DD.md`.
 - **`projects`** — the 21ideas ecosystem section: `name`, `description`, `status`
   (`LIVE | WIP | ARCHIVED`), optional `url`, `stack`, `featured`, `order`.
 
@@ -88,8 +89,16 @@ title + date-stamped subtitle) and `src/pages/og/default.png.ts` (fallback).
   token.
 - **Structured data** — JSON-LD `@graph` built in `src/lib/schema.ts`: `NewsMediaOrganization` +
   `WebSite` site-wide, `NewsArticle` + `BreadcrumbList` per digest.
-- **Sitemap** — `@astrojs/sitemap` with per-URL `lastmod`/`changefreq`/`priority`; hidden `/tags`
-  pages excluded. (Use `ChangeFreqEnum`, not bare strings — bare strings fail `npm run check`.)
+- **Sitemap** — `@astrojs/sitemap` with per-URL `lastmod`/`changefreq`/`priority`; `/tags` pages
+  are kept out of the main sitemap and covered by the dedicated `/tags-sitemap.xml` instead.
+  (Use `ChangeFreqEnum`, not bare strings — bare strings fail `npm run check`.)
+- **Topic hubs** — `/tags` (index) + `/tags/[tag]` (per-article hubs). Built at build time by
+  parsing each digest's heading tree (`src/lib/tags.ts`): every `#### ` headline inherits its
+  enclosing `## ` topic, mapped to a stable slug via a ten-topic registry; hub rows deep-link to
+  the headline's anchor inside its digest. The same registry drives the topic chips on each digest
+  and the frontmatter `tags` the bot writes (which feed RSS `<category>`). Hubs below an
+  item floor render `noindex, follow` and stay out of `/tags-sitemap.xml`; qualifying hubs are
+  listed there with `lastmod` = newest item.
 - **News feeds** — Google News sitemap at `/news-sitemap.xml` (rolling 48-hour window) and a Yandex
   fresh-content RSS feed at `/yandex-news.xml` (full `<yandex:full-text>`). Both render digest
   Markdown to HTML via `markdown-it` + `sanitize-html`.
