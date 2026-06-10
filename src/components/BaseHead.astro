@@ -12,6 +12,7 @@ interface Props {
 	modifiedTime?: string;  // ISO 8601, articles only
 	section?: string;       // e.g. "Биткоин"
 	schema?: object | object[]; // extra JSON-LD nodes (article, breadcrumb)
+	noindex?: boolean;      // thin/draft pages — noindex but keep crawl paths
 }
 
 const {
@@ -23,6 +24,7 @@ const {
 	modifiedTime,
 	section,
 	schema,
+	noindex = false,
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
@@ -65,7 +67,9 @@ const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="robots" content={noindex
+	? 'noindex, follow'
+	: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={ogType} />

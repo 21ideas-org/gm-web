@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
-import { TAGS, tagBySlug, buildTagIndex, type NewsRef } from '../../lib/tags';
+import { TAGS, tagBySlug, buildTagIndex, HUB_MIN_ITEMS, type NewsRef } from '../../lib/tags';
 
 export async function getStaticPaths() {
   const index = await buildTagIndex();
@@ -21,6 +21,7 @@ const def = tagBySlug(tag!)!;
   path={`tags/${def.slug}`}
   pathMeta={`grep -rl '#${def.slug}' digests/`}
   activeNav="tags"
+  noindex={items.length < HUB_MIN_ITEMS}
 >
   <section class="section">
     <div class="section-header"><h1>{def.hubTitle}</h1><span class="more">{items.length}</span></div>
