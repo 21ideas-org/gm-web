@@ -44,7 +44,7 @@ const featured = (await getCollection('projects', p => p.data.featured))
           <PostCard
             href={`/digests/${post.id}`}
             date={post.data.pubDate}
-            title={post.data.title}
+            description={post.data.description}
           />
         </li>
       ))}

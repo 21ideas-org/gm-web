@@ -3,14 +3,22 @@ import { formatDate } from '../lib/date';
 interface Props {
   href: string;
   date: Date;
-  title: string;
+  description?: string;
+  title?: string;
   meta?: string;
 }
-const { href, date, title, meta } = Astro.props;
+const { href, date, description, title, meta } = Astro.props;
 const dateStr = formatDate(date);
+// Display-only: strip the bot's repeated boilerplate tail
+// ("… и другие биткоин-новости <date>") and cap with an ellipsis, so each card
+// shows just the day's lead headlines. If the bot ever rephrases the tail the
+// regex no-ops and the full description renders (graceful fallback).
+const teaser = description?.replace(/\s*и другие биткоин-новости.*$/u, '…');
 ---
 <a class="post-row" href={href}>
   <span class="date">{dateStr}</span>
-  <span class="title">{title}</span>
+  {teaser
+    ? <span class="teaser">{teaser}</span>
+    : <span class="title">{title}</span>}
   {meta && <span class="post-meta">{meta}</span>}
 </a>

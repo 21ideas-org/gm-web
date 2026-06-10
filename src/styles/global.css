@@ -282,13 +282,14 @@ hr {
   display: grid;
   grid-template-columns: 100px 1fr auto;
   gap: 16px;
-  align-items: baseline;
+  align-items: start;
   padding: 14px 0;
   color: var(--text);
   border-bottom: none;
 }
 .post-list a.post-row:hover { background: var(--surface); }
-.post-list a.post-row:hover .title { color: var(--accent); }
+.post-list a.post-row:hover .title,
+.post-list a.post-row:hover .teaser { color: var(--accent); }
 .post-list .date {
   color: var(--accent);
   font-size: var(--fs-sm);
@@ -297,6 +298,16 @@ hr {
   font-size: var(--fs-base);
   font-weight: 500;
   color: var(--text);
+}
+.post-list .teaser {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  /* one day's three lead headlines; clamp guards a freak-long day */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .post-list .post-meta {
   font-size: var(--fs-xs);
@@ -311,6 +322,12 @@ hr {
   .post-list .post-meta {
     grid-column: 2;
     white-space: normal;
+  }
+  .post-list .teaser {
+    /* narrower column fits ~half the chars/line of desktop — raise the
+       ceiling so the headlines still show before the clamp bites */
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
   }
 }
 
