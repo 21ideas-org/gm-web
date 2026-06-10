@@ -404,6 +404,11 @@ hr {
   line-height: 1.35;
   margin-top: 2em;
 }
+.prose h2::before {
+  content: "## ";
+  color: var(--muted);
+  font-weight: 400;
+}
 .prose h3 {
   font-size: var(--fs-h3);
   font-weight: 500;
@@ -700,6 +705,11 @@ hr {
   font-size: var(--fs-h2);
   font-weight: 500;
   margin: 0 0 12px;
+}
+.about-section h2::before {
+  content: "## ";
+  color: var(--muted);
+  font-weight: 400;
 }
 .about-section p {
   max-width: var(--maxw-prose);
