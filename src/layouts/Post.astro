@@ -92,6 +92,39 @@ const schema = [
   document.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
+
+    // Shareable headings: copy the deep link, reflect it in the address bar WITHOUT scroll-jumping
+    // (replaceState, not location.hash — so it also doesn't fire :target on your own page), and
+    // flash the hash glyph to a check. The whole <h2>/<h4> title is the tap target. Let modified
+    // clicks (cmd/ctrl/shift/alt) fall through to native open-in-new-tab.
+    const headLink = target.closest('.head-link');
+    if (headLink instanceof HTMLAnchorElement &&
+        !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) {
+      event.preventDefault();
+      const id = headLink.getAttribute('href')?.slice(1) ?? '';
+      const url = location.origin + location.pathname + '#' + id;
+      const glyph = headLink.querySelector('.hgh');
+      const original = glyph?.textContent ?? '';
+      const restore = () => {
+        headLink.removeAttribute('data-state');
+        if (glyph) glyph.textContent = original;
+      };
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          history.replaceState(null, '', '#' + id);
+          headLink.dataset.state = 'copied';
+          if (glyph) glyph.textContent = '✓';
+          window.setTimeout(restore, 1500);
+        })
+        .catch(() => {
+          headLink.dataset.state = 'error';
+          if (glyph) glyph.textContent = '×';
+          window.setTimeout(restore, 1500);
+        });
+      return;
+    }
+
     const btn = target.closest('.code-copy');
     if (!(btn instanceof HTMLButtonElement)) return;
     const wrap = btn.closest('.code-wrap');

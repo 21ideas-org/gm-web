@@ -465,11 +465,36 @@ hr {
   line-height: 1.35;
   margin-top: 2em;
 }
-.prose h2::before {
-  content: "## ";
+/* Shareable headings (rehype-heading-anchor.mjs): the whole topic <h2> / story <h4> title is a
+   self-link whose only colored cue is the leading hash glyph — deliberately "##" for topics, "###"
+   for stories (the bot emits H2/####; the displayed count is a presentational choice, not the
+   level). Resting glyph is --muted (matches the old "## " prefix, visible on mobile w/o hover);
+   it lights to --accent on hover/focus, on :target (someone arriving via a shared link), and
+   briefly on copy. Click → copy-no-jump-and-flash is wired in Post.astro. */
+.prose h2, .prose h4 { scroll-margin-top: 2rem; }
+.prose .hgh {
   color: var(--muted);
   font-weight: 400;
+  transition: color 120ms linear;
 }
+.prose a.head-link {
+  color: inherit;
+  border-bottom: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+.prose a.head-link:hover .hgh,
+.prose a.head-link:focus-visible .hgh,
+.prose a.head-link[data-state="copied"] .hgh,
+.prose h2:target .hgh,
+.prose h4:target .hgh {
+  color: var(--accent);
+}
+.prose a.head-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+.prose a.head-link[data-state="error"] .hgh { color: var(--red); }
 .prose h3 {
   font-size: var(--fs-h3);
   font-weight: 500;
