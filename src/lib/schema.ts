@@ -58,6 +58,21 @@ export function newsArticleNode(o: {
 	};
 }
 
+// FAQPage — machine-readable Q&A lifted near-verbatim by assistants/answer engines. The questions
+// MUST mirror visible on-page content (Google's policy; also keeps the two in sync). Note: Google no
+// longer shows FAQ rich results for non-gov/health sites, so this is for extraction/entity value,
+// not a SERP snippet. One FAQPage per page.
+export function faqPageNode(qas: { q: string; a: string }[]) {
+	return {
+		'@type': 'FAQPage',
+		mainEntity: qas.map((x) => ({
+			'@type': 'Question',
+			name: x.q,
+			acceptedAnswer: { '@type': 'Answer', text: x.a },
+		})),
+	};
+}
+
 // Generic BreadcrumbList. Each crumb's `path` is site-relative ('' = home,
 // 'digests/', `tags/${slug}/`, …); the trailing slash matches our canonical URLs.
 export function breadcrumbNode(crumbs: { name: string; path: string }[]) {

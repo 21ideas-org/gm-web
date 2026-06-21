@@ -831,6 +831,30 @@ hr {
 .contact-list .row .branch { color: var(--dim); }
 .contact-list .row .k { color: var(--muted); }
 
+.faq-item { max-width: var(--maxw-prose); border-bottom: 1px solid var(--border); }
+.faq-item:first-of-type { border-top: 1px solid var(--border); }
+.faq-q {
+  cursor: pointer;
+  list-style: none; /* drop the default disclosure triangle (Firefox/Chrome) */
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--text);
+}
+.faq-q::-webkit-details-marker { display: none; } /* …and Safari */
+.faq-q::before { content: "[+]"; color: var(--accent); font-weight: 400; }
+.faq-item[open] > .faq-q::before { content: "[\2212]"; } /* [−], U+2212 minus */
+.faq-q:hover { color: var(--accent); }
+.faq-a {
+  font-size: var(--fs-body);
+  line-height: var(--lh-prose);
+  color: var(--muted);
+  margin: 0;
+  padding: 0 0 14px calc(3ch + 8px); /* align under the question text, past "[+]" + gap */
+}
+
 /* ─── Theme toggle button (in nav) ─── */
 .theme-btn {
   background: none; border: none; cursor: pointer;
