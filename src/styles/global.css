@@ -880,6 +880,20 @@ hr {
   padding: 0 0 14px calc(3ch + 8px); /* align under the question text, past "[+]" + gap */
 }
 
+/* ─── «Сегодня в истории» rubric (History.astro) ─── */
+/* Renders OUTSIDE .prose, so it can't borrow the in-content h2/.hgh styling (scoped to .prose) —
+   these rules give it the same look. The .faq-* accordion classes above ARE global, so reused as-is. */
+.history { padding-top: 28px; }
+.history h2 {
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.history .hgh {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 /* ─── Theme toggle button (in nav) ─── */
 .theme-btn {
   background: none; border: none; cursor: pointer;

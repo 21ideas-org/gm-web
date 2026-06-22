@@ -31,3 +31,12 @@ export function formatRuDate(date: Date): string {
 export function formatRuDayMonth(date: Date): string {
 	return `${date.getUTCDate()} ${RU_MONTHS_GENITIVE[date.getUTCMonth()]}`;
 }
+
+// "MM-DD" (e.g. "06-21") — the anniversary key into historyByDay() (src/lib/history.ts). UTC
+// fields, like every formatter here, so the digest's own calendar day is used (no host-timezone
+// day shift); pubDate is UTC-midnight (bot writes YYYY-MM-DD, zod coerces to …T00:00:00Z).
+export function formatMonthDay(date: Date): string {
+	const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
+	const dd = String(date.getUTCDate()).padStart(2, '0');
+	return `${mm}-${dd}`;
+}

@@ -4,6 +4,7 @@ import { formatDate, formatRuDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
 import { tagBySlug } from '../lib/tags';
 import Subscribe from '../components/Subscribe.astro';
+import History from '../components/History.astro';
 
 interface Props {
   id: string;
@@ -67,6 +68,8 @@ const schema = [
   <article class="prose">
     <slot />
   </article>
+
+  <History pubDate={pubDate} />
 
   <Subscribe text="Свежий дайджест каждое утро. Не пропустите следующий выпуск." />
 

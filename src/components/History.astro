@@ -1,0 +1,26 @@
+---
+import { historyByDay } from '../lib/history';
+import { formatMonthDay } from '../lib/date';
+
+interface Props {
+  pubDate: Date;
+}
+const { pubDate } = Astro.props;
+// Split each description into paragraphs here, not in the template: an inline /\n{2,}/ regex literal
+// trips the Astro compiler ({2,} reads as a JSX brace). A single-paragraph description yields one <p>.
+const events = (historyByDay()[formatMonthDay(pubDate)] ?? []).map((e) => ({
+  title: e.title,
+  paragraphs: e.description.split(/\n{2,}/),
+}));
+---
+{events.length > 0 && (
+  <section class="history">
+    <h2><span class="hgh" aria-hidden="true">##</span> Сегодня в истории</h2>
+    {events.map((e) => (
+      <details class="faq-item">
+        <summary class="faq-q">{e.title}</summary>
+        {e.paragraphs.map((p) => <p class="faq-a">{p}</p>)}
+      </details>
+    ))}
+  </section>
+)}
