@@ -5,7 +5,7 @@ Technical reference for the gm_₿ site. For what the project is and how to run 
 
 ## Overview
 
-gm_₿ is a static site built with **Astro 6** (`output: 'static'`), deployed to GitHub Pages at
+gm_₿ is a static site built with **Astro 7** (`output: 'static'`), deployed to GitHub Pages at
 `https://gm.21ideas.org` (custom domain via `public/CNAME`). All routing is file-based under
 `src/pages/`, and everything — pages, feeds, sitemaps, OG images — is generated at build time;
 there is no server runtime.
@@ -29,8 +29,10 @@ the spaced form `gm ₿`.
 
 ## Stack
 
-- **[Astro 6](https://astro.build)** — static site generator (`output: 'static'`)
-- **MDX** — Markdown content collections
+- **[Astro 7](https://astro.build)** — static site generator (`output: 'static'`)
+- **@astrojs/markdown-remark** — supplies `rehypeHeadingIds` to the Markdown pipeline (digests are
+  plain Markdown content collections; the heading-anchor and tag plugins build on its heading ids).
+  A direct dependency because Astro 7 no longer hoists it
 - **@astrojs/sitemap** — sitemap at `/sitemap-index.xml` (per-URL `lastmod`; tag hubs are covered
   by a separate `/tags-sitemap.xml` instead)
 - **@astrojs/rss** — full-content RSS feed at `/rss.xml`
