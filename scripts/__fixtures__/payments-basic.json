@@ -1,0 +1,12 @@
+{
+  "_note": "SYNTHETIC / REDACTED — not a real Coinos capture. Made-up ids; all PII fields (memo/hash/ref/path/with) blank. All four rows are clean, confirmed USD donations created 2026-06-19..20 (≥82h, well past the 48h quarantine relative to a NOW of 2026-06-24T00:00:00Z). incoming.USD.sats equals the sum of the four (every row eligible).",
+  "payments": [
+    { "id": "fixt-basic-0001", "amount": 14000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781857860000, "rate": 63812.31, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-basic-0002", "amount": 20000, "tip": 1000, "fee": 0, "ourfee": 0, "created": 1781870400000, "rate": 60000, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-basic-0003", "amount": 50000, "tip": 0, "fee": 200, "ourfee": 100, "created": 1781950500000, "rate": 61234.56, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-basic-0004", "amount": 10000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781964000000, "rate": 63855, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" }
+  ],
+  "count": 4,
+  "incoming": { "USD": { "sats": 94700, "fiat": "57.35", "tips": 1000, "fiatTips": "0.60" } },
+  "outgoing": {}
+}

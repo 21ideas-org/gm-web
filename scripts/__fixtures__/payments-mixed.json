@@ -1,0 +1,13 @@
+{
+  "_note": "SYNTHETIC / REDACTED — not a real capture. Exercises the filter: two clean USD rows (appended) plus a revertedDuplicate row, a 0-conf on-chain pending row, and a non-USD (EUR) row (all dropped). All PII fields blank. incoming.USD.sats is the realistic SUPERSET (all amount>0 USD rows, unfiltered: 30000+5485+8000+12000 = 55485) > our eligible cumulative (35485), modelling §3's upper-bound gate.",
+  "payments": [
+    { "id": "fixt-mixed-0001", "amount": 30000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781852400000, "rate": 62000, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-mixed-0002", "amount": 5000, "tip": 500, "fee": 10, "ourfee": 5, "created": 1781854200000, "rate": 62500, "currency": "USD", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-mixed-0003", "amount": 8000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781852400000, "rate": 62000, "currency": "USD", "confirmed": true, "revertedDuplicate": true, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-mixed-0004", "amount": 12000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781852400000, "rate": 62000, "currency": "USD", "confirmed": false, "memo": "", "hash": "", "ref": "", "path": "" },
+    { "id": "fixt-mixed-0005", "amount": 9000, "tip": 0, "fee": 0, "ourfee": 0, "created": 1781852400000, "rate": 58000, "currency": "EUR", "confirmed": true, "memo": "", "hash": "", "ref": "", "path": "" }
+  ],
+  "count": 5,
+  "incoming": { "USD": { "sats": 55485, "fiat": "33.60", "tips": 500, "fiatTips": "0.31" } },
+  "outgoing": {}
+}
