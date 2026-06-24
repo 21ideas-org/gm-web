@@ -5,3 +5,8 @@
 export const SITE_TITLE = 'gm_₿';
 export const SITE_NAME = 'Доброе утро, биткоинер';
 export const SITE_DESCRIPTION = 'Биткоин-онли дайджесты';
+
+// Financial-transparency page (/support). The wallet address consts live with the page (Phase 2);
+// these two feed the build-time reader src/lib/finances.ts only.
+export const SERVER_USD_PER_MONTH = 5; // all-in infra, flat — added to each month's token cost.
+export const FINANCES_START = '2026-06'; // first month tracked (UTC) — display window only.
