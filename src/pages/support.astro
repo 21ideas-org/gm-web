@@ -1,0 +1,182 @@
+---
+import Base from '../layouts/Base.astro';
+import CopyBlock from '../components/CopyBlock.astro';
+import { getFinances } from '../lib/finances';
+import { formatDate, formatRuMonth } from '../lib/date';
+import { SUPPORT_LN_ADDRESS, SUPPORT_BOLT12, SUPPORT_ONCHAIN } from '../consts';
+
+const fin = getFinances();
+const { current, months, totals, builtAt, lastDonationTs } = fin;
+
+// ── display helpers (money stays as the numbers finances.ts computed; we only format) ──
+const usd = (n: number): string => `$${n.toFixed(2)}`;
+// Signed USD with a real minus sign (U+2212) for the NET / баланс figures.
+const signedUsd = (n: number): string => `${n < 0 ? '−' : '+'}$${Math.abs(n).toFixed(2)}`;
+// RU thousands grouping with a non-breaking space (U+00A0) so a sats figure never wraps mid-number.
+const groupThousands = (n: number): string => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const fmtSats = (n: number): string => `⚡ ${groupThousands(n)}`; // "⚡ 14 300"
+
+// Coverage = donations / cost. Clamp the BAR WIDTH to 100% but print the true %. cost 0 ⇒ "—"
+// (no divide-by-zero); the bar shows empty. `over` flips the fill colour past 100%.
+type Cov = { width: string; label: string; over: boolean };
+function coverage(don: number, cost: number): Cov {
+  if (cost <= 0) return { width: '0%', label: '—', over: false };
+  const pct = (don / cost) * 100;
+  return { width: `${Math.min(100, pct)}%`, label: `${Math.round(pct)}%`, over: don > cost };
+}
+const curCov = coverage(current.donationsUsd, current.costUsd);
+const allCov = coverage(totals.donationsUsd, totals.costUsd);
+
+const curMonthLabel = formatRuMonth(new Date(`${current.month}-01T00:00:00Z`));
+
+// Pre-format the ledger rows here (pure TS) — keeps the template free of inline comparisons /
+// block-body arrows that the .astro→TSX checker mis-parses as markup.
+const ledgerRows = months.map((m) => {
+  const net = m.donationsUsd - m.costUsd;
+  return {
+    month: m.month,
+    cost: usd(m.costUsd) + (m.missingDays > 0 ? '*' : ''),
+    donated: usd(m.donationsUsd),
+    sats: groupThousands(m.donationsSats),
+    net: signedUsd(net),
+    netClass: net < 0 ? 'neg' : 'pos',
+  };
+});
+const totalNetClass = totals.netUsd < 0 ? 'neg' : 'pos';
+const balanceClass = totals.netUsd < 0 ? 'neg' : 'pos';
+const showTotal = months.length > 1; // a one-month ledger's «ИТОГО» would just echo the single row
+
+// Two honest, separate stamps (§5.5): page rebuild date vs last-donation recency. Divergence is
+// expected during a donation lull and does NOT signal a stalled refresh — labels kept unambiguous.
+const builtStamp = formatDate(new Date(builtAt));
+const lastDonStamp = lastDonationTs ? formatDate(new Date(lastDonationTs)) : null;
+const updatedLine = lastDonStamp
+  ? `обновлено ${builtStamp} · последний донат ${lastDonStamp}`
+  : `обновлено ${builtStamp}`;
+
+// Months with missing ops-reports (launch-clamped in finances.ts) → honesty footnote. Empty today.
+const missingMonths = months.filter((m) => m.missingDays > 0);
+const missingNote =
+  missingMonths.length > 0
+    ? `* за часть дней нет ops-отчёта — расходы за эти дни не учтены (${missingMonths
+        .map((m) => `${m.month}: ${m.missingDays} дн.`)
+        .join('; ')}).`
+    : null;
+---
+<Base
+  title="поддержать"
+  description="Поддержать «Доброе утро, биткоинер»: реквизиты для донатов (Lightning, bolt12) и отчёты о финансировании проекта — расходы, донаты и баланс по месяцам."
+  path="support"
+  pathMeta="cat support.md"
+  activeNav="support"
+>
+  <section class="about-section">
+    <h1 class="fin-h1">Поддержать</h1>
+    <p>«Доброе утро, биткоинер» — бесплатный проект для всех. Никакой подписки, рекламы и платного доступа. Если дайджест полезен — поддержите его донатом: это покрывает серверы и AI-токены, на которых он работает.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>реквизиты</h2>
+    <div class="fin-wallet">
+      <CopyBlock label="⚡ lightning address" value={SUPPORT_LN_ADDRESS} />
+      {SUPPORT_BOLT12 && <CopyBlock label="⚡ bolt12" value={SUPPORT_BOLT12} />}
+      {SUPPORT_ONCHAIN && <CopyBlock label="⛓ on-chain" value={SUPPORT_ONCHAIN} />}
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>прозрачность</h2>
+    <p>Ниже — реальные цифры проекта. Расходы — в долларах (так оплачиваются серверы и токены). Донаты — в сатоши и в долларах по курсу на день получения. Обновляется при каждой публикации.</p>
+
+    <div class="fin-coverage">
+      <div class="fin-block">
+        <div class="fin-block-title">{curMonthLabel}</div>
+        <div class="fin-row"><span class="fin-label">расходы</span><span class="fin-val">{usd(current.costUsd)}</span></div>
+        <div class="fin-row"><span class="fin-label">донаты</span><span class="fin-val">{usd(current.donationsUsd)} · {fmtSats(current.donationsSats)}</span></div>
+        <div class="fin-row fin-row--bar">
+          <span class="fin-label">покрытие</span>
+          <span class="fin-bar" aria-hidden="true"><span class:list={[{ over: curCov.over }]} style={`width:${curCov.width}`}></span></span>
+          <span class="fin-pct">{curCov.label}</span>
+        </div>
+      </div>
+
+      <div class="fin-block">
+        <div class="fin-block-title">за всё время</div>
+        <div class="fin-row"><span class="fin-label">расходы</span><span class="fin-val">{usd(totals.costUsd)}</span></div>
+        <div class="fin-row"><span class="fin-label">донаты</span><span class="fin-val">{usd(totals.donationsUsd)} · {fmtSats(totals.donationsSats)}</span></div>
+        <div class="fin-row fin-row--bar">
+          <span class="fin-label">покрытие</span>
+          <span class="fin-bar" aria-hidden="true"><span class:list={[{ over: allCov.over }]} style={`width:${allCov.width}`}></span></span>
+          <span class="fin-pct">{allCov.label}</span>
+        </div>
+        <div class="fin-row"><span class="fin-label">баланс</span><span class:list={["fin-val", "net", balanceClass]}>{signedUsd(totals.netUsd)}</span></div>
+      </div>
+    </div>
+
+    <div class="fin-ledger-wrap">
+      <table class="fin-ledger">
+        <thead>
+          <tr><th>месяц</th><th>расходы</th><th>донаты</th><th>саты</th><th>баланс</th></tr>
+        </thead>
+        <tbody>
+          {ledgerRows.map((r) => (
+            <tr>
+              <td>{r.month}</td>
+              <td>{r.cost}</td>
+              <td>{r.donated}</td>
+              <td>{r.sats}</td>
+              <td class:list={["net", r.netClass]}>{r.net}</td>
+            </tr>
+          ))}
+        </tbody>
+        {showTotal && (
+          <tfoot>
+            <tr>
+              <td>ИТОГО</td>
+              <td>{usd(totals.costUsd)}</td>
+              <td>{usd(totals.donationsUsd)}</td>
+              <td>{groupThousands(totals.donationsSats)}</td>
+              <td class:list={["net", totalNetClass]}>{signedUsd(totals.netUsd)}</td>
+            </tr>
+          </tfoot>
+        )}
+      </table>
+    </div>
+
+    {missingNote && <p class="fin-stamps">{missingNote}</p>}
+
+    <p class="fin-stamps">{updatedLine}</p>
+  </section>
+</Base>
+
+<script>
+  // Delegated copy handler for CopyBlock's `.code-copy` buttons. The /support page uses Base.astro
+  // (not Post.astro), so it can't inherit Post.astro's handler — this is that same `.code-copy`
+  // branch. A top-level sibling of the layout (mirrors Post.astro) so Astro hoists it as a script.
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const btn = target.closest('.code-copy');
+    if (!(btn instanceof HTMLButtonElement)) return;
+    const wrap = btn.closest('.code-wrap');
+    const pre = wrap?.querySelector('pre');
+    if (!pre) return;
+    const text = pre.innerText;
+    const restore = () => {
+      btn.removeAttribute('data-state');
+      btn.textContent = 'copy';
+    };
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        btn.dataset.state = 'copied';
+        btn.textContent = 'copied';
+        window.setTimeout(restore, 1600);
+      })
+      .catch(() => {
+        btn.dataset.state = 'error';
+        btn.textContent = 'error';
+        window.setTimeout(restore, 1600);
+      });
+  });
+</script>

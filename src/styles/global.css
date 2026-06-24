@@ -16,6 +16,7 @@
   --text:     #e6e6ea;
 
   --red:      #f85149;
+  --green:    #3fb950;
   --accent:   #ffb000;
 
   --font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -50,6 +51,7 @@
   --text:     #1a1a1a;
 
   --red:      #b32626;
+  --green:    #1a7f37;
   --accent:   #9a6700;
 }
 
@@ -892,6 +894,99 @@ hr {
 .history .hgh {
   color: var(--muted);
   font-weight: 400;
+}
+
+/* ─── Support / finances (/support) ─── */
+/* Page title: "# Поддержать" — single-hash glyph to the section h2's "## " (about-section), one
+   level up, matching the site's terminal heading idiom. */
+.fin-h1 {
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.fin-h1::before { content: "# "; color: var(--muted); font-weight: 400; }
+
+/* Wallet code snippets (CopyBlock). pre.code-block borrows the base bg/border from
+   `.prose pre, pre.code-block`; here we force the long bolt12/on-chain string to WRAP inside the
+   box (it's ~190 chars) instead of horizontally scrolling. */
+.fin-wallet {
+  display: grid;
+  gap: 14px;
+  max-width: var(--maxw-prose);
+  margin-top: 8px;
+}
+.fin-wallet pre.code-block {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Coverage blocks (§5.4) — этот месяц / за всё время. */
+.fin-coverage {
+  display: grid;
+  gap: 22px;
+  max-width: var(--maxw-prose);
+  margin: 18px 0 4px;
+}
+.fin-block { display: grid; gap: 6px; }
+.fin-block-title { color: var(--text); font-size: var(--fs-sm); margin-bottom: 2px; }
+.fin-row {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-base);
+}
+.fin-row--bar { grid-template-columns: 7em 1fr auto; }
+.fin-label { color: var(--muted); }
+.fin-val { color: var(--text); font-variant-numeric: tabular-nums; }
+.fin-pct { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; }
+
+/* The bar is decorative — the true % is printed next to it (aria-hidden on the element). Square
+   corners = terminal. Fill is --green; a surplus (>100%) flips to --accent via .over. */
+.fin-bar {
+  display: block;
+  height: 8px;
+  background: var(--dim);
+  border-radius: 0;
+  overflow: hidden;
+}
+.fin-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
+.fin-bar > span.over { background: var(--accent); }
+
+/* NET / баланс sign coloring (shared by the coverage баланс line and the ledger NET cells). */
+.net.pos { color: var(--green); }
+.net.neg { color: var(--red); }
+
+/* Per-month ledger (§5.5). Monospace, tabular-nums, numbers right-aligned; horizontal scroll on
+   narrow viewports rather than overflow (same lesson as the tags hub). */
+.fin-ledger-wrap { overflow-x: auto; margin: 16px 0 4px; max-width: 100%; }
+.fin-ledger {
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fin-ledger th,
+.fin-ledger td { padding: 5px 16px 5px 0; text-align: right; }
+.fin-ledger th:first-child,
+.fin-ledger td:first-child { text-align: left; }
+.fin-ledger thead th {
+  color: var(--muted);
+  font-weight: 400;
+  border-bottom: 1px solid var(--border);
+}
+.fin-ledger tfoot td { border-top: 1px solid var(--border); color: var(--text); }
+
+/* Two honest stamps (§5.5): page rebuild date + last-donation recency. The <p> lives inside
+   .about-section, so the compound selector is needed to win over `.about-section p`. */
+.about-section p.fin-stamps {
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  margin: 10px 0 0;
 }
 
 /* ─── Theme toggle button (in nav) ─── */

@@ -2,7 +2,7 @@
 import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
-  active?: 'home' | 'digests' | 'projects' | 'about' | 'tags';
+  active?: 'home' | 'digests' | 'projects' | 'about' | 'tags' | 'support';
 }
 const { active } = Astro.props;
 ---
@@ -12,5 +12,6 @@ const { active } = Astro.props;
   <a href="/tags" aria-current={active === 'tags' ? 'page' : undefined}>топики</a>
   <a href="/projects" aria-current={active === 'projects' ? 'page' : undefined}>проекты</a>
   <a href="/about" aria-current={active === 'about' ? 'page' : undefined}>о gm_₿</a>
+  <a href="/support" aria-current={active === 'support' ? 'page' : undefined}>поддержать</a>
   <ThemeToggle />
 </nav>

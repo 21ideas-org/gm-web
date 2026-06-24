@@ -3,6 +3,13 @@ const RU_MONTHS_GENITIVE = [
 	'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
 
+// Nominative case — for a STANDALONE month name ("июнь 2026"), unlike the genitive
+// above which is for "5 июня". Used by the /support coverage-block headings (§5.4).
+const RU_MONTHS_NOMINATIVE = [
+	'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+	'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+];
+
 // All formatters use UTC fields so a UTC-midnight pubDate isn't shifted across a
 // day boundary by the build host's local timezone.
 
@@ -30,6 +37,12 @@ export function formatRuDate(date: Date): string {
 // where consecutive daily digests make the year redundant.
 export function formatRuDayMonth(date: Date): string {
 	return `${date.getUTCDate()} ${RU_MONTHS_GENITIVE[date.getUTCMonth()]}`;
+}
+
+// "месяц YYYY" (e.g. "июнь 2026") — standalone month + year, NOMINATIVE case. Used in the
+// /support coverage-block headings ("этот месяц · июнь 2026"). UTC fields, like the others here.
+export function formatRuMonth(date: Date): string {
+	return `${RU_MONTHS_NOMINATIVE[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
 
 // "MM-DD" (e.g. "06-21") — the anniversary key into historyByDay() (src/lib/history.ts). UTC

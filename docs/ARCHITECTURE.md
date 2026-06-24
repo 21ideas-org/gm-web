@@ -40,7 +40,7 @@ the spaced form `gm ₿`.
 
 ## Routing
 
-`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/tags` · `/tags/[tag]` ·
+`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
 `/rss.xml` · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
 · `/og/*.png` · `robots.txt`.
 
