@@ -4,6 +4,14 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      # Astro core + its integrations move in lockstep (shared peer deps), so a
+      # single-package bump can deadlock npm ci (e.g. astro 7 vs @astrojs/mdx 5).
+      # Group them into one PR so the whole ecosystem updates together and resolves.
+      astro:
+        patterns:
+          - astro
+          - "@astrojs/*"
 
   - package-ecosystem: github-actions
     directory: /
