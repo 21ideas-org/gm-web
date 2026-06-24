@@ -1,6 +1,5 @@
 // @ts-check
 
-import mdx from '@astrojs/mdx';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import { defineConfig } from 'astro/config';
@@ -22,7 +21,6 @@ export default defineConfig({
 	site: SITE,
 	base: '/',
 	integrations: [
-		mdx(),
 		sitemap({
 			filter: (page) => !page.includes('/tags'), // main sitemap stays tag-free; hubs ride tags-sitemap.xml (never lists a noindex thin hub)
 			serialize(item) {
