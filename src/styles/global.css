@@ -7,9 +7,6 @@
 :root {
   --bg:       #0a0a0c;
   --surface:  #121216;
-  --s0:       #121216;
-  --s1:       #181820;
-  --s2:       #20202a;
   --border:   #2a2a33;
   --dim:      #44444f;
   --muted:    #8a8a96;
@@ -24,7 +21,6 @@
   --fs-xs:    11px;
   --fs-sm:    13px;
   --fs-base:  16px;
-  --fs-md:    16px;
   --fs-body:  17px;
   --fs-lg:    20px;
   --fs-h3:    20px;
@@ -35,6 +31,8 @@
   --lh-ui:    1.4;
   --lh-prose: 1.7;
 
+  --t: 120ms linear;        /* shared hover/focus transition */
+
   --maxw-page:  680px;
   --maxw-prose: 64ch;
 }
@@ -42,9 +40,6 @@
 :root[data-theme="light"] {
   --bg:       #f6f4ef;
   --surface:  #efece4;
-  --s0:       #efece4;
-  --s1:       #e7e3d8;
-  --s2:       #ddd8c9;
   --border:   #cfc8b6;
   --dim:      #a8a190;
   --muted:    #5b5a52;
@@ -75,7 +70,7 @@ a {
   color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color 120ms linear, color 120ms linear;
+  transition: border-color var(--t), color var(--t);
 }
 a:hover { border-bottom-color: var(--accent); }
 a:focus-visible {
@@ -219,8 +214,12 @@ hr {
   margin: 0;
   color: var(--text);
 }
+/* Command-prompt prefix — the signature "$ " glyph shared by the section
+   openers, featured cards and project names (nav's is --dim; see .nav a::before). */
 .section-header h2::before,
-.section-header h1::before {
+.section-header h1::before,
+.featured-card .name::before,
+.project-card .name::before {
   content: "$ ";
   color: var(--accent);
   font-weight: 400;
@@ -237,6 +236,11 @@ hr {
   padding-top: 32px;
   border-top: 1px solid var(--border);
 }
+/* When the «Сегодня в истории» accordion precedes the CTA, its last .faq-item
+   already draws a divider — drop the CTA's own top border to avoid a double rule.
+   On event-less days the .history block isn't rendered, so the border-top above
+   still separates the CTA from the article body. */
+.history + .subscribe--bare { border-top: none; }
 .subscribe-lead {
   max-width: var(--maxw-prose);
   font-size: var(--fs-body);
@@ -259,9 +263,9 @@ hr {
   border: 1px solid var(--border);
   color: var(--text);
   font-size: var(--fs-sm);
-  transition: border-color 120ms linear, color 120ms linear;
+  transition: border-color var(--t), color var(--t);
 }
-.cta-btn .arrow { color: var(--dim); transition: color 120ms linear; }
+.cta-btn .arrow { color: var(--dim); transition: color var(--t); }
 .cta-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -272,26 +276,35 @@ hr {
   outline-offset: 2px;
 }
 
-/* ─── Post list (used on home, digests index, tag page) ─── */
-.post-list {
+/* ─── Terminal row lists (shared by post list + tag index) ─── */
+/* Shared skeleton: full-bleed bordered rows that tint to --surface on hover.
+   Each list supplies its own grid columns + hover→accent target below. */
+.post-list,
+.tag-index {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.post-list li {
-  border-bottom: 1px solid var(--border);
-}
-.post-list li:first-child { border-top: 1px solid var(--border); }
-.post-list a.post-row {
+.post-list li,
+.tag-index li { border-bottom: 1px solid var(--border); }
+.post-list li:first-child,
+.tag-index li:first-child { border-top: 1px solid var(--border); }
+.post-list a.post-row,
+.tag-index a.tag-row {
   display: grid;
-  grid-template-columns: 100px 1fr auto;
   gap: 16px;
-  align-items: start;
   padding: 14px 0;
   color: var(--text);
   border-bottom: none;
 }
-.post-list a.post-row:hover { background: var(--surface); }
+.post-list a.post-row:hover,
+.tag-index a.tag-row:hover { background: var(--surface); }
+
+/* ─── Post list (home, digests index, tag page) ─── */
+.post-list a.post-row {
+  grid-template-columns: 100px 1fr auto;
+  align-items: start;
+}
 .post-list a.post-row:hover .title,
 .post-list a.post-row:hover .teaser { color: var(--accent); }
 .post-list .date {
@@ -367,11 +380,6 @@ hr {
   font-weight: 500;
   color: var(--text);
 }
-.featured-card .name::before {
-  content: "$ ";
-  color: var(--accent);
-  font-weight: 400;
-}
 .featured-card .desc {
   color: var(--muted);
   font-size: var(--fs-sm);
@@ -403,7 +411,7 @@ hr {
   padding: 18px 20px;
   display: grid;
   gap: 10px;
-  transition: border-color 120ms linear;
+  transition: border-color var(--t);
 }
 .project-card:hover {
   border-color: var(--dim);
@@ -419,11 +427,6 @@ hr {
   font-size: var(--fs-lg);
   font-weight: 500;
   color: var(--text);
-}
-.project-card .name::before {
-  content: "$ ";
-  color: var(--accent);
-  font-weight: 400;
 }
 .project-card .desc {
   color: var(--muted);
@@ -477,7 +480,7 @@ hr {
 .prose .hgh {
   color: var(--muted);
   font-weight: 400;
-  transition: color 120ms linear;
+  transition: color var(--t);
 }
 .prose a.head-link {
   color: inherit;
@@ -607,7 +610,7 @@ hr {
   font-size: var(--fs-xs);
   padding: 2px 8px;
   cursor: pointer;
-  transition: color 120ms linear, border-color 120ms linear;
+  transition: color var(--t), border-color var(--t);
 }
 .code-copy:hover {
   color: var(--text);
@@ -772,26 +775,12 @@ hr {
 .tag-intro .hash  { color: var(--accent); }
 .tag-intro .count { color: var(--muted); font-size: var(--fs-base); margin-left: 12px; }
 
-/* ─── Tag index (tags.html) ─── */
-.tag-index {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-}
-.tag-index li { border-bottom: 1px solid var(--border); }
-.tag-index li:first-child { border-top: 1px solid var(--border); }
+/* ─── Tag index (tags.html) — borrows the row skeleton from .post-list above ─── */
+.tag-index { display: grid; grid-template-columns: 1fr; }
 .tag-index a.tag-row {
-  display: grid;
   grid-template-columns: 1fr auto;
   align-items: baseline;
-  gap: 16px;
-  padding: 14px 0;
-  color: var(--text);
-  border-bottom: none;
 }
-.tag-index a.tag-row:hover { background: var(--surface); }
 .tag-index a.tag-row:hover .name { color: var(--accent); }
 .tag-index .name {
   font-size: var(--fs-base);
@@ -961,25 +950,31 @@ hr {
 .net.pos { color: var(--green); }
 .net.neg { color: var(--red); }
 
-/* Per-month ledger (§5.5). Monospace, tabular-nums, numbers right-aligned; horizontal scroll on
-   narrow viewports rather than overflow (same lesson as the tags hub). */
-.fin-ledger-wrap { overflow-x: auto; margin: 16px 0 4px; max-width: 100%; }
+/* Per-month ledger (§5.5). */
+.fin-ledger-wrap { margin: 16px 0 4px; max-width: var(--maxw-prose); }
 .fin-ledger {
+  width: 100%;
   border-collapse: collapse;
+  border: 1px solid var(--border);
   font-size: var(--fs-sm);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 .fin-ledger th,
-.fin-ledger td { padding: 5px 16px 5px 0; text-align: right; }
+.fin-ledger td {
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  text-align: right;
+}
 .fin-ledger th:first-child,
 .fin-ledger td:first-child { text-align: left; }
-.fin-ledger thead th {
-  color: var(--muted);
-  font-weight: 400;
-  border-bottom: 1px solid var(--border);
+.fin-ledger thead th { color: var(--muted); font-weight: 400; }
+.fin-ledger tfoot td { color: var(--text); }
+@media (max-width: 480px) {
+  .fin-ledger { font-size: var(--fs-xs); }
+  .fin-ledger th,
+  .fin-ledger td { padding: 4px 6px; }
 }
-.fin-ledger tfoot td { border-top: 1px solid var(--border); color: var(--text); }
 
 /* Two honest stamps (§5.5): page rebuild date + last-donation recency. The <p> lives inside
    .about-section, so the compound selector is needed to win over `.about-section p`. */
