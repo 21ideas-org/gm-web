@@ -35,7 +35,7 @@ const ledgerRows = months.map((m) => {
   const net = m.donationsUsd - m.costUsd;
   return {
     month: m.month,
-    cost: usd(m.costUsd) + (m.missingDays > 0 ? '*' : ''),
+    cost: usd(m.costUsd),
     donated: usd(m.donationsUsd),
     sats: groupThousands(m.donationsSats),
     net: signedUsd(net),
@@ -53,15 +53,6 @@ const lastDonStamp = lastDonationTs ? formatDate(new Date(lastDonationTs)) : nul
 const updatedLine = lastDonStamp
   ? `обновлено ${builtStamp} · последний донат ${lastDonStamp}`
   : `обновлено ${builtStamp}`;
-
-// Months with missing ops-reports (launch-clamped in finances.ts) → honesty footnote. Empty today.
-const missingMonths = months.filter((m) => m.missingDays > 0);
-const missingNote =
-  missingMonths.length > 0
-    ? `* за часть дней нет ops-отчёта — расходы за эти дни не учтены (${missingMonths
-        .map((m) => `${m.month}: ${m.missingDays} дн.`)
-        .join('; ')}).`
-    : null;
 ---
 <Base
   title="поддержать"
@@ -72,7 +63,7 @@ const missingNote =
 >
   <section class="about-section">
     <h1 class="fin-h1">Поддержать</h1>
-    <p>«Доброе утро, биткоинер» — бесплатный проект для всех. Никакой подписки, рекламы и платного доступа. Если дайджест полезен — поддержите его донатом: это покрывает серверы и AI-токены, на которых он работает.</p>
+    <p>«Доброе утро, биткоинер» — бесплатный проект для каждого. Если дайджест полезен — поддержите его донатом: это покрывает серверы и AI-токены, необходимые для продолжения работы проекта.</p>
   </section>
 
   <section class="about-section">
@@ -86,7 +77,7 @@ const missingNote =
 
   <section class="about-section">
     <h2>прозрачность</h2>
-    <p>Ниже отображены реальные расходы проекта. Расходы — в долларах (так оплачиваются сервер и токены). Скоро также будут отображаться донаты — в сатоши и в долларах по курсу на день получения.</p>
+    <p>Ниже отображены реальные расходы проекта. Расходы — в долларах (так оплачиваются сервер и токены). Скоро также будут отображаться донаты — в сатоши и в долларах по курсу на день получения. Подробные отчёты ежедневных запусков доступны <a href="https://github.com/21ideas-org/gm-web/tree/main/ops-reports/daily" rel="noopener">здесь</a>.</p>
 
     <div class="fin-coverage">
       <div class="fin-block">
@@ -142,8 +133,6 @@ const missingNote =
         )}
       </table>
     </div>
-
-    {missingNote && <p class="fin-stamps">{missingNote}</p>}
 
     <p class="fin-stamps">{updatedLine}</p>
   </section>
