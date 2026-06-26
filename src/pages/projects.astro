@@ -2,11 +2,12 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { plural } from '../lib/plural';
 
 const projects = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order);
 
-const pathMeta = `${projects.length} проектов`;
+const pathMeta = `${projects.length} ${plural(projects.length, ['проект', 'проекта', 'проектов'])}`;
 ---
 <Base
   title="проекты — gm_₿"
