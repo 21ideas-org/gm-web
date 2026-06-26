@@ -59,7 +59,7 @@ const schema = [
       <span class="date">{dateStr}</span>
     </div>
     {chips.length > 0 && (
-      <nav class="tag-chips" aria-label="Темы выпуска">
+      <nav class="tag-chips" aria-label="Темы выпуска" data-scroller>
         {chips.map((t) => <a href={`/tags/${t!.slug}`}>#{t!.label}</a>)}
       </nav>
     )}

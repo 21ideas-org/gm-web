@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
 interface Props { path: string; meta?: string; }
 const { path, meta } = Astro.props;
 const parts = path.split('/');
@@ -12,5 +13,8 @@ const parts = path.split('/');
       </>
     ))
   } ]</span>
-  {meta && <span class="meta">{meta}</span>}
+  <span class="path-right">
+    {meta && <span class="meta">{meta}</span>}
+    <ThemeToggle />
+  </span>
 </header>

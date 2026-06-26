@@ -63,5 +63,33 @@ const {
       <slot />
       <Footer />
     </div>
+    <script>
+      // Horizontal scrollers (nav, tag chips): hint overflow with an edge fade
+      // shown only on the side(s) that have hidden content, and center the
+      // active link on load. Touch/trackpad scrolling is native (CSS).
+      const scrollers = document.querySelectorAll<HTMLElement>('[data-scroller]');
+      scrollers.forEach((el) => {
+        const sync = () => {
+          const max = el.scrollWidth - el.clientWidth;
+          if (max <= 1) {
+            el.removeAttribute('data-fade');
+            return;
+          }
+          const start = el.scrollLeft > 1;
+          const end = el.scrollLeft < max - 1;
+          el.dataset.fade = start && end ? 'both' : start ? 'start' : 'end';
+        };
+        const active = el.querySelector<HTMLElement>('[aria-current="page"]');
+        if (active) {
+          el.scrollLeft = Math.max(
+            0,
+            active.offsetLeft - (el.clientWidth - active.clientWidth) / 2
+          );
+        }
+        sync();
+        el.addEventListener('scroll', sync, { passive: true });
+        if ('ResizeObserver' in window) new ResizeObserver(sync).observe(el);
+      });
+    </script>
   </body>
 </html>
