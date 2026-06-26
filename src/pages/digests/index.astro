@@ -2,11 +2,12 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
+import { plural } from '../../lib/plural';
 
 const posts = (await getCollection('digests', p => !p.data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const pathMeta = `${posts.length} дайджестов`;
+const pathMeta = `${posts.length} ${plural(posts.length, ['дайджест', 'дайджеста', 'дайджестов'])}`;
 ---
 <Base
   title="дайджесты — gm_₿"
