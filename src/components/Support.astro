@@ -1,0 +1,16 @@
+---
+// Support CTA — donation nudge funnelling to /support. Rendered at the digest
+// foot, directly above <Subscribe>. Reuses the subscribe lead/actions layout;
+// its button carries the accent-bordered `cta-btn--accent` variant so it reads
+// as the primary ask, distinct from the ghost telegram/rss buttons below.
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+<section class="support-cta" aria-label="Поддержать проект">
+  <p class="subscribe-lead"><span class="arrow">&gt;</span> {text}</p>
+  <div class="subscribe-actions">
+    <a class="cta-btn cta-btn--accent" href="/support">поддержать <span class="arrow">→</span></a>
+  </div>
+</section>

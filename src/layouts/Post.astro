@@ -4,6 +4,7 @@ import { formatDate, formatRuDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
 import { tagBySlug } from '../lib/tags';
 import Subscribe from '../components/Subscribe.astro';
+import Support from '../components/Support.astro';
 import History from '../components/History.astro';
 
 interface Props {
@@ -71,7 +72,9 @@ const schema = [
 
   <History pubDate={pubDate} />
 
-  <Subscribe text="Свежий дайджест каждое утро. Не пропустите следующий выпуск." />
+  <Support text="На сегодня всё. Дайджест оказался полезным? Поддержи проект!" />
+
+  <Subscribe text="Свежий дайджест каждое утро. Не пропусти следующий выпуск." />
 
   {(prevPost || nextPost) && (
     <nav class="post-nav" aria-label="Adjacent posts">

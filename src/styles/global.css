@@ -304,6 +304,28 @@ hr {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
+/* Primary (donation) button — accent border only (text + arrow stay default),
+   so it stands apart from the ghost telegram/rss buttons. */
+.cta-btn--accent { border-color: var(--accent); }
+.cta-btn--accent:hover { background: var(--surface); }
+
+/* ─── Support CTA (digest foot, directly above the Subscribe block) ─── */
+/* Carries the top separator that the Subscribe block would otherwise draw, and
+   the Subscribe block that follows drops its own rule — the two CTAs read as one
+   grouped stack with no divider between them. As with Subscribe, when the
+   «Сегодня в истории» accordion precedes it, its last .faq-item already draws a
+   divider, so the top border is dropped there too. */
+.support-cta {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.history + .support-cta { border-top: none; }
+.support-cta + .subscribe--bare {
+  border-top: none;
+  margin-top: 32px;
+  padding-top: 0;
+}
 
 /* ─── Terminal row lists (shared by post list + tag index) ─── */
 /* Shared skeleton: full-bleed bordered rows that tint to --surface on hover.
