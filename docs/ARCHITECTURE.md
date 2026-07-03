@@ -111,6 +111,29 @@ title + date-stamped subtitle) and `src/pages/og/default.png.ts` (fallback).
   file in `public/` is public by protocol design — not a secret. Google does not participate; it
   relies on the news sitemap instead.
 
+## Donations & finances
+
+The `/support` page (`src/pages/support.astro` + `src/lib/finances.ts`) renders the project's
+per-month running cost against donations, from `FINANCES_START` (`src/consts.ts`). `finances.ts` runs
+at build time, is memoized, and is **fail-soft** — a missing or malformed input degrades to an
+empty/partial model and never throws, because the page shares the daily digest-publish build. Money
+is kept as integer sats + USD cents until display.
+
+Donations come from two committed, build-time sources under `src/data/` (read via `fs`, so they are
+never served), merged in `readDonations()`:
+
+- **`donations-ledger.json`** — the programmatic ledger, refreshed **manually via a local CLI**
+  (`scripts/update-donations-ledger.mjs`), not by CI or any bot. It pulls received-payment history
+  from Coinos, self-computes net sats + USD value, and records each donation projected down to
+  exactly `{id, ts, sats, usdCents, rail}` — hash-only, free of any donor PII, with timestamps
+  stored as a UTC date only (never an exact time), since the repo is public. Append-only, with a
+  strict projection guard, a cumulative sanity gate, and an offline unit-test suite (`npm test`, run
+  on pull requests). Only **USD** payments are recorded.
+- **`donations-manual.json`** — a small, hand-curated, display-only ledger for donations the
+  programmatic updater can't represent (e.g. donations to a personal lightning address, or receipts
+  predating the account's switch to USD, converted by hand). Same entry shape; never read by the
+  updater or its gates.
+
 ## Build & deploy
 
 `npm run build` → static output in `dist/`. Pushing to `main` triggers
