@@ -955,6 +955,7 @@ hr {
   gap: 14px;
   max-width: var(--maxw-prose);
   margin-top: 8px;
+  margin-bottom: 18px;
 }
 .fin-wallet pre.code-block {
   white-space: pre-wrap;
