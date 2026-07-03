@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Donations ledger updater — runs on the VPS, chained into the bot's daily job
-// (NOT in CI, never in the site build). Dep-free: Node 22 built-ins only.
+// Donations ledger updater — run MANUALLY, locally, on demand (see
+// plans/donations.manual-runbook.md; NOT on the VPS, NOT in CI, never in the
+// site build). Dep-free: Node 22 built-ins only.
 //
 // It pulls received-payment history from Coinos, self-computes the net credited
 // sats + USD cents per donation, projects each row down to exactly
@@ -8,12 +9,15 @@
 // committed append-only ledger, and writes it back atomically — only on full
 // success. See plans/donations.hardened.md §2/§3/§4/§9.
 //
-// ⚠️ The §3 Coinos contract is PROVISIONAL here: Phase 0 (the live contract
-// probe) has not been confirmed against the live API as of this writing. The
-// load-bearing assumptions encoded below — pagination returns all rows, the
-// `amount+tip-fee-ourfee` net formula matches `incoming.USD`, `rate` semantics,
-// id stability, `revertedDuplicate` drop, and the `rail` heuristic — must be
-// verified by Phase 0 before the real backfill / go-live.
+// Phase 0 probe (2026-07-03): the §3 contract is CONFIRMED against the live API
+// on real rows — `count` == rows (no pagination), `created` is epoch-ms, ids are
+// 36-char UUIDs, and Σ(amount+tip−fee−ourfee) reconciles exactly with
+// `incoming.<fiat>.sats` (tip handling still untested — no tipped row present).
+// KEY FINDING: Coinos stamps each payment with the display-fiat active AT RECEIPT,
+// which was GEL for the account's pre-USD history (now USD). So `incoming` carries
+// a permanent non-USD `GEL` key — hence KNOWN_NON_USD below. The pre-USD GEL
+// receipts are NOT recorded here (isEligible drops non-USD); they're surfaced
+// manually via src/data/donations-manual.json. See the runbook §2.
 //
 // Structure: the parse→filter→compute→project→dedup pipeline and the sanity /
 // projection gates are PURE functions (exported, fixture-driven). All I/O
@@ -33,7 +37,7 @@ const SATS_PER_BTC = 100_000_000;
 // Settle delay: append only rows older than this. Coinos can reclassify a row
 // as `revertedDuplicate` after the fact and drop it; the quarantine lets that
 // settle before we freeze the donation into the append-only ledger (§2).
-export const QUARANTINE_MS = 48 * 60 * 60 * 1000; // 48h (≥24–48h, §2)
+export const QUARANTINE_MS = 60 * 60 * 1000; // 1h (rev 13 / manual runbook)
 
 const FETCH_TIMEOUT_MS = 25_000; // hard per-request timeout (AbortController, §4)
 const WALL_MS = 60_000; // overall wall-clock cap — a hang must self-abort (§4)
@@ -76,9 +80,11 @@ export function deriveRail(row) {
 export function isEligible(row, now, quarantineMs = QUARANTINE_MS) {
   return (
     num(row?.amount) > 0 &&
+    netSats(row) > 0 && // fee > amount must not freeze a negative donation
     row?.confirmed === true &&
     row?.revertedDuplicate !== true &&
     row?.currency === 'USD' &&
+    num(row?.created) > 0 && // missing/garbage created must not become ts=1970
     now - num(row?.created) >= quarantineMs
   );
 }
@@ -93,12 +99,21 @@ export function usdCentsOf(sats, rate) {
   return Math.round((sats / SATS_PER_BTC) * num(rate) * 100);
 }
 
+// Coarsen a receipt time to its UTC calendar date (YYYY-MM-DD). The ledger is
+// PUBLIC (open-source repo); /support only ever shows the date and buckets by
+// UTC month, so storing an exact HH:MM:SS is gratuitous precision that aids
+// donor fingerprinting. The gates/quarantine use row.created directly (full
+// precision), never this — so coarsening the stored ts changes nothing there. §6.
+export function utcDate(ms) {
+  return new Date(num(ms)).toISOString().slice(0, 10);
+}
+
 // Strict projection: CONSTRUCT the entry — never spread the unprojected row.
 export function projectEntry(row, now) {
   const sats = netSats(row);
   return {
     id: hashId(String(row.id)),
-    ts: new Date(num(row.created)).toISOString(),
+    ts: utcDate(row.created), // UTC date only (privacy — public ledger, §6)
     sats,
     usdCents: usdCentsOf(sats, row.rate),
     rail: deriveRail(row),
@@ -144,16 +159,25 @@ export function cumulativeSats(ledger) {
   );
 }
 
+// Currencies known to exist in this account's `incoming` history but deliberately
+// NOT recorded here. The ledger is USD-only (isEligible drops every non-USD row),
+// and these pre-USD receipts are surfaced manually via src/data/donations-manual.json
+// instead (see the runbook). They live in `incoming` FOREVER, so without this
+// allowlist the sanity gate would false-fail on every run. A non-USD key OUTSIDE
+// this set still fails loudly — it means a NEW fiat appeared and needs a decision.
+export const KNOWN_NON_USD = new Set(['GEL']);
+
 // Sanity gate (§3 steps 4–5): an UPPER bound — catches over-counting only.
-//  - any non-USD `incoming` key with nonzero sats → fail (never fold currencies);
+//  - a non-USD `incoming` key with nonzero sats fails UNLESS it's in knownNonUsd
+//    (an expected, deliberately-unrecorded historical fiat) — never fold currencies;
 //  - cumulative ledger sats must not EXCEED incoming.USD.sats (a superset).
 // Returns { ok, reason }.
-export function checkSanity(ledger, incoming) {
+export function checkSanity(ledger, incoming, knownNonUsd = KNOWN_NON_USD) {
   const agg = incoming ?? {};
   for (const [cur, v] of Object.entries(agg)) {
-    if (cur === 'USD') continue;
+    if (cur === 'USD' || knownNonUsd.has(cur)) continue;
     if (num(v?.sats) !== 0) {
-      return { ok: false, reason: `non-USD incoming key "${cur}" is nonzero (${num(v?.sats)} sats)` };
+      return { ok: false, reason: `unexpected non-USD incoming key "${cur}" is nonzero (${num(v?.sats)} sats)` };
     }
   }
   const incomingUsdSats = num(agg.USD?.sats);

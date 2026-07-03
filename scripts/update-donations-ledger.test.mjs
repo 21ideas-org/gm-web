@@ -45,7 +45,7 @@ test('basic fixture: self-computed net sats + usdCents (tips, fees, rounding)', 
   const a = m.get(hashId('fixt-basic-0001'));
   assert.equal(a.sats, 14000); // no tip/fee
   assert.equal(a.usdCents, 893); // round(893.37) down
-  assert.equal(a.ts, new Date(1781857860000).toISOString());
+  assert.equal(a.ts, new Date(1781857860000).toISOString().slice(0, 10)); // UTC date only (privacy, §6)
 
   const b = m.get(hashId('fixt-basic-0002'));
   assert.equal(b.sats, 21000); // amount 20000 + tip 1000
@@ -100,6 +100,16 @@ test('projectEntry never spreads source fields (memo/hash/ref/path/with stripped
   assert.equal(entry.id, hashId('raw-id-xyz')); // hash-only id
 });
 
+test('projectEntry stores ts as a UTC date only — no HH:MM:SS (privacy, §6)', () => {
+  const row = {
+    id: 'x', amount: 5000, tip: 0, fee: 0, ourfee: 0,
+    created: 1781857860000, rate: 60000, currency: 'USD', confirmed: true,
+  };
+  const entry = projectEntry(row, NOW);
+  assert.match(entry.ts, /^\d{4}-\d{2}-\d{2}$/); // date only — no time component to fingerprint against
+  assert.equal(entry.ts, new Date(1781857860000).toISOString().slice(0, 10));
+});
+
 test('findProjectionViolation catches an extra key and a missing key', () => {
   const extra = {
     entries: [{ id: 'a', ts: 't', sats: 1, usdCents: 1, rail: 'lightning', memo: 'leak' }],
@@ -138,10 +148,20 @@ test('mixed fixture: filters out reverted, 0-conf, and non-USD rows', () => {
 
 // ── Sanity gate failure modes ────────────────────────────────────────────────
 
-test('checkSanity fails on a nonzero non-USD incoming key', () => {
+test('checkSanity fails on an UNEXPECTED nonzero non-USD incoming key', () => {
   const r = checkSanity(EMPTY, { USD: { sats: 0 }, EUR: { sats: 5 } });
   assert.equal(r.ok, false);
-  assert.match(r.reason, /non-USD/);
+  assert.match(r.reason, /unexpected non-USD/);
+});
+
+test('checkSanity tolerates a KNOWN non-USD key (GEL) but still fails a new one (EUR)', () => {
+  // GEL is pre-USD history, recorded manually elsewhere — its permanent presence
+  // in `incoming` must NOT fail the gate (else every run false-fails).
+  assert.deepEqual(checkSanity(EMPTY, { USD: { sats: 0 }, GEL: { sats: 18456 } }), { ok: true });
+  // …but a genuinely new fiat still trips the tripwire.
+  const r = checkSanity(EMPTY, { USD: { sats: 0 }, GEL: { sats: 18456 }, EUR: { sats: 5 } });
+  assert.equal(r.ok, false);
+  assert.match(r.reason, /EUR/);
 });
 
 test('checkSanity fails when cumulative ledger sats EXCEED incoming.USD.sats', () => {
@@ -179,6 +199,40 @@ test('quarantine boundary: row at the threshold is in, just-inside is out', () =
   assert.equal(next.entries.length, 1);
   assert.ok(byId(next).has(hashId('q-at')));
   assert.ok(!byId(next).has(hashId('q-inside')));
+});
+
+// ── Garbage created / negative net (inline synthetic rows) ──────────────────
+
+test('isEligible rejects a string/garbage created (must not freeze ts=1970)', () => {
+  const row = {
+    id: 'g-created',
+    amount: 7000,
+    tip: 0,
+    fee: 0,
+    ourfee: 0,
+    created: '2026-06-20T00:00:00Z', // ISO string — num() coerces to 0
+    rate: 60000,
+    currency: 'USD',
+    confirmed: true,
+  };
+  assert.equal(isEligible(row, NOW), false);
+  assert.equal(buildLedger([row], EMPTY, NOW).entries.length, 0);
+});
+
+test('isEligible rejects a negative net (fee > amount must not freeze sats<0)', () => {
+  const row = {
+    id: 'g-negative',
+    amount: 100,
+    tip: 0,
+    fee: 500,
+    ourfee: 0,
+    created: NOW - QUARANTINE_MS - 1000,
+    rate: 60000,
+    currency: 'USD',
+    confirmed: true,
+  };
+  assert.equal(isEligible(row, NOW), false);
+  assert.equal(buildLedger([row], EMPTY, NOW).entries.length, 0);
 });
 
 // ── excludeIds (hashed) ──────────────────────────────────────────────────────
