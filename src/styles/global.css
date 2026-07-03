@@ -983,7 +983,8 @@ hr {
 .fin-pct { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; }
 
 /* The bar is decorative — the true % is printed next to it (aria-hidden on the element). Square
-   corners = terminal. Fill is --green; a surplus (>100%) flips to --accent via .over. */
+   corners = terminal. Fill is --accent (amber) while under-covered; full coverage (>=100%) flips to
+   --green via .full — amber signals "help needed", green signals "covered". */
 .fin-bar {
   display: block;
   height: 8px;
@@ -994,9 +995,9 @@ hr {
 .fin-bar > span {
   display: block;
   height: 100%;
-  background: var(--green);
+  background: var(--accent);
 }
-.fin-bar > span.over { background: var(--accent); }
+.fin-bar > span.full { background: var(--green); }
 
 /* NET / баланс sign coloring (shared by the coverage баланс line and the ledger NET cells). */
 .net.pos { color: var(--green); }

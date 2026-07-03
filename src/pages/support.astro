@@ -17,12 +17,13 @@ const groupThousands = (n: number): string => String(n).replace(/\B(?=(\d{3})+(?
 const fmtSats = (n: number): string => `⚡ ${groupThousands(n)}`; // "⚡ 14 300"
 
 // Coverage = donations / cost. Clamp the BAR WIDTH to 100% but print the true %. cost 0 ⇒ "—"
-// (no divide-by-zero); the bar shows empty. `over` flips the fill colour past 100%.
-type Cov = { width: string; label: string; over: boolean };
+// (no divide-by-zero); the bar shows empty. `full` (>=100% covered) flips the fill from amber
+// (--accent, "help needed") to green (--green, "covered").
+type Cov = { width: string; label: string; full: boolean };
 function coverage(don: number, cost: number): Cov {
-  if (cost <= 0) return { width: '0%', label: '—', over: false };
+  if (cost <= 0) return { width: '0%', label: '—', full: false };
   const pct = (don / cost) * 100;
-  return { width: `${Math.min(100, pct)}%`, label: `${Math.round(pct)}%`, over: don > cost };
+  return { width: `${Math.min(100, pct)}%`, label: `${Math.round(pct)}%`, full: don >= cost };
 }
 const curCov = coverage(current.donationsUsd, current.costUsd);
 const allCov = coverage(totals.donationsUsd, totals.costUsd);
@@ -86,7 +87,7 @@ const updatedLine = lastDonStamp
         <div class="fin-row"><span class="fin-label">донаты</span><span class="fin-val">{usd(current.donationsUsd)} · {fmtSats(current.donationsSats)}</span></div>
         <div class="fin-row fin-row--bar">
           <span class="fin-label">покрытие</span>
-          <span class="fin-bar" aria-hidden="true"><span class:list={[{ over: curCov.over }]} style={`width:${curCov.width}`}></span></span>
+          <span class="fin-bar" aria-hidden="true"><span class:list={[{ full: curCov.full }]} style={`width:${curCov.width}`}></span></span>
           <span class="fin-pct">{curCov.label}</span>
         </div>
       </div>
@@ -97,7 +98,7 @@ const updatedLine = lastDonStamp
         <div class="fin-row"><span class="fin-label">донаты</span><span class="fin-val">{usd(totals.donationsUsd)} · {fmtSats(totals.donationsSats)}</span></div>
         <div class="fin-row fin-row--bar">
           <span class="fin-label">покрытие</span>
-          <span class="fin-bar" aria-hidden="true"><span class:list={[{ over: allCov.over }]} style={`width:${allCov.width}`}></span></span>
+          <span class="fin-bar" aria-hidden="true"><span class:list={[{ full: allCov.full }]} style={`width:${allCov.width}`}></span></span>
           <span class="fin-pct">{allCov.label}</span>
         </div>
         <div class="fin-row"><span class="fin-label">баланс</span><span class:list={["fin-val", "net", balanceClass]}>{signedUsd(totals.netUsd)}</span></div>
