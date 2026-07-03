@@ -102,56 +102,72 @@ function readCost(): { byMonth: Map<string, CostBucket>; firstReportDay: number 
 
 type DonBucket = { usdCents: number; sats: number };
 
-// Read the append-only ledger, bucketing INCLUDED entries (excludeIds honored, hash-to-hash) by UTC month.
-// Money stays integer (usdCents, sats) until display; lastDonationTs is the newest included entry's ts.
+// Read BOTH donation sources — the programmatic Coinos ledger and the manual pre-history file —
+// bucketing INCLUDED entries by UTC month. Money stays integer (usdCents, sats) until display;
+// lastDonationTs is the newest included entry's ts across both. Every read/parse is fail-soft.
 function readDonations(): { byMonth: Map<string, DonBucket>; lastDonationTs: string | null } {
   const byMonth = new Map<string, DonBucket>();
   let lastDonationTs: string | null = null;
+  let lastMs = -Infinity;
 
-  let parsed: unknown;
+  // Bucket one entry (shape { ts, sats, usdCents }) into byMonth + track recency. Shared by both
+  // sources so a manual entry and a Coinos entry are treated byte-for-byte identically downstream.
+  const add = (e: { ts?: unknown; sats?: unknown; usdCents?: unknown }, src: string): void => {
+    const ts = typeof e.ts === 'string' ? e.ts : null;
+    if (!ts) {
+      console.warn(`[finances] ${src} entry missing ts — skipped`);
+      return;
+    }
+    const ms = Date.parse(ts);
+    if (Number.isNaN(ms)) {
+      console.warn(`[finances] ${src} entry has unparseable ts "${ts}" — skipped`);
+      return;
+    }
+    const d = new Date(ms);
+    const month = monthKey(d.getUTCFullYear(), d.getUTCMonth());
+    const bucket = byMonth.get(month) ?? { usdCents: 0, sats: 0 };
+    bucket.usdCents += Number(e.usdCents) || 0;
+    bucket.sats += Number(e.sats) || 0;
+    byMonth.set(month, bucket);
+    if (ms > lastMs) {
+      lastMs = ms;
+      lastDonationTs = ts; // newest INCLUDED entry (either source) → donation recency, NOT sync health (§2)
+    }
+  };
+
+  // 1) Programmatic Coinos ledger — append-only, hash ids, excludeIds honored (§2/§9).
   try {
     const raw = readFileSync(resolve(process.cwd(), 'src/data/donations-ledger.json'), 'utf8');
-    parsed = JSON.parse(raw);
+    const root = (JSON.parse(raw) ?? {}) as { excludeIds?: unknown; entries?: unknown };
+    const exclude = new Set<string>(
+      Array.isArray(root.excludeIds) ? root.excludeIds.filter((x): x is string => typeof x === 'string') : [],
+    );
+    const entries: unknown[] = Array.isArray(root.entries) ? root.entries : [];
+    for (const r of entries) {
+      if (!r || typeof r !== 'object') continue;
+      const e = r as { id?: unknown; ts?: unknown; sats?: unknown; usdCents?: unknown };
+      if (typeof e.id === 'string' && exclude.has(e.id)) continue; // honor excludeIds (both hashed)
+      add(e, 'ledger');
+    }
   } catch (err) {
-    console.warn('[finances] failed to read donations-ledger.json — donations treated as empty:', err);
-    return { byMonth, lastDonationTs };
+    console.warn('[finances] failed to read donations-ledger.json — programmatic donations treated as empty:', err);
   }
 
-  const root = (parsed ?? {}) as { excludeIds?: unknown; entries?: unknown };
-  const exclude = new Set<string>(
-    Array.isArray(root.excludeIds) ? root.excludeIds.filter((x): x is string => typeof x === 'string') : [],
-  );
-  const entries: unknown[] = Array.isArray(root.entries) ? root.entries : [];
-
-  let lastMs = -Infinity;
-  for (const raw of entries) {
-    try {
-      if (!raw || typeof raw !== 'object') continue;
-      const e = raw as { id?: unknown; ts?: unknown; sats?: unknown; usdCents?: unknown };
-      if (typeof e.id === 'string' && exclude.has(e.id)) continue; // honor excludeIds (both hashed — §2/§9)
-      const ts = typeof e.ts === 'string' ? e.ts : null;
-      if (!ts) {
-        console.warn('[finances] ledger entry missing ts — skipped');
-        continue;
-      }
-      const ms = Date.parse(ts);
-      if (Number.isNaN(ms)) {
-        console.warn(`[finances] ledger entry has unparseable ts "${ts}" — skipped`);
-        continue;
-      }
-      const d = new Date(ms);
-      const month = monthKey(d.getUTCFullYear(), d.getUTCMonth());
-      const bucket = byMonth.get(month) ?? { usdCents: 0, sats: 0 };
-      bucket.usdCents += Number(e.usdCents) || 0;
-      bucket.sats += Number(e.sats) || 0;
-      byMonth.set(month, bucket);
-
-      if (ms > lastMs) {
-        lastMs = ms;
-        lastDonationTs = ts; // newest INCLUDED entry → donation recency (NOT sync health — §2)
-      }
-    } catch (err) {
-      console.warn('[finances] failed to process a ledger entry — skipped:', err);
+  // 2) Manual pre-history (OPTIONAL) — personal-address + pre-USD receipts, hand-converted to USD.
+  //    Display-only: NEVER read by the updater or its sanity gate (foreign/converted sats would false-fail
+  //    §3). No excludeIds / no dedup vs (1): manual holds provenances the Coinos ledger structurally cannot.
+  try {
+    const raw = readFileSync(resolve(process.cwd(), 'src/data/donations-manual.json'), 'utf8');
+    const root = (JSON.parse(raw) ?? {}) as { entries?: unknown };
+    const entries: unknown[] = Array.isArray(root.entries) ? root.entries : [];
+    for (const r of entries) {
+      if (!r || typeof r !== 'object') continue;
+      add(r as { ts?: unknown; sats?: unknown; usdCents?: unknown }, 'manual');
+    }
+  } catch (err) {
+    // Absent file is normal (the manual ledger is optional) → silent; only a present-but-broken file warns.
+    if ((err as NodeJS.ErrnoException)?.code !== 'ENOENT') {
+      console.warn('[finances] donations-manual.json unreadable/unparseable — manual donations skipped:', err);
     }
   }
 

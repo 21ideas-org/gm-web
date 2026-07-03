@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "note": "Manual, hand-curated pre-history donations — DISPLAY ONLY. Merged in src/lib/finances.ts alongside the programmatic Coinos ledger; NEVER read by scripts/update-donations-ledger.mjs or its sanity gate (foreign-wallet / non-USD-converted sats would false-fail §3). Two provenances: (a) donations to a personal lightning address, already USD, usdCents = round(sats/1e8 * rate * 100) at receipt; (b) pre-USD receipts on the gmbitcoiner Coinos account recorded in GEL, hand-converted at 1 USD = 2.6 GEL. Synthetic ids (display keys only). ts is UTC DATE ONLY (no time) — the repo is public and /support only shows the date + buckets by month; keep future entries date-only too. Sorted by ts. See plans/donations.manual-runbook.md §6/§7.",
+  "entries": [
+    {
+      "id": "manual-0001",
+      "ts": "2026-06-12",
+      "sats": 3000,
+      "usdCents": 191,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0002",
+      "ts": "2026-06-12",
+      "sats": 47245,
+      "usdCents": 3000,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0003",
+      "ts": "2026-06-24",
+      "sats": 10000,
+      "usdCents": 627,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0004",
+      "ts": "2026-06-26",
+      "sats": 10000,
+      "usdCents": 610,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0005",
+      "ts": "2026-06-27",
+      "sats": 2574,
+      "usdCents": 158,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0006",
+      "ts": "2026-06-27",
+      "sats": 10042,
+      "usdCents": 609,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0007",
+      "ts": "2026-06-30",
+      "sats": 29886,
+      "usdCents": 1746,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0008",
+      "ts": "2026-07-02",
+      "sats": 1080,
+      "usdCents": 66,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0009",
+      "ts": "2026-07-02",
+      "sats": 2500,
+      "usdCents": 153,
+      "rail": "lightning"
+    },
+    {
+      "id": "manual-0010",
+      "ts": "2026-07-02",
+      "sats": 2302,
+      "usdCents": 141,
+      "rail": "lightning"
+    }
+  ]
+}
