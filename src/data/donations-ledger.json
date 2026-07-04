@@ -2,5 +2,20 @@
   "schema": 1,
   "currency": "USD",
   "excludeIds": [],
-  "entries": []
+  "entries": [
+    {
+      "id": "cff997f85e01e63a5999bd6af452c9457df5501934bce3baaa7e68fb4b69ce2c",
+      "ts": "2026-07-03",
+      "sats": 25000,
+      "usdCents": 1547,
+      "rail": "lightning"
+    },
+    {
+      "id": "dc7aed24a429ec63557ec5096630fd070b0ba99f174745bf8633a48a4bf20646",
+      "ts": "2026-07-03",
+      "sats": 121646,
+      "usdCents": 7543,
+      "rail": "lightning"
+    }
+  ]
 }
