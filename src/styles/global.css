@@ -564,7 +564,7 @@ hr {
    browser-default margin-bottom (~1.33em) — that collapses with the gloss's margin-top and, being
    the larger value, silently wins. Zeroing it hands the gap back to the margin-top-only model. */
 .prose h4 { margin-bottom: 0; }
-.prose h4 + p { margin-top: 0.5em; }
+.prose h4 + p { margin-top: 0.2em; }
 .prose a {
   color: var(--accent);
   border-bottom: 1px solid var(--dim);
