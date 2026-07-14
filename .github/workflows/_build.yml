@@ -23,7 +23,7 @@ jobs:
         run: npm run build
 
       - name: Check internal links
-        uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           # No --include-verbatim: it makes lychee scan inside <script>/<style>, where the about
           # page's FAQPage JSON-LD embeds JSON-escaped anchor HTML (href=\"https://…\"). lychee
