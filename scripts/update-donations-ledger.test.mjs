@@ -287,9 +287,12 @@ test('append-only: existing entries are preserved; only new rows append', () => 
 
 // ── Serializer determinism ───────────────────────────────────────────────────
 
-test('serializer sorts by ts and matches the committed empty seed byte-for-byte', () => {
+test('serializer sorts by ts and keeps the committed ledger in canonical form byte-for-byte', () => {
+  // Re-serializing the *actual* committed ledger must reproduce it exactly (key order,
+  // ts/id sort, 2-space indent, trailing newline). This survives new donation rows —
+  // unlike comparing against an EMPTY serialization, which only held for the initial seed.
   const seed = readFileSync(join(HERE, '..', 'src', 'data', 'donations-ledger.json'), 'utf8');
-  assert.equal(serializeLedger(EMPTY), seed);
+  assert.equal(serializeLedger(JSON.parse(seed)), seed);
 
   const unsorted = {
     schema: 1,
