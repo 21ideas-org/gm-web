@@ -23,6 +23,13 @@
       "sats": 4796,
       "usdCents": 300,
       "rail": "lightning"
+    },
+    {
+      "id": "543471472411d13645bc6095ce8f866758c4cfdeda8d89501601259a21e899f7",
+      "ts": "2026-08-06",
+      "sats": 10000,
+      "usdCents": 646,
+      "rail": "lightning"
     }
   ]
 }
