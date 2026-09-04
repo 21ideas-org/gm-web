@@ -14,17 +14,17 @@
     "test": "node --test 'scripts/**/*.test.mjs'"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.2.1",
+    "@astrojs/markdown-remark": "^7.3.0",
     "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.0.9",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.2.10",
     "better-sqlite3": "^12.11.1",
     "markdown-it": "^14.3.0",
     "sanitize-html": "^2.17.5",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
     "@resvg/resvg-js": "^2.6.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/markdown-it": "^14.1.2",
