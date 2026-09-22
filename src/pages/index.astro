@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import Cursor from '../components/Cursor.astro';
 import PostCard from '../components/PostCard.astro';
 import Subscribe from '../components/Subscribe.astro';
+import Support from '../components/Support.astro';
 const buildDate = new Date().toISOString().slice(0, 10);
 
 const posts = (await getCollection('digests', p => !p.data.draft))
@@ -67,6 +68,18 @@ const featured = (await getCollection('projects', p => p.data.featured))
           <span class="arrow">→</span>
         </a>
       ))}
+    </div>
+  </section>
+
+  <Support text="Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!" />
+
+  <section class="section" aria-labelledby="buy-bitcoin-heading">
+    <div class="section-header">
+      <h2 id="buy-bitcoin-heading">купить биткоин</h2>
+    </div>
+    <p class="subscribe-lead">Для обмена фиата на биткоин я пользуюсь услугами Hermes Exchange. Нужно обменять биткоин или другую криптовалюту на доллар, евро, рубль или другую валюту? Подробности по клику ниже.</p>
+    <div class="subscribe-actions">
+      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин <span class="arrow">→</span></a>
     </div>
   </section>
 </Base>
