@@ -12,7 +12,7 @@ const posts = (await getCollection('digests', p => !p.data.draft))
   .slice(0, 3);
 
 const featured = (await getCollection('projects', p => p.data.featured))
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a, b) => (a.data.featuredOrder ?? a.data.order) - (b.data.featuredOrder ?? b.data.order));
 ---
 <Base
   title="Доброе утро, биткоинер — ежедневный биткоин-дайджест на русском"

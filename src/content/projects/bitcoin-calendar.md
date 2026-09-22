@@ -5,5 +5,5 @@ status: WIP
 url: https://bitcoin-calendar.org
 repo: https://github.com/Bitcoin-Calendar
 featured: false
-order: 4
+order: 5
 ---
