@@ -4,5 +4,6 @@ description: Биткоин-онли телеграм-канал 21ideas — н�
 status: LIVE
 url: https://t.me/bitcoin21ideas
 featured: true
+featuredOrder: 2
 order: 3
 ---
