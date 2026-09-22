@@ -4,6 +4,7 @@ import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import { defineConfig } from 'astro/config';
 import { rehypeCodeCopy } from './src/plugins/rehype-code-copy.mjs';
+import { rehypeBuyBitcoin } from './src/plugins/rehype-buy-bitcoin.mjs';
 import { rehypeHeadingAnchor } from './src/plugins/rehype-heading-anchor.mjs';
 import { TAGS, anchorFor } from './src/lib/topics';
 import { gmDark, gmLight } from './src/themes/shiki-gm.mjs';
@@ -49,6 +50,7 @@ export default defineConfig({
 			// topic match fails → empty hubs). Providing it explicitly also stops Astro re-adding it.
 			rehypeHeadingIds,
 			rehypeCodeCopy,
+			rehypeBuyBitcoin,
 			[rehypeHeadingAnchor, { topicSlugs: TOPIC_SLUGS, anchorFor }],
 		],
 		shikiConfig: {

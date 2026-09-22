@@ -320,6 +320,7 @@ hr {
   padding-top: 32px;
   border-top: 1px solid var(--border);
 }
+.section[aria-labelledby="featured"] + .support-cta { border-top: none; }
 .history + .support-cta { border-top: none; }
 .support-cta + .subscribe--bare {
   border-top: none;
@@ -568,6 +569,13 @@ hr {
   border-bottom: 1px solid var(--dim);
 }
 .prose a:hover { border-bottom-color: var(--accent); }
+.prose .buy-bitcoin-cta { margin: 24px 0 0; }
+.prose .buy-bitcoin-cta .cta-btn {
+  color: var(--text);
+  border: 1px solid var(--accent);
+  line-height: var(--lh-ui);
+}
+.prose .buy-bitcoin-cta .cta-btn:hover { color: var(--accent); }
 .prose strong { color: var(--text); font-weight: 700; }
 .prose em { font-style: italic; color: var(--text); }
 .prose blockquote {
@@ -577,6 +585,7 @@ hr {
   color: var(--muted);
 }
 .prose blockquote strong { color: var(--text); }
+.info-page { padding-top: 44px; }
 .prose ul, .prose ol {
   margin: 0;
   padding-left: 1.6em;

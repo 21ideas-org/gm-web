@@ -2,11 +2,12 @@
 import type { CollectionEntry } from 'astro:content';
 
 type Props = CollectionEntry<'projects'>['data'];
-const { name, description, status, stack, url, repo } = Astro.props;
+const { name, description, status, stack, url, telegram, repo } = Astro.props;
 
 const statusClass = status.toLowerCase();
 const links = [
   ...(url ? [{ k: 'ссылка', href: url }] : []),
+  ...(telegram ? [{ k: 'telegram', href: telegram }] : []),
   ...(repo ? [{ k: 'repo', href: repo }] : []),
 ];
 ---
