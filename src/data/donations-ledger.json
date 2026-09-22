@@ -23,6 +23,41 @@
       "sats": 4796,
       "usdCents": 300,
       "rail": "lightning"
+    },
+    {
+      "id": "543471472411d13645bc6095ce8f866758c4cfdeda8d89501601259a21e899f7",
+      "ts": "2026-08-06",
+      "sats": 10000,
+      "usdCents": 646,
+      "rail": "lightning"
+    },
+    {
+      "id": "a67f2877f30e490e33627b6162c01b3fb4ce44d37cfd474ba3c7db880a59cb4f",
+      "ts": "2026-08-18",
+      "sats": 1000,
+      "usdCents": 64,
+      "rail": "lightning"
+    },
+    {
+      "id": "b62dc00a58745728de71462dc796f86338c1f41dabf50c0ec433d2cc04e02e96",
+      "ts": "2026-08-31",
+      "sats": 12000,
+      "usdCents": 944,
+      "rail": "lightning"
+    },
+    {
+      "id": "cba18e68a6ee09ac5d3d51c8f7d1eddc93938cbaf14f67e6fe5bf0a931f74cb5",
+      "ts": "2026-08-31",
+      "sats": 4021,
+      "usdCents": 316,
+      "rail": "lightning"
+    },
+    {
+      "id": "f63ef1ea28b3e7f53469beb706dd1f32dfa7839149975c874185ed20cd76b139",
+      "ts": "2026-09-01",
+      "sats": 10000,
+      "usdCents": 782,
+      "rail": "lightning"
     }
   ]
 }
