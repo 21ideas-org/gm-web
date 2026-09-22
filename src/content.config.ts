@@ -20,9 +20,11 @@ const projects = defineCollection({
 		description: z.string(),
 		status: z.enum(['LIVE', 'WIP', 'ARCHIVED']),
 		url: z.url().optional(), // canonical link to the project / channel
+		telegram: z.url().optional(), // Telegram channel (optional second link)
 		repo: z.url().optional(), // source repository (optional second link)
 		stack: z.array(z.string()).optional(), // ecosystem links don't need a tech stack
 		featured: z.boolean().default(false),
+		featuredOrder: z.number().optional(),
 		order: z.number().default(0),
 	}),
 });
