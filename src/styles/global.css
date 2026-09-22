@@ -713,7 +713,6 @@ hr {
   display: flex;
   gap: 14px;
   font-size: var(--fs-sm);
-  max-width: var(--maxw-prose);
   padding: 2px 0;
 }
 .tag-chips a {
@@ -817,7 +816,7 @@ hr {
 .footer a { color: var(--muted); border-bottom: none; }
 .footer a:hover { color: var(--text); }
 .footer .left { letter-spacing: 0.02em; }
-.footer .right { display: flex; gap: 16px; }
+.footer .right { display: flex; gap: 8px; }
 
 /* ─── 404 ─── */
 .notfound {
