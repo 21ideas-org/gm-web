@@ -58,6 +58,55 @@
       "sats": 10000,
       "usdCents": 782,
       "rail": "lightning"
+    },
+    {
+      "id": "3f4bf192d2fde3b4d264ef4f2ed1d1c7506a65ab3bc9591e41e571571d593ff8",
+      "ts": "2026-09-18",
+      "sats": 2100,
+      "usdCents": 170,
+      "rail": "lightning"
+    },
+    {
+      "id": "74e2378c732a467ec79a6b19dda5660c637f9b443d8854f4cb2bd8b8afc7beba",
+      "ts": "2026-09-18",
+      "sats": 300,
+      "usdCents": 24,
+      "rail": "lightning"
+    },
+    {
+      "id": "a2ff02ef1f179e4f8a53aa994b652ac7281d09d2444fbeb5b3e948edb29d68fe",
+      "ts": "2026-09-18",
+      "sats": 2100,
+      "usdCents": 170,
+      "rail": "lightning"
+    },
+    {
+      "id": "ca5156aa380f3b5edccb8006d932ec45e60f139cc902ec53d12cf07af1c55a1d",
+      "ts": "2026-09-18",
+      "sats": 500,
+      "usdCents": 40,
+      "rail": "lightning"
+    },
+    {
+      "id": "d36fcce8aebaa81fb4dbe09ad5d45ae0fb632be098b0d728b0263091788f025a",
+      "ts": "2026-09-18",
+      "sats": 800,
+      "usdCents": 65,
+      "rail": "lightning"
+    },
+    {
+      "id": "e1ccad9a9091e7c3dc02f0698feba709c458bcd46228e159475af182aeb06b9b",
+      "ts": "2026-09-18",
+      "sats": 42,
+      "usdCents": 3,
+      "rail": "lightning"
+    },
+    {
+      "id": "fe56bcf83024296742ba37c4ff46b6462ea8303edda39859cae24bca215f704c",
+      "ts": "2026-09-21",
+      "sats": 735,
+      "usdCents": 60,
+      "rail": "lightning"
     }
   ]
 }
