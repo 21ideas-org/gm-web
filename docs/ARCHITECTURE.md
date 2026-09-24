@@ -130,7 +130,16 @@ involvement — so every past digest picks it up on the next build.
   grouped by month-day, the leading emoji prefix is stripped from titles, and same-day events are
   ordered by full historical date ascending. `references` and `media` are kept in the in-memory event
   model as `string[]`, passed through exactly as the API stores them (no trimming, URL parsing, or
-  filtering — deciding what to link is left to the presentation layer); they are not rendered yet.
+  filtering — deciding what to link is left to the presentation layer). `media` is not rendered yet.
+- **Source links** — each event's `references` render as a plain list of links below its
+  description, inside the same accordion item (no heading). The pure helper
+  `src/lib/history-references.mjs` mirrors the Calendar Telegram formatter: the label is the
+  hostname without a leading `www.`, source order and duplicate hostnames are preserved, and a
+  Wayback snapshot (`https://web.archive.org/web/<timestamp>/<original>`, exact host only, timestamp
+  flags like `id_` included) keeps the archived URL as the link but is labelled from the original's
+  hostname plus « (архив)». It is stricter than the bot: entries are trimmed, and empty strings,
+  non-HTTP(S) or unparseable URLs, and snapshots without a valid HTTP(S) original are skipped. A bad
+  reference never drops its event; an event with no usable references renders exactly as before.
 - **Fail-soft, never fatal** — digest pages share the bot's publish build, so nothing here can fail
   the build. Degradation is layered: a malformed optional field (references/media that isn't an
   array) becomes `[]` and a non-string element inside one is dropped, but the event is kept; an invalid row (bad date, blank title/description) is skipped alone;
