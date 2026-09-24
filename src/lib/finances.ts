@@ -3,10 +3,10 @@
 // FAIL-SOFT / NEVER-THROW. This runs in the shared digest-publish build lane: a digest push rebuilds the
 // whole site (including /support), so an unparseable ledger, a malformed/drifted ops-report frontmatter,
 // or a missing file must `console.warn` + degrade to an empty/partial model — never throw and block a
-// digest. Mirrors src/lib/history.ts (every read/parse is wrapped; a bad input is skipped, not fatal).
+// digest. Mirrors src/lib/history.mjs (every read/parse is wrapped; a bad input is skipped, not fatal).
 //
 // Both sources are read via `fs` from `resolve(process.cwd(), …)` — NOT a static import — so the ledger
-// (which lives under src/, served nowhere) stays out of dist/. Same convention as history.ts / og.ts.
+// (which lives under src/, served nowhere) stays out of dist/. Same convention as og.ts.
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { SERVER_USD_PER_MONTH, FINANCES_START } from '../consts';
