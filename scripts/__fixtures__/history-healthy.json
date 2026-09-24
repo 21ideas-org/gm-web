@@ -1,0 +1,36 @@
+{
+  "schema": "bitcoin-calendar.public-events.v1",
+  "database": { "rows": 4 },
+  "events": [
+    {
+      "id": 101,
+      "date": "2015-09-23",
+      "title": "🗣️ Синтетическое событие B",
+      "description": "Тестовое описание B.\n\nВторой абзац B.",
+      "references": ["https://example.org/b", "https://web.archive.org/web/2015/https://example.org/b"],
+      "media": ["https://example.org/b.png"]
+    },
+    {
+      "id": 102,
+      "date": "2009-09-23",
+      "title": "🇸🇻 Синтетическое событие A",
+      "description": "Тестовое описание A.",
+      "references": ["https://example.org/a"],
+      "media": []
+    },
+    {
+      "id": 103,
+      "date": "2021-09-23",
+      "title": "21 синтетическое событие C",
+      "description": "Тестовое описание C."
+    },
+    {
+      "id": 104,
+      "date": "2012-09-22",
+      "title": "👨‍👩‍👧 Синтетическое событие D",
+      "description": "Тестовое описание D.",
+      "references": [],
+      "media": []
+    }
+  ]
+}

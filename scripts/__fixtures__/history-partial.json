@@ -1,0 +1,35 @@
+{
+  "schema": "bitcoin-calendar.public-events.v1",
+  "database": { "rows": 9 },
+  "events": [
+    {
+      "id": 201,
+      "date": "2014-09-23",
+      "title": "🗣️ Синтетическое событие со сломанными ссылками",
+      "description": "Описание сохраняется, хотя ссылки и медиа повреждены.",
+      "references": "not-an-array",
+      "media": [42, "  https://example.org/ok.png  ", { "url": "https://example.org/obj.png" }, "javascript:alert(1)"]
+    },
+    {
+      "id": 202,
+      "date": "2010-09-23",
+      "title": "Синтетическое событие с частично валидными ссылками",
+      "description": "Второе описание.",
+      "references": [
+        null,
+        "ftp://example.org/x",
+        "не ссылка",
+        "  ",
+        "",
+        7,
+        " https://web.archive.org/web/2010/http://example.org/ok\n"
+      ],
+      "media": "nope"
+    },
+    { "id": 203, "date": "2011-13-40", "title": "Невалидная дата", "description": "Строка пропускается." },
+    { "id": 204, "date": "2011-09-23", "title": "   ", "description": "Пустой заголовок." },
+    { "id": 205, "date": "2011-09-23", "title": "🗣️", "description": "Заголовок из одного эмодзи." },
+    { "id": 206, "date": "2011-09-23", "title": "Без описания", "description": null },
+    "not-an-object"
+  ]
+}

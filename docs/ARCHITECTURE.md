@@ -50,8 +50,9 @@ the spaced form `gm ₿`.
 
 - **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `PathStrip` → `Nav` →
   `<slot>` → `Footer`.
-- **`Post.astro`** — wraps `Base`, adds the post header (date + clickable topic chips) + prev/next
-  nav. (The Giscus `<Comments />` slot exists but is not imported in v1.)
+- **`Post.astro`** — wraps `Base`, adds the post header (date + clickable topic chips), the
+  «Сегодня в истории» rubric (`History.astro`) + prev/next nav. (The Giscus `<Comments />` slot
+  exists but is not imported in v1.)
 
 ## Content collections (`src/content.config.ts`)
 
@@ -110,6 +111,41 @@ title + date-stamped subtitle) and `src/pages/og/default.png.ts` (fallback).
   `api.indexnow.org` endpoint (Yandex + Bing) for new/changed digests after each deploy. The key
   file in `public/` is public by protocol design — not a secret. Google does not participate; it
   relies on the news sitemap instead.
+
+## «Сегодня в истории» (this day in Bitcoin history)
+
+Every digest ends with a collapsible list of historical Bitcoin events whose anniversary matches the
+digest's `pubDate` (`src/components/History.astro`). It is a pure function of the date — no bot
+involvement — so every past digest picks it up on the next build.
+
+- **Source** — the deployed public Bitcoin Calendar API,
+  `https://api.bitcoin-calendar.org/public/v1/events?lang=ru` (no key, no secret). The loader
+  `src/lib/history.mjs` fetches it **at build time only, in Node** — nothing is fetched in the
+  browser and no runtime service exists. `HISTORY_API_URL` overrides the endpoint for local/test runs.
+- **One request per build** — a module-level memoized promise is shared by every prerendered digest
+  page: 8-second timeout per attempt, at most one retry after 1 second (transient failures only:
+  timeout, network error, 5xx/429), so at most two physical requests per build.
+- **Validation & ordering** — the response must be `{ schema, database: { rows }, events: [...] }`
+  with `schema` exactly `bitcoin-calendar.public-events.v1` (the versioned public contract). Rows are
+  grouped by month-day, the leading emoji prefix is stripped from titles, and same-day events are
+  ordered by full historical date ascending. `references` and `media` are kept in the in-memory event
+  model as `string[]`, passed through exactly as the API stores them (no trimming, URL parsing, or
+  filtering — deciding what to link is left to the presentation layer); they are not rendered yet.
+- **Fail-soft, never fatal** — digest pages share the bot's publish build, so nothing here can fail
+  the build. Degradation is layered: a malformed optional field (references/media that isn't an
+  array) becomes `[]` and a non-string element inside one is dropped, but the event is kept; an invalid row (bad date, blank title/description) is skipped alone;
+  `database.rows` differing from `events.length` is reported as `rows_mismatch` while every valid event
+  still renders. A timeout, network error, non-2xx, non-JSON body, or schema mismatch makes the whole
+  source unavailable, and every digest **silently omits the section** — no reader-facing error text.
+- **Diagnostics** — exactly one `[history] fetch <ok|degraded|unavailable> …` line on stderr per
+  build, carrying only fixed reason codes and counts (never upstream error text). There is no public
+  status route and no Actions annotation.
+- **Recovery** — the site is static, so an outage is baked into the pages built during it. Recovery
+  is simply the next successful build (e.g. the next digest push or a manual re-run of the deploy
+  workflow); every digest regains the section then.
+
+History used to be read from a committed SQLite file (`src/data/events_ru.db` via `better-sqlite3`,
+the project's only native dependency). Both were removed when the loader moved to the API.
 
 ## Donations & finances
 
