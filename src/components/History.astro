@@ -1,5 +1,6 @@
 ---
 import { historyByDay, eventsForDay } from '../lib/history.mjs';
+import { historyEventView } from '../lib/history-references.mjs';
 import { formatMonthDay } from '../lib/date';
 
 interface Props {
@@ -7,13 +8,11 @@ interface Props {
 }
 const { pubDate } = Astro.props;
 // historyByDay() never rejects: an unavailable Calendar API resolves to {} and the section is omitted.
-// References/media stay in the event model but aren't rendered yet.
-// Split each description into paragraphs here, not in the template: an inline /\n{2,}/ regex literal
-// trips the Astro compiler ({2,} reads as a JSX brace). A single-paragraph description yields one <p>.
-const events = eventsForDay(await historyByDay(), formatMonthDay(pubDate)).map((e) => ({
-  title: e.title,
-  paragraphs: e.description.split(/\n{2,}/),
-}));
+// Media stays in the event model but isn't rendered yet. References become source links below the
+// description; invalid ones are dropped by historyEventView (an event with none renders as before).
+// Paragraph splitting lives in the helper, not the template: an inline /\n{2,}/ regex literal trips
+// the Astro compiler ({2,} reads as a JSX brace).
+const events = eventsForDay(await historyByDay(), formatMonthDay(pubDate)).map(historyEventView);
 ---
 {events.length > 0 && (
   <section class="history">
@@ -22,6 +21,11 @@ const events = eventsForDay(await historyByDay(), formatMonthDay(pubDate)).map((
       <details class="faq-item">
         <summary class="faq-q">{e.title}</summary>
         {e.paragraphs.map((p) => <p class="faq-a">{p}</p>)}
+        {e.sources.length > 0 && (
+          <ul class="history-sources">
+            {e.sources.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+          </ul>
+        )}
       </details>
     ))}
   </section>
