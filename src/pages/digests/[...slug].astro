@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 import { formatRuDayMonth } from '../../lib/date';
 import { tagsFromHeadings } from '../../lib/tags';
+import { audioForDigest } from '../../lib/audio.mjs';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('digests', p => !p.data.draft))
@@ -35,6 +36,7 @@ const { Content, headings } = await render(post);
   description={post.data.description}
   pubDate={post.data.pubDate}
   tags={tagsFromHeadings(headings)}
+  audio={audioForDigest(post.id)}
   prevPost={prevPost}
   nextPost={nextPost}
 >

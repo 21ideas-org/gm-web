@@ -6,6 +6,8 @@ import { tagBySlug } from '../lib/tags';
 import Subscribe from '../components/Subscribe.astro';
 import Support from '../components/Support.astro';
 import History from '../components/History.astro';
+import AudioPlayer from '../components/AudioPlayer.astro';
+import type { AudioEpisode } from '../lib/audio.mjs';
 
 interface Props {
   id: string;
@@ -13,10 +15,11 @@ interface Props {
   description: string;
   pubDate: Date;
   tags: string[];
+  audio?: AudioEpisode;
   prevPost?: { id: string; label: string };
   nextPost?: { id: string; label: string };
 }
-const { id, title, description, pubDate, tags = [], prevPost, nextPost } = Astro.props;
+const { id, title, description, pubDate, tags = [], audio, prevPost, nextPost } = Astro.props;
 const chips = tags.map((s) => tagBySlug(s)).filter(Boolean);
 const dateStr = formatDate(pubDate);
 const dateLabel = formatRuDate(pubDate);
@@ -65,6 +68,8 @@ const schema = [
       </nav>
     )}
   </header>
+
+  {audio && <AudioPlayer episode={audio} dateLabel={dateLabel} />}
 
   <article class="prose">
     <slot />

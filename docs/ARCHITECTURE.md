@@ -162,6 +162,33 @@ involvement — so every past digest picks it up on the next build.
 History used to be read from a committed SQLite file (`src/data/events_ru.db` via `better-sqlite3`,
 the project's only native dependency). Both were removed when the loader moved to the API.
 
+## Audio edition (digest player)
+
+A digest page shows a compact native audio player (`src/components/AudioPlayer.astro`, rendered by
+`Post.astro` under the header) only when a valid sidecar exists for it. Pages without one are
+unchanged. MP3s are never committed, fetched or read by the build; they live on the media host.
+
+- **Sidecar** — `src/data/audio/{episodeId}.json` (outside the content collection, so the digest
+  Markdown/schema the bot writes is untouched). v1 fields: `version` (1), `episodeId`
+  (`YYYY-MM-DD`, must equal the file name and an existing `src/content/digests/{episodeId}.md`),
+  `guid` (exactly `gm-audio:{episodeId}`), `publishedAt` (UTC `…T…Z`), `coveredDate` (real date
+  before the episode), `digestSha256` (sha256 of the digest file's **original bytes**), `url`,
+  `mimeType` (`audio/mpeg`), `byteLength` (positive integer), `durationSeconds` (positive), `sha256`
+  (MP3 hash, 64 lowercase hex). Unknown extra fields are ignored.
+- **Trusted URL** — must be exactly `https://gm.21ideas.org/podcasts/{episodeId}/{sha256}.mp3`
+  (`AUDIO_MEDIA_ORIGIN` in `src/lib/audio.mjs`; the configured value must be a bare HTTPS origin).
+  Other origins/ports/schemes, credentials, queries, fragments, traversal or encoded/variant paths
+  are rejected. A guid/URL/hash shared by two records rejects both.
+- **One loader** — `src/lib/audio.mjs`: `loadAudioEpisodes()` (pure, injectable dirs/origin/log),
+  memoized `audioEpisodes()` (`Map<episodeId, AudioEpisode>`) and `audioForDigest(id)`. A later
+  podcast feed should consume the same map, looked up by published (non-draft) digest ids.
+- **Fail-soft** — a missing directory is silent; an invalid, orphaned, unreadable or mismatched
+  sidecar is skipped with `[audio] skip <file>: <reason>` plus one `[audio] sidecars ok=N skipped=M`
+  line on stderr. It never fails the build.
+- **Player** — `<audio controls preload="none">` with an accessible label, duration
+  (`<time datetime="PT…">`) and a direct MP3 download link with its size. Offline tests:
+  `node --test scripts/audio.test.mjs` (also part of `npm test`).
+
 ## Donations & finances
 
 The `/support` page (`src/pages/support.astro` + `src/lib/finances.ts`) renders the project's
