@@ -12,7 +12,7 @@ const { episode, dateLabel } = Astro.props;
 const label = `Аудиоверсия дайджеста за ${dateLabel}`;
 const duration = formatAudioDuration(episode.durationSeconds);
 ---
-<section class="audio-player" aria-label={label}>
+<section class="audio-player">
   <p class="audio-title" aria-hidden="true">слушать выпуск</p>
   <audio controls preload="none" aria-label={label}>
     <source src={episode.url} type={episode.mimeType} />
@@ -20,6 +20,6 @@ const duration = formatAudioDuration(episode.durationSeconds);
   </audio>
   <p class="audio-meta">
     <span>длительность <time datetime={isoDuration(episode.durationSeconds)}>{duration}</time></span>
-    <a class="audio-download" href={episode.url} download type={episode.mimeType}>скачать mp3 · {formatAudioSize(episode.byteLength)}</a>
+    <span><span class="audio-sep" aria-hidden="true">// </span><a class="audio-download" href={episode.url} download type={episode.mimeType}>скачать mp3 · {formatAudioSize(episode.byteLength)}</a></span>
   </p>
 </section>

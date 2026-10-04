@@ -769,12 +769,11 @@ hr {
   font-size: var(--fs-sm);
 }
 .audio-title { margin: 0 0 8px; color: var(--muted); }
-.audio-title::before { content: "▶ "; color: var(--accent); }
+.audio-title::before { content: "\25B6\FE0E "; color: var(--accent); } /* VS15: text, not emoji */
 /* Native controls follow the site theme (incl. the explicit toggle), not just the OS preference. */
 .audio-player audio { display: block; width: 100%; color-scheme: dark; }
 :root[data-theme="light"] .audio-player audio { color-scheme: light; }
-.audio-player audio:focus-visible,
-.audio-download:focus-visible {
+.audio-player audio:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
@@ -786,12 +785,9 @@ hr {
   margin: 8px 0 0;
   color: var(--muted);
 }
-.audio-download {
-  color: var(--accent);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--t);
-}
-.audio-download:hover { border-bottom-color: var(--accent); }
+.audio-sep { color: var(--dim); }
+/* Color, underline-on-hover and focus ring come from the global `a` rules. */
+.audio-download { display: inline-block; padding-block: 3px; }
 
 /* ─── Prev / next ─── */
 .post-nav {
