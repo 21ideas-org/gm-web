@@ -1,0 +1,25 @@
+---
+import type { AudioEpisode } from '../lib/audio.mjs';
+import { formatAudioDuration, formatAudioSize, isoDuration } from '../lib/audio.mjs';
+
+interface Props {
+  episode: AudioEpisode;
+  dateLabel: string;
+}
+const { episode, dateLabel } = Astro.props;
+// Only validated episodes reach here (src/lib/audio.mjs): the URL is the trusted
+// {origin}/podcasts/{episodeId}/{sha256}.mp3. preload="none" — nothing is downloaded until play.
+const label = `Аудиоверсия дайджеста за ${dateLabel}`;
+const duration = formatAudioDuration(episode.durationSeconds);
+---
+<section class="audio-player" aria-label={label}>
+  <p class="audio-title" aria-hidden="true">слушать выпуск</p>
+  <audio controls preload="none" aria-label={label}>
+    <source src={episode.url} type={episode.mimeType} />
+    <a href={episode.url}>Скачать аудиоверсию (MP3)</a>
+  </audio>
+  <p class="audio-meta">
+    <span>длительность <time datetime={isoDuration(episode.durationSeconds)}>{duration}</time></span>
+    <a class="audio-download" href={episode.url} download type={episode.mimeType}>скачать mp3 · {formatAudioSize(episode.byteLength)}</a>
+  </p>
+</section>

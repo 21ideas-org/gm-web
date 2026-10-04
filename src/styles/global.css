@@ -760,6 +760,39 @@ hr {
 .post-header .meta .read { color: var(--muted); }
 .post-header .meta .read::before { content: "// "; color: var(--dim); }
 
+/* ─── Audio player (digest pages with a valid sidecar; AudioPlayer.astro) ─── */
+.audio-player {
+  margin: 4px 0 20px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+}
+.audio-title { margin: 0 0 8px; color: var(--muted); }
+.audio-title::before { content: "▶ "; color: var(--accent); }
+/* Native controls follow the site theme (incl. the explicit toggle), not just the OS preference. */
+.audio-player audio { display: block; width: 100%; color-scheme: dark; }
+:root[data-theme="light"] .audio-player audio { color-scheme: light; }
+.audio-player audio:focus-visible,
+.audio-download:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+.audio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+.audio-download {
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--t);
+}
+.audio-download:hover { border-bottom-color: var(--accent); }
+
 /* ─── Prev / next ─── */
 .post-nav {
   display: grid;
