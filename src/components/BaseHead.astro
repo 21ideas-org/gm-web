@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import { SITE_NAME } from '../consts';
 import { organizationNode, websiteNode, graph } from '../lib/schema';
+import { PODCAST_SHOW } from '../lib/podcast-config.mjs';
+import { podcastShowStatus } from '../lib/podcast.mjs';
 
 interface Props {
 	title: string;
@@ -32,6 +34,8 @@ const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
 // Site-wide nodes on every page, plus any page-specific nodes (digests pass NewsArticle + Breadcrumb).
 const extraNodes = Array.isArray(schema) ? schema : schema ? [schema] : [];
 const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
+// /podcast.xml exists (and is advertised) only once the rollout completes the show identity.
+const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
 ---
 
 <!-- Global Metadata -->
@@ -49,6 +53,14 @@ const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
 	title={SITE_NAME}
 	href={new URL('rss.xml', Astro.site)}
 />
+{podcastReady && (
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title={`${SITE_NAME} — подкаст`}
+		href={new URL('podcast.xml', Astro.site)}
+	/>
+)}
 <meta name="generator" content={Astro.generator} />
 
 <!-- Search-engine ownership verification (public token, safe to commit) -->

@@ -3,8 +3,7 @@
 //   SITE_NAME  — the editorial / publisher name, for machine-read metadata (schema.org,
 //                og:site_name, RSS/Yandex feed titles) that engines and readers show literally.
 export const SITE_TITLE = 'gm_₿';
-export const SITE_NAME = 'Доброе утро, биткоинер';
-export const SITE_DESCRIPTION = 'Биткоин-онли дайджесты';
+export { SITE_NAME, SITE_DESCRIPTION } from './site-identity.mjs';
 
 // Financial-transparency page (/support). Wallet addresses shown on the page (Phase 2).
 // bolt12/on-chain rows render only when their const is non-empty (a blank string = hidden).
