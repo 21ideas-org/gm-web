@@ -5,6 +5,8 @@
 // are unaffected. Do not put a personal address here, and do not point `imageUrl` at the 1200×630
 // OG card: directories need a square 1400–3000 px JPEG/PNG cover.
 
+import { SITE_NAME, SITE_DESCRIPTION } from '../site-identity.mjs';
+
 /**
  * @typedef {{
  *   siteOrigin: string,
@@ -22,11 +24,11 @@
 /** @type {Readonly<PodcastShow>} */
 export const PODCAST_SHOW = Object.freeze({
   siteOrigin: 'https://gm.21ideas.org', // bare HTTPS origin for the self, digest and support URLs
-  title: 'Доброе утро, биткоинер', // = SITE_NAME
-  description: 'Биткоин-онли дайджесты', // = SITE_DESCRIPTION
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
   language: 'ru',
-  author: 'Доброе утро, биткоинер', // org-as-author, like the schema.org Organization
-  ownerName: 'Доброе утро, биткоинер',
+  author: SITE_NAME, // org-as-author, like the schema.org Organization
+  ownerName: SITE_NAME,
   ownerEmail: '', // ← rollout: project ownership contact (blank ⇒ feed unpublished)
   category: 'News', // Apple Podcasts category text
   imageUrl: '', // ← rollout: square HTTPS cover, 1400–3000 px (blank ⇒ feed unpublished)

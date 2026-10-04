@@ -4,9 +4,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 import { loadAudioEpisodes } from '../src/lib/audio.mjs';
 import {
@@ -254,4 +254,34 @@ test('incomplete or untrusted show identity keeps the feed unadvertised', () => 
   // The 1200×630 OG card is not a podcast cover.
   assert.deepEqual(podcastShowStatus({ ...SHOW, imageUrl: 'https://gm.21ideas.org/og/default.png' }).missing, ['imageUrl']);
   assert.deepEqual(podcastShowStatus(undefined).complete, false);
+});
+
+
+test('changing the canonical site identity updates podcast metadata and both show-note formats', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'gm-podcast-brand-'));
+  mkdirSync(join(root, 'src', 'lib'), { recursive: true });
+  const source = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
+  for (const file of ['podcast.mjs', 'podcast-config.mjs']) {
+    copyFileSync(join(source, 'lib', file), join(root, 'src', 'lib', file));
+  }
+  const name = 'Новое имя проекта';
+  const description = 'Обновлённое описание';
+  writeFileSync(join(root, 'src', 'site-identity.mjs'),
+    `export const SITE_NAME = ${JSON.stringify(name)};\nexport const SITE_DESCRIPTION = ${JSON.stringify(description)};\n`);
+  const config = await import(pathToFileURL(join(root, 'src', 'lib', 'podcast-config.mjs')).href);
+  const podcast = await import(pathToFileURL(join(root, 'src', 'lib', 'podcast.mjs')).href);
+  assert.equal(config.PODCAST_SHOW.title, name);
+  assert.equal(config.PODCAST_SHOW.author, name);
+  assert.equal(config.PODCAST_SHOW.ownerName, name);
+  assert.equal(config.PODCAST_SHOW.description, description);
+  const opts = { siteOrigin: SHOW.siteOrigin, episodeId: '2026-10-04', dateLabel: '4 октября 2026', teaser: 'Новость' };
+  assert.ok(podcast.showNotes(opts).startsWith(name + '\n'));
+  assert.ok(podcast.showNotesHtml(opts).startsWith(`<p>${name}<br>`));
+  assert.ok(podcast.showNotes(opts).includes(`Поддержите создание «${name}»:`));
+  const { audio, digests } = scenario();
+  const xml = podcast.renderPodcastFeed({
+    show: { ...config.PODCAST_SHOW, ownerEmail: SHOW.ownerEmail, imageUrl: SHOW.imageUrl }, digests, audio,
+  });
+  assert.ok(xml.includes(`<title>${name}</title>`));
+  assert.ok(xml.includes(`<description>${description}</description>`));
 });

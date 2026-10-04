@@ -24,8 +24,9 @@ compatible with that bot.
 - **Plain identifier** — `gm`. Used wherever a glyph can't go: the `gm.21ideas.org` subdomain, the
   `gm-web` repo, social handles. This is the spoken/searchable name.
 
-Defined once in `src/consts.ts` — `SITE_TITLE` (wordmark) and `SITE_NAME` (editorial name). Avoid
-the spaced form `gm ₿`.
+`SITE_TITLE` (wordmark) is defined in `src/consts.ts`. `SITE_NAME` (editorial name) and
+`SITE_DESCRIPTION` are defined once in the pure ESM module `src/site-identity.mjs`, shared by the
+podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid the spaced form `gm ₿`.
 
 ## Stack
 

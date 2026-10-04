@@ -9,12 +9,14 @@
 // then the canonical digest URL and the support line. Both URLs are assembled here from the trusted
 // show config — never taken from digest text.
 
+import { SITE_NAME } from '../site-identity.mjs';
+
 /** @typedef {import('./podcast-config.mjs').PodcastShow} PodcastShow */
 /** @typedef {import('./audio.mjs').AudioEpisode} AudioEpisode */
 /** @typedef {{ id: string, title: string, description: string, dateLabel: string, draft?: boolean }} PodcastDigest */
 /** @typedef {{ digest: PodcastDigest, episode: AudioEpisode }} PodcastItem */
 
-export const PODCAST_BRAND = 'Доброе утро, биткоинер';
+export const PODCAST_BRAND = SITE_NAME;
 export const PODCAST_FEED_PATH = '/podcast.xml';
 export const PODCAST_FEED_PARAM = 'podcast'; // [feed].xml.js → /podcast.xml
 
