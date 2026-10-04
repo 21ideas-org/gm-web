@@ -119,30 +119,31 @@ digest's `pubDate` (`src/components/History.astro`). It is a pure function of th
 involvement — so every past digest picks it up on the next build.
 
 - **Source** — the deployed public Bitcoin Calendar API,
-  `https://api.bitcoin-calendar.org/public/v1/events?lang=ru` (no key, no secret). The loader
+  `https://api.bitcoin-calendar.org/public/v2/events?lang=ru` (no key, no secret). The loader
   `src/lib/history.mjs` fetches it **at build time only, in Node** — nothing is fetched in the
   browser and no runtime service exists. `HISTORY_API_URL` overrides the endpoint for local/test runs.
 - **One request per build** — a module-level memoized promise is shared by every prerendered digest
   page: 8-second timeout per attempt, at most one retry after 1 second (transient failures only:
   timeout, network error, 5xx/429), so at most two physical requests per build.
 - **Validation & ordering** — the response must be `{ schema, database: { rows }, events: [...] }`
-  with `schema` exactly `bitcoin-calendar.public-events.v1` (the versioned public contract). Rows are
+  with `schema` exactly `bitcoin-calendar.public-events.v2` (the versioned public contract). Rows are
   grouped by month-day, the leading emoji prefix is stripped from titles, and same-day events are
   ordered by full historical date ascending. `references` and `media` are kept in the in-memory event
   model as `string[]`, passed through exactly as the API stores them (no trimming, URL parsing, or
-  filtering — deciding what to link is left to the presentation layer). `media` is not rendered yet.
-- **Source links** — each event's `references` render as a plain list of links below its
-  description, inside the same accordion item (no heading). The pure helper
-  `src/lib/history-references.mjs` mirrors the Calendar Telegram formatter: the label is the
-  hostname without a leading `www.`, source order and duplicate hostnames are preserved, and a
-  Wayback snapshot (`https://web.archive.org/web/<timestamp>/<original>`, exact host only, timestamp
-  flags like `id_` included) keeps the archived URL as the link but is labelled from the original's
-  hostname plus « (архив)». It is stricter than the bot: entries are trimmed, and empty strings,
-  non-HTTP(S) or unparseable URLs, and snapshots without a valid HTTP(S) original are skipped. A bad
-  reference never drops its event; an event with no usable references renders exactly as before.
+  filtering). Neither list is rendered in gm-web; sources are available on the Calendar event page.
+  The loader also preserves the stored `url_path` string, or `null` when absent or of the wrong type.
+- **Event button** — below the description, inside the same accordion item, the event has one
+  «Открыть в Биткоин календаре →» button using the existing `.cta-btn` style. The pure helper
+  `src/lib/history-event.mjs` splits description paragraphs and builds the Russian permalink under
+  `https://bitcoin-calendar.org/ru/events/`. It validates `url_path` as `/<date>/<slug>/` with a real
+  calendar date and a single slug segment, rejecting whitespace-padded slugs, dot segments,
+  backslashes and control characters. Date and slug are encoded separately. The path is never
+  reconstructed from the title or historical `date`: the stored path's date may differ. Missing or
+  invalid paths omit only the button, preserving the event's title and description.
 - **Fail-soft, never fatal** — digest pages share the bot's publish build, so nothing here can fail
   the build. Degradation is layered: a malformed optional field (references/media that isn't an
-  array) becomes `[]` and a non-string element inside one is dropped, but the event is kept; an invalid row (bad date, blank title/description) is skipped alone;
+  array) becomes `[]` and a non-string element inside one is dropped; a non-string `url_path` becomes
+  `null`. The event is kept; an invalid row (bad date, blank title/description) is skipped alone;
   `database.rows` differing from `events.length` is reported as `rows_mismatch` while every valid event
   still renders. A timeout, network error, non-2xx, non-JSON body, or schema mismatch makes the whole
   source unavailable, and every digest **silently omits the section** — no reader-facing error text.
@@ -152,6 +153,11 @@ involvement — so every past digest picks it up on the next build.
 - **Recovery** — the site is static, so an outage is baked into the pages built during it. Recovery
   is simply the next successful build (e.g. the next digest push or a manual re-run of the deploy
   workflow); every digest regains the section then.
+- **Rollout** — deploy Calendar API v2 and expose `/public/v2/events` through the public proxy/cache
+  with the same protections as v1 before releasing this gm-web consumer. Verify an unauthenticated
+  200 response, the v2 schema and populated `url_path` fields at the public origin. V1 remains
+  available to existing consumers; deploying gm-web before v2 is available would omit the history
+  section during builds.
 
 History used to be read from a committed SQLite file (`src/data/events_ru.db` via `better-sqlite3`,
 the project's only native dependency). Both were removed when the loader moved to the API.
