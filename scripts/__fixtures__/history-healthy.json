@@ -1,5 +1,5 @@
 {
-  "schema": "bitcoin-calendar.public-events.v1",
+  "schema": "bitcoin-calendar.public-events.v2",
   "database": { "rows": 4 },
   "events": [
     {
@@ -13,6 +13,7 @@
     {
       "id": 102,
       "date": "2009-09-23",
+      "url_path": "/2009-09-23/synthetic-a/",
       "title": "🇸🇻 Синтетическое событие A",
       "description": "Тестовое описание A.",
       "references": ["https://example.org/a"],

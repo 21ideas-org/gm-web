@@ -1,5 +1,5 @@
 {
-  "schema": "bitcoin-calendar.public-events.v1",
+  "schema": "bitcoin-calendar.public-events.v2",
   "database": { "rows": 9 },
   "events": [
     {

@@ -81,6 +81,7 @@ test('healthy: references and media are retained as string[] in the event model'
   assert.deepEqual(a, {
     id: 102,
     date: '2009-09-23',
+    url_path: '/2009-09-23/synthetic-a/',
     title: 'Синтетическое событие A',
     description: 'Тестовое описание A.',
     references: ['https://example.org/a'],
@@ -181,7 +182,7 @@ test('refusal: a real connection-refused request degrades to unavailable/network
   // Port 9 (discard) on loopback is closed on any normal dev/CI host → ECONNREFUSED.
   const logs = [];
   const load = createHistoryLoader({
-    url: 'http://127.0.0.1:9/public/v1/events?lang=ru',
+    url: 'http://127.0.0.1:9/public/v2/events?lang=ru',
     sleep: async () => {},
     log: (line) => logs.push(line),
   });
@@ -204,7 +205,7 @@ test('non-JSON: an HTML error page body is unavailable/non_json', async () => {
 
 test('schema mismatch: wrong envelope shapes are unavailable/schema_mismatch', () => {
   const healthy = loadFixture('history-healthy.json');
-  assert.equal(HISTORY_SCHEMA, 'bitcoin-calendar.public-events.v1');
+  assert.equal(HISTORY_SCHEMA, 'bitcoin-calendar.public-events.v2');
   assert.equal(healthy.schema, HISTORY_SCHEMA);
   const { schema: _omit, ...noSchema } = healthy;
   const bad = [
@@ -214,11 +215,11 @@ test('schema mismatch: wrong envelope shapes are unavailable/schema_mismatch', (
     noSchema, // missing schema
     { ...healthy, schema: null },
     { ...healthy, schema: 1 },
-    { ...healthy, schema: ['bitcoin-calendar.public-events.v1'] },
-    { ...healthy, schema: { id: 'bitcoin-calendar.public-events.v1' } },
-    { ...healthy, schema: 'bitcoin-calendar.public-events.v2' },
-    { ...healthy, schema: 'bitcoin-calendar.public-events.v1 ' },
-    { ...healthy, schema: 'BITCOIN-CALENDAR.PUBLIC-EVENTS.V1' },
+    { ...healthy, schema: ['bitcoin-calendar.public-events.v2'] },
+    { ...healthy, schema: { id: 'bitcoin-calendar.public-events.v2' } },
+    { ...healthy, schema: 'bitcoin-calendar.public-events.v1' },
+    { ...healthy, schema: 'bitcoin-calendar.public-events.v2 ' },
+    { ...healthy, schema: 'BITCOIN-CALENDAR.PUBLIC-EVENTS.V2' },
     { ...healthy, schema: '' },
     { schema: HISTORY_SCHEMA, events: [] },
     { schema: HISTORY_SCHEMA, database: { rows: 0 } },
@@ -359,7 +360,7 @@ test('diagnostic: one bounded line with codes/counts only — never upstream err
 });
 
 test('endpoint: production default needs no secret; override via option or HISTORY_API_URL', () => {
-  assert.equal(HISTORY_API_URL, 'https://api.bitcoin-calendar.org/public/v1/events?lang=ru');
+  assert.equal(HISTORY_API_URL, 'https://api.bitcoin-calendar.org/public/v2/events?lang=ru');
   assert.equal(resolveHistoryUrl({}), HISTORY_API_URL);
   assert.equal(resolveHistoryUrl({ HISTORY_API_URL: '  ' }), HISTORY_API_URL);
   assert.equal(resolveHistoryUrl({ HISTORY_API_URL: 'http://localhost:8080/e' }), 'http://localhost:8080/e');
@@ -372,4 +373,18 @@ test('request: plain GET with an Accept header and no credentials', async () => 
   assert.equal(init.method ?? 'GET', 'GET');
   assert.equal(init.headers.accept, 'application/json');
   assert.equal(Object.keys(init.headers).some((h) => /auth|key|token/i.test(h)), false);
+});
+
+
+test('permalink paths survive normalization; malformed optional paths keep the event', () => {
+  const fixture = loadFixture('history-healthy.json');
+  const row = { ...fixture.events[1], date: '2009-09-22', url_path: '/2009-09-23/synthetic-a/' };
+  const parse = (url_path) => parseHistoryPayload({ ...fixture, database: { rows: 1 }, events: [{ ...row, url_path }] });
+  assert.equal(parse(row.url_path).byDay['09-22'][0].url_path, row.url_path);
+  for (const value of [undefined, null, 42, {}, []]) {
+    const result = parse(value);
+    assert.equal(result.byDay['09-22'][0].title, 'Синтетическое событие A');
+    assert.equal(result.byDay['09-22'][0].url_path, null);
+    assert.equal(result.status.state, value == null ? 'ok' : 'degraded');
+  }
 });

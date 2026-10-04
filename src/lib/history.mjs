@@ -11,10 +11,11 @@
 
 /**
  * references/media are the API's strings exactly as stored (may be blank, padded, non-URL, ftp,
- * Wayback…) — deciding what to link is the consumer's job (gm-bitcoiner#7), not the loader's.
+ * Wayback…). Sources remain in the model; the Calendar page presents them.
  * @typedef {{
  *   id: string | number | null,
  *   date: string,
+ *   url_path: string | null,
  *   title: string,
  *   description: string,
  *   references: string[],
@@ -35,9 +36,9 @@
 /** @typedef {Record<string, HistoryEvent[]>} HistoryByDay */
 /** @typedef {{ byDay: HistoryByDay, status: HistoryStatus }} HistoryResult */
 
-export const HISTORY_API_URL = 'https://api.bitcoin-calendar.org/public/v1/events?lang=ru';
+export const HISTORY_API_URL = 'https://api.bitcoin-calendar.org/public/v2/events?lang=ru';
 // Versioned public contract: a payload is only accepted when `schema` is exactly this string.
-export const HISTORY_SCHEMA = 'bitcoin-calendar.public-events.v1';
+export const HISTORY_SCHEMA = 'bitcoin-calendar.public-events.v2';
 export const TIMEOUT_MS = 8000; // per attempt, covering headers + body
 export const RETRY_DELAY_MS = 1000;
 const MAX_ATTEMPTS = 2; // first try + at most one retry → at most two physical requests per build
@@ -107,9 +108,11 @@ function normalizeEvent(raw) {
   let id = null;
   if (typeof raw.id === 'string' || (typeof raw.id === 'number' && Number.isFinite(raw.id))) id = raw.id;
   else if (raw.id !== undefined && raw.id !== null) flag.issue = true;
+  const url_path = typeof raw.url_path === 'string' ? raw.url_path : null;
+  if (raw.url_path != null && url_path === null) flag.issue = true;
   const references = stringList(raw.references, flag);
   const media = stringList(raw.media, flag);
-  return { event: { id, date, title, description, references, media }, fieldIssue: flag.issue };
+  return { event: { id, date, url_path, title, description, references, media }, fieldIssue: flag.issue };
 }
 
 /**
