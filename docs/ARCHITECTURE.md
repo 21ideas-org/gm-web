@@ -43,7 +43,7 @@ the spaced form `gm ₿`.
 ## Routing
 
 `/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
-`/rss.xml` · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
+`/rss.xml` · `/podcast.xml` (only once the show is configured) · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
 · `/og/*.png` · `robots.txt`.
 
 ## Layouts & components
@@ -106,7 +106,7 @@ title + date-stamped subtitle) and `src/pages/og/default.png.ts` (fallback).
   fresh-content RSS feed at `/yandex-news.xml` (full `<yandex:full-text>`). Both render digest
   Markdown to HTML via `markdown-it` + `sanitize-html`.
 - **RSS** — `/rss.xml` carries full `<content:encoded>`, `<language>ru-ru</language>`, and a self
-  `atom:link`.
+  `atom:link`. The separate audio-only `/podcast.xml` is described under **Podcast feed**.
 - **IndexNow** — an `indexnow` job in `.github/workflows/deploy.yml` pings the shared
   `api.indexnow.org` endpoint (Yandex + Bing) for new/changed digests after each deploy. The key
   file in `public/` is public by protocol design — not a secret. Google does not participate; it
@@ -180,14 +180,48 @@ unchanged. MP3s are never committed, fetched or read by the build; they live on 
   Other origins/ports/schemes, credentials, queries, fragments, traversal or encoded/variant paths
   are rejected. A guid/URL/hash shared by two records rejects both.
 - **One loader** — `src/lib/audio.mjs`: `loadAudioEpisodes()` (pure, injectable dirs/origin/log),
-  memoized `audioEpisodes()` (`Map<episodeId, AudioEpisode>`) and `audioForDigest(id)`. A later
-  podcast feed should consume the same map, looked up by published (non-draft) digest ids.
+  memoized `audioEpisodes()` (`Map<episodeId, AudioEpisode>`) and `audioForDigest(id)`. The
+  podcast feed consumes the same map, looked up by published (non-draft) digest ids.
 - **Fail-soft** — a missing directory is silent; an invalid, orphaned, unreadable or mismatched
   sidecar is skipped with `[audio] skip <file>: <reason>` plus one `[audio] sidecars ok=N skipped=M`
   line on stderr. It never fails the build.
 - **Player** — `<audio controls preload="none">` with an accessible label, duration
   (`<time datetime="PT…">`) and a direct MP3 download link with its size. Offline tests:
   `node --test scripts/audio.test.mjs` (also part of `npm test`).
+
+## Podcast feed (`/podcast.xml`)
+
+A separate RSS 2.0 + iTunes feed of the audio episodes; `/rss.xml` stays the full-text feed and is
+unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pages/[feed].xml.js`.
+
+- **Episodes** — published (non-draft) digests whose own validated episode is in the shared
+  `audioEpisodes()` map (all sidecar validation, URL trust and guid/URL/hash de-duplication stay in
+  `src/lib/audio.mjs`). Drafts, digests without audio, and orphan/invalid/mismatched/conflicting
+  records never produce an item. Newest first by `publishedAt`. Per item: `guid` (`gm-audio:{id}`,
+  `isPermaLink="false"`), RFC 822 `pubDate` from the sidecar's UTC `publishedAt`, `enclosure`
+  (sidecar `url`, `byteLength`, `mimeType`), `itunes:duration` (whole measured seconds), the digest
+  title, and the canonical digest `link`.
+- **Show notes** — built in code from the publication-card fields, in this order:
+  `Доброе утро, биткоинер`, the `formatRuDate` label (with year — the spoken no-year rule is
+  speech-only), the digest `description` (the bot's capitalized Telegram/cover teaser, verbatim),
+  `https://gm.21ideas.org/digests/{id}/`, and `Поддержите создание «Доброе утро, биткоинер»:
+  https://gm.21ideas.org/support/`. Both URLs come from `siteOrigin` in the config, never from digest
+  text; no exchange link. `<description>` is plain text with blank-line paragraphs;
+  `<content:encoded>` is the HTML variant whose links show the full URL as their text. All text is
+  XML-escaped and XML-illegal characters are dropped.
+- **Show config** — `PODCAST_SHOW` in `src/lib/podcast-config.mjs`: `siteOrigin` (bare HTTPS
+  origin), `title`, `description`, `language`, `author`, `ownerName`, `ownerEmail` (ownership
+  contact), `category` (Apple category text), `imageUrl` (HTTPS `.jpg`/`.png`, square 1400–3000 px —
+  not the 1200×630 `/og/` card). `ownerEmail` and `imageUrl` are blank until the human rollout
+  supplies them; never commit a personal address.
+- **Unadvertised until complete** — `podcastShowStatus()` lists missing/untrusted fields. While any
+  is missing, `getStaticPaths()` returns no path, so the build emits **no** `/podcast.xml`, and
+  `BaseHead.astro` omits the feed's `<link rel="alternate">`. Text builds are unaffected. Once
+  complete, the feed is built and advertised automatically; validate the first live feed with
+  platform tooling. Directory submission (Apple Podcasts, Spotify) is a separate human step.
+- **Tests** — `node --test scripts/podcast.test.mjs` (also part of `npm test`): byte-exact fixture
+  `scripts/__fixtures__/podcast/feed.xml`, excluded-record cases, GUID/order stability, hostile
+  text, show-note contract, and both a complete fixture config and the committed incomplete one.
 
 ## Donations & finances
 

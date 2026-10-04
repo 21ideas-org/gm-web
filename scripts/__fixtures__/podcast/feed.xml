@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Доброе утро, биткоинер</title>
+    <link>https://gm.21ideas.org/</link>
+    <description>Биткоин-онли дайджесты &amp; &lt;новости&gt;</description>
+    <language>ru</language>
+    <atom:link href="https://gm.21ideas.org/podcast.xml" rel="self" type="application/rss+xml"/>
+    <itunes:author>Доброе утро, биткоинер</itunes:author>
+    <itunes:owner>
+      <itunes:name>Доброе утро, биткоинер</itunes:name>
+      <itunes:email>podcast@example.test</itunes:email>
+    </itunes:owner>
+    <itunes:image href="https://cdn.fixture.test/cover-3000.jpg"/>
+    <itunes:category text="News"/>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <item>
+      <title>Доброе утро, биткоинер — 4 октября 2026</title>
+      <link>https://gm.21ideas.org/digests/2026-10-04/</link>
+      <guid isPermaLink="false">gm-audio:2026-10-04</guid>
+      <pubDate>Sun, 04 Oct 2026 05:00:00 GMT</pubDate>
+      <description>Доброе утро, биткоинер
+4 октября 2026
+
+Цена &gt; $100 000 &amp; &lt;b&gt;«рост»&lt;/b&gt; &quot;кавычки&quot; &apos;апостроф&apos; ]]&gt; конец
+
+https://gm.21ideas.org/digests/2026-10-04/
+
+Поддержите создание «Доброе утро, биткоинер»: https://gm.21ideas.org/support/</description>
+      <content:encoded>&lt;p&gt;Доброе утро, биткоинер&lt;br&gt;4 октября 2026&lt;/p&gt;&lt;p&gt;Цена &amp;gt; $100 000 &amp;amp; &amp;lt;b&amp;gt;«рост»&amp;lt;/b&amp;gt; &amp;quot;кавычки&amp;quot; &amp;apos;апостроф&amp;apos; ]]&amp;gt; конец&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gm.21ideas.org/digests/2026-10-04/&quot;&gt;https://gm.21ideas.org/digests/2026-10-04/&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Поддержите создание «Доброе утро, биткоинер»: &lt;a href=&quot;https://gm.21ideas.org/support/&quot;&gt;https://gm.21ideas.org/support/&lt;/a&gt;&lt;/p&gt;</content:encoded>
+      <enclosure url="https://media.fixture.test/podcasts/2026-10-04/4444444444444444444444444444444444444444444444444444444444444444.mp3" length="4855585" type="audio/mpeg"/>
+      <itunes:duration>303</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Доброе утро, биткоинер — 3 октября 2026</title>
+      <link>https://gm.21ideas.org/digests/2026-10-03/</link>
+      <guid isPermaLink="false">gm-audio:2026-10-03</guid>
+      <pubDate>Sat, 03 Oct 2026 05:00:12 GMT</pubDate>
+      <description>Доброе утро, биткоинер
+3 октября 2026
+
+Майнеры продают меньше, а сеть растёт
+
+https://gm.21ideas.org/digests/2026-10-03/
+
+Поддержите создание «Доброе утро, биткоинер»: https://gm.21ideas.org/support/</description>
+      <content:encoded>&lt;p&gt;Доброе утро, биткоинер&lt;br&gt;3 октября 2026&lt;/p&gt;&lt;p&gt;Майнеры продают меньше, а сеть растёт&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gm.21ideas.org/digests/2026-10-03/&quot;&gt;https://gm.21ideas.org/digests/2026-10-03/&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Поддержите создание «Доброе утро, биткоинер»: &lt;a href=&quot;https://gm.21ideas.org/support/&quot;&gt;https://gm.21ideas.org/support/&lt;/a&gt;&lt;/p&gt;</content:encoded>
+      <enclosure url="https://media.fixture.test/podcasts/2026-10-03/3333333333333333333333333333333333333333333333333333333333333333.mp3" length="12000000" type="audio/mpeg"/>
+      <itunes:duration>1800</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+  </channel>
+</rss>
