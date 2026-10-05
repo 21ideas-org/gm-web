@@ -1,19 +1,30 @@
 ---
 import type { AudioEpisode } from '../lib/audio.mjs';
-
+import { formatAudioDuration } from '../lib/audio.mjs';
 interface Props {
   episode: AudioEpisode;
   dateLabel: string;
 }
 const { episode, dateLabel } = Astro.props;
-// Only validated episodes reach here (src/lib/audio.mjs): the URL is the trusted
-// {origin}/podcasts/{episodeId}.mp3 (or -vN.mp3) on the separate audio host. preload="none" — nothing is
-// downloaded until play. Download remains available through the native controls menu.
 const label = `Аудиоверсия дайджеста за ${dateLabel}`;
 ---
-<section class="audio-player">
+<section class="audio-player" data-audio-player data-audio-duration={episode.durationSeconds} aria-label={label}>
+  <!-- Native playback remains available when JavaScript is unavailable. -->
   <audio controls preload="none" aria-label={label}>
     <source src={episode.url} type={episode.mimeType} />
-    <a href={episode.url}>Скачать аудиоверсию (MP3)</a>
+    <a href={episode.url}>Открыть аудиоверсию (MP3)</a>
   </audio>
+  <div class="audio-controls" data-audio-controls hidden>
+    <button class="audio-toggle" type="button" data-audio-toggle aria-label="Воспроизвести">
+      <svg class="audio-play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3 17 10 6 17Z" /></svg>
+      <svg class="audio-pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h4v14H5zm6 0h4v14h-4z" /></svg>
+    </button>
+    <span class="audio-time" data-audio-time aria-hidden="true">0:00 / {formatAudioDuration(episode.durationSeconds)}</span>
+    <input class="audio-seek" data-audio-seek type="range" min="0" max={episode.durationSeconds} step="1" value="0" disabled aria-label="Позиция воспроизведения" />
+  </div>
+  <p class="audio-status" data-audio-status role="status" aria-live="polite" aria-atomic="true"></p>
 </section>
+<script>
+  import { initializeAudioPlayer } from '../lib/audio-player.mjs';
+  document.querySelectorAll<HTMLElement>('[data-audio-player]').forEach(initializeAudioPlayer);
+</script>
