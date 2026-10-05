@@ -205,6 +205,15 @@ host (`https://audio.21ideas.org`, the 21ideas box). The site itself stays on Gi
 
 ## Podcast feed (`/podcast.xml`)
 
+The channel continues the existing **21ideas** podcast; its identity is independent of the daily
+digest brand. `src/data/podcast/21ideas-archive.json` is a frozen import of the historical Anchor
+episodes. `src/lib/podcast-archive.mjs` validates and renders that archive; the feed merges it with
+new sidecar-backed digest episodes, newest first. Original GUIDs, enclosure URLs/types/lengths,
+dates, descriptions and iTunes episode metadata are retained. Historical media stays external and
+is not subject to the new digest audio loader's URL/duration restrictions. Duplicate archive or
+archive/digest identities fail the build rather than silently lose episodes. Migration steps and
+the external-media retention boundary are in `docs/podcast/21ideas-migration.md`.
+
 A separate RSS 2.0 + iTunes feed of the audio episodes; `/rss.xml` stays the full-text feed and is
 unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pages/[feed].xml.js`.
 
@@ -217,9 +226,9 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   `byteLength`, `mimeType`), `itunes:duration` (whole measured seconds), the digest
   title, and the canonical digest `link`.
 - **Show notes** — built in code from the publication-card fields, in this order:
-  `Доброе утро, биткоинер`, the `formatRuDate` label (with year — the spoken no-year rule is
+  `Доброе утро, биткоинер — {date}`, using the `formatRuDate` label (with year — the spoken no-year rule is
   speech-only), the digest `description` (the bot's capitalized Telegram/cover teaser, verbatim),
-  `https://gm.21ideas.org/digests/{id}/`, and `Поддержите создание «Доброе утро, биткоинер»:
+  `Текстовая версия со ссылками на источники:` plus `https://gm.21ideas.org/digests/{id}/`, and `Поддержите создание «Доброе утро, биткоинер»:
   https://gm.21ideas.org/support/`. Both URLs come from `siteOrigin` in the config, never from digest
   text; no exchange link. `<description>` is plain text with blank-line paragraphs;
   `<content:encoded>` is the HTML variant whose links show the full URL as their text. All text is
@@ -227,8 +236,10 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
 - **Show config** — `PODCAST_SHOW` in `src/lib/podcast-config.mjs`: `siteOrigin` (bare HTTPS
   origin), `title`, `description`, `language`, `author`, `ownerName`, `ownerEmail` (ownership
   contact), `category` (Apple category text), `imageUrl` (HTTPS `.jpg`/`.png`, square 1400–3000 px —
-  not the 1200×630 `/og/` card). `ownerEmail` and `imageUrl` are blank until the human rollout
-  supplies them; never commit a personal address.
+  not the 1200×630 `/og/` card). `ownerEmail` uses the operator-approved public project contact. The existing
+  3000×3000 show cover is served from `/podcasts/21ideas-cover.jpg`; optional `episodeImageUrl`
+  supplies `/podcasts/gm-bitcoiner-cover.png` for new digest episodes only. Historical episode
+  artwork is preserved. An invalid configured episode cover suppresses feed publication.
 - **Unadvertised until complete** — `podcastShowStatus()` lists missing/untrusted fields. While any
   is missing, `getStaticPaths()` returns no path, so the build emits **no** `/podcast.xml`, and
   `BaseHead.astro` omits the feed's `<link rel="alternate">`. Text builds are unaffected. Once
@@ -236,7 +247,8 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   platform tooling. Directory submission (Apple Podcasts, Spotify) is a separate human step.
 - **Tests** — `node --test scripts/podcast.test.mjs` (also part of `npm test`): byte-exact fixture
   `scripts/__fixtures__/podcast/feed.xml`, excluded-record cases, GUID/order stability, hostile
-  text, show-note contract, and both a complete fixture config and the committed incomplete one.
+  text, show-note contract, and complete production/fixture configurations and invalid-identity guards. Archive tests in
+  `scripts/podcast-archive.test.mjs` cover historical metadata preservation and identity collisions.
 
 ## Donations & finances
 

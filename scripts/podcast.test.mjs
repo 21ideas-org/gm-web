@@ -193,14 +193,15 @@ test('show notes: brand, dated label with year, teaser, canonical digest URL, th
   assert.equal(
     notes,
     [
-      'Доброе утро, биткоинер',
-      '4 октября 2026',
+      'Доброе утро, биткоинер — 4 октября 2026',
       '',
       'Биткоин снова растёт',
       '',
+      'Текстовая версия со ссылками на источники:',
       'https://gm.21ideas.org/digests/2026-10-04/',
       '',
-      'Поддержите создание «Доброе утро, биткоинер»: https://gm.21ideas.org/support/',
+      'Поддержите создание «Доброе утро, биткоинер»:',
+      'https://gm.21ideas.org/support/',
     ].join('\n'),
   );
   assert.equal(PODCAST_BRAND, 'Доброе утро, биткоинер');
@@ -215,8 +216,8 @@ test('show-note URLs are built from trusted config, never from digest text', () 
     teaser: 'Смотрите https://evil.example/digests/2026-10-04/',
   });
   const lines = notes.split('\n');
-  assert.equal(lines[5], 'https://gm.21ideas.org/digests/2026-10-04/');
-  assert.equal(lines.at(-1), 'Поддержите создание «Доброе утро, биткоинер»: https://gm.21ideas.org/support/');
+  assert.equal(lines[lines.indexOf('Текстовая версия со ссылками на источники:') + 1], 'https://gm.21ideas.org/digests/2026-10-04/');
+  assert.equal(lines.at(-1), 'https://gm.21ideas.org/support/');
   assert.throws(() => showNotes({ siteOrigin: SHOW.siteOrigin, episodeId: '../x', dateLabel: 'x', teaser: 'x' }));
 });
 
@@ -227,15 +228,18 @@ test('complete fixture config advertises exactly one /podcast.xml path', () => {
   assert.deepEqual(podcastFeedPaths(SHOW), [{ params: { feed: 'podcast' } }]);
 });
 
-test('the committed config is incomplete until rollout: no feed, no path, no throw', () => {
-  const status = podcastShowStatus(PODCAST_SHOW);
-  assert.equal(status.complete, false);
-  assert.ok(status.missing.includes('imageUrl') && status.missing.includes('ownerEmail'));
-  assert.deepEqual(podcastFeedPaths(PODCAST_SHOW), []);
+test('approved production config publishes the existing show with daily artwork', () => {
+  assert.deepEqual(podcastShowStatus(PODCAST_SHOW), { complete: true, missing: [] });
+  assert.deepEqual(podcastFeedPaths(PODCAST_SHOW), [{ params: { feed: 'podcast' } }]);
+  assert.equal(PODCAST_SHOW.title, '21ideas');
+  assert.equal(PODCAST_SHOW.ownerEmail, 'bitcoin.translated@gmail.com');
   const { audio, digests } = scenario();
-  assert.equal(renderPodcastFeed({ show: PODCAST_SHOW, digests, audio }), null);
-  assert.equal(PODCAST_SHOW.title, PODCAST_BRAND);
-  assert.equal(PODCAST_SHOW.siteOrigin, 'https://gm.21ideas.org');
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio });
+  assert.equal((xml.match(/<itunes:image href="https:\/\/gm.21ideas.org\/podcasts\/gm-bitcoiner-cover.png"\/>/g) ?? []).length, 2);
+});
+
+test('an invalid optional daily cover prevents publishing an unsafe feed', () => {
+  assert.deepEqual(podcastShowStatus({ ...SHOW, episodeImageUrl: 'javascript:alert(1)' }).missing, ['episodeImageUrl']);
 });
 
 test('incomplete or untrusted show identity keeps the feed unadvertised', () => {
@@ -261,11 +265,11 @@ test('incomplete or untrusted show identity keeps the feed unadvertised', () => 
 });
 
 
-test('changing the canonical site identity updates podcast metadata and both show-note formats', async () => {
+test('site branding updates daily notes while preserving the existing 21ideas show identity', async () => {
   const root = mkdtempSync(join(tmpdir(), 'gm-podcast-brand-'));
   mkdirSync(join(root, 'src', 'lib'), { recursive: true });
   const source = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
-  for (const file of ['podcast.mjs', 'podcast-config.mjs']) {
+  for (const file of ['podcast.mjs', 'podcast-config.mjs', 'podcast-archive.mjs']) {
     copyFileSync(join(source, 'lib', file), join(root, 'src', 'lib', file));
   }
   const name = 'Новое имя проекта';
@@ -274,18 +278,18 @@ test('changing the canonical site identity updates podcast metadata and both sho
     `export const SITE_NAME = ${JSON.stringify(name)};\nexport const SITE_DESCRIPTION = ${JSON.stringify(description)};\n`);
   const config = await import(pathToFileURL(join(root, 'src', 'lib', 'podcast-config.mjs')).href);
   const podcast = await import(pathToFileURL(join(root, 'src', 'lib', 'podcast.mjs')).href);
-  assert.equal(config.PODCAST_SHOW.title, name);
-  assert.equal(config.PODCAST_SHOW.author, name);
-  assert.equal(config.PODCAST_SHOW.ownerName, name);
-  assert.equal(config.PODCAST_SHOW.description, description);
+  assert.equal(config.PODCAST_SHOW.title, '21ideas');
+  assert.equal(config.PODCAST_SHOW.author, 'Tony Lightning');
+  assert.equal(config.PODCAST_SHOW.ownerName, '21ideas');
+  assert.equal(config.PODCAST_SHOW.description, 'Первый всеобъемлющий подкаст о Биткоине на русском');
   const opts = { siteOrigin: SHOW.siteOrigin, episodeId: '2026-10-04', dateLabel: '4 октября 2026', teaser: 'Новость' };
-  assert.ok(podcast.showNotes(opts).startsWith(name + '\n'));
-  assert.ok(podcast.showNotesHtml(opts).startsWith(`<p>${name}<br>`));
+  assert.ok(podcast.showNotes(opts).startsWith(name + ' — '));
+  assert.ok(podcast.showNotesHtml(opts).startsWith(`<p>${name} — `));
   assert.ok(podcast.showNotes(opts).includes(`Поддержите создание «${name}»:`));
   const { audio, digests } = scenario();
   const xml = podcast.renderPodcastFeed({
     show: { ...config.PODCAST_SHOW, ownerEmail: SHOW.ownerEmail, imageUrl: SHOW.imageUrl }, digests, audio,
   });
-  assert.ok(xml.includes(`<title>${name}</title>`));
-  assert.ok(xml.includes(`<description>${description}</description>`));
+  assert.ok(xml.includes('<title>21ideas</title>'));
+  assert.ok(xml.includes('<description>Первый всеобъемлющий подкаст о Биткоине на русском</description>'));
 });
