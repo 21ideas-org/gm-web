@@ -1,0 +1,1077 @@
+{
+  "version": 1,
+  "episodes": [
+    {
+      "guid": "e24991e7-d04d-4243-8c1a-47f125f4f0e5",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39599584/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-7-31%2F8c45aaa4-6240-1882-3afe-40bdaecf0a35.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-08-31-v2.m4a",
+      "byteLength": 15000447,
+      "mimeType": "audio/x-m4a",
+      "sha256": "edae66be7b5d1e243c6262e61c328f3f92aa5069274ed60e6504967f53040384"
+    },
+    {
+      "guid": "e9d1620f-e30f-4f8b-a497-c49d519c1a3a",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39599710/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-7-31%2Fbd1fefca-7b85-1860-0b25-a84b44162ebf.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-08-31-v3.m4a",
+      "byteLength": 18868691,
+      "mimeType": "audio/x-m4a",
+      "sha256": "ca096876545f3fa3456e3348f24da878d4c7bd98e7b9b993699fcdd8f19ed377"
+    },
+    {
+      "guid": "bb40f093-aa70-4f73-8e9a-eea71635b378",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39599777/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-7-31%2F2b00f5fe-7b28-3e84-d31a-10427a674ca3.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-08-31-v4.m4a",
+      "byteLength": 16335963,
+      "mimeType": "audio/x-m4a",
+      "sha256": "3142fec82392fd04842c10830759de4db4640c0a47f0625b4d3a6a3597f2e7c8"
+    },
+    {
+      "guid": "450a7b6b-9fb9-4b49-b43b-de1621556180",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39599296/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-7-31%2F1aea042c-068a-9d16-a300-9f8ec2d81b95.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-08-31.m4a",
+      "byteLength": 22348219,
+      "mimeType": "audio/x-m4a",
+      "sha256": "abe02eb12c54e6c6233263246b899c8db53c45543d69c069db72e6454c79adc8"
+    },
+    {
+      "guid": "61b63ef1-001e-459b-81fe-eb1c19e313b9",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39720239/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-8-2%2F216231809-44100-2-768af65e282b9.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-09-02.m4a",
+      "byteLength": 5852959,
+      "mimeType": "audio/x-m4a",
+      "sha256": "711cd2fcebf13071cffc687613318444937319ad457747ac325a5b095dd34e66"
+    },
+    {
+      "guid": "51473e71-4561-4a54-8a51-15e1f1fd1bf0",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39984765/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-8-8%2F217242349-44100-2-201030515b7f9.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-09-08-v2.m4a",
+      "byteLength": 13127982,
+      "mimeType": "audio/x-m4a",
+      "sha256": "065c15f9ec25ebc2c2a958561bafd867430c4f34b2d00a8894d0ddc3eb338a23"
+    },
+    {
+      "guid": "15ac53ac-ee7f-4d67-b78f-72ee86b8399b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39984853/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-8-8%2F217242749-44100-2-818b11c4878df.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-09-08-v3.m4a",
+      "byteLength": 18016971,
+      "mimeType": "audio/x-m4a",
+      "sha256": "358e84d062a53e85f81d88492d82422a1bd441fceb9eca609868c8465b9e844f"
+    },
+    {
+      "guid": "8f6119c3-fcbe-42d6-ba38-dad106399f21",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/39984624/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-8-8%2Fd06bcc1a-6f90-48ac-7fec-91b779c76a44.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-09-08.m4a",
+      "byteLength": 14377145,
+      "mimeType": "audio/x-m4a",
+      "sha256": "cb4c4d56f65c06963eb9df10850c69bb5328ab082cf3b8e7e0e2ccd8e43ae398"
+    },
+    {
+      "guid": "ca5d5805-b5b2-4f95-8b9f-c55710aa9aa8",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/40034894/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-8-9%2F217437303-44100-2-2dcae8026cf9d.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-09-09.m4a",
+      "byteLength": 19324461,
+      "mimeType": "audio/x-m4a",
+      "sha256": "9baa1447d0bdf318e0a51f991cf1ddda9eb86562b2269de2a5c1d67145b17cba"
+    },
+    {
+      "guid": "0448574a-c352-4385-9deb-81050298e32a",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/41554415/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-9-10%2F54f1c30d-4df1-d610-2ccc-f6b32431cc18.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-10-10-v2.m4a",
+      "byteLength": 8488817,
+      "mimeType": "audio/x-m4a",
+      "sha256": "61d234698223c11dcb193b7c11862abcc801268ec93f47c8588520b8c930e2c5"
+    },
+    {
+      "guid": "459c3355-d208-4368-b836-bb5547aae711",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/41554187/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-9-10%2F91affd5f-0124-d56d-8060-6400126fe7ad.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-10-10.m4a",
+      "byteLength": 36157784,
+      "mimeType": "audio/x-m4a",
+      "sha256": "f2b8b31d4472b235493ca373f5e64c0c9985bc8ddf120b2a8f1c34f391493a70"
+    },
+    {
+      "guid": "50e445c2-2dbe-49fc-bc55-fb3723bdf99c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45037825/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-11-18%2F5c60b161-a8ff-d540-1545-217db181392c.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-12-18.m4a",
+      "byteLength": 12784048,
+      "mimeType": "audio/x-m4a",
+      "sha256": "fad91ea60eb3cf17c49c21cdab874478335d7ddb044c7c6a3d823e933954fa01"
+    },
+    {
+      "guid": "56a4428a-f223-4812-ab7d-7a70f6a715ac",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45198584/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-11-22%2Fc24e340d-1577-297a-b0f4-2111803b33c4.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-12-22-v2.mp3",
+      "byteLength": 37943589,
+      "mimeType": "audio/mpeg",
+      "sha256": "684a0772e4ed1ee41da06479e5d0bb9e0fe26e2ec5e79ca8c7f3f8c3aa959176"
+    },
+    {
+      "guid": "5db3bb73-b556-4c96-a74b-38bd305d3f0d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45193275/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-11-22%2F11fa4e4a-bc57-c1f5-fdff-ca845dd34d73.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-12-22.m4a",
+      "byteLength": 11477081,
+      "mimeType": "audio/x-m4a",
+      "sha256": "86815dd4008c28cb6564a3280084893f5cefc86a94851a238ff61a3906bdc4ab"
+    },
+    {
+      "guid": "37239ffa-e3b5-42d6-a5f7-14d5abea768c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45308060/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-11-25%2F239395018-44100-2-b0ae6e4304889.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-12-25.m4a",
+      "byteLength": 17550990,
+      "mimeType": "audio/x-m4a",
+      "sha256": "81781295305b88b48dec05b311006619c605134371ee70c3a6b1dd9247f2474e"
+    },
+    {
+      "guid": "3abb1d02-6214-4a21-879a-12f6a69bf10f",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45411057/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2021-11-28%2F4ddf9ebb-eca8-c1ba-eddc-e8794aa6178d.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2021-12-28.mp3",
+      "byteLength": 52329326,
+      "mimeType": "audio/mpeg",
+      "sha256": "21cea48d7a3d67efe9d29b9dc8b6daa70aebf2c8f38ff50da372a8c419597fca"
+    },
+    {
+      "guid": "b7140dbb-b943-45b9-948d-5e7b72397243",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45864788/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-0-8%2F2f2f02b9-0524-b79e-643f-4478e4fc6247.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-01-08.mp3",
+      "byteLength": 21405780,
+      "mimeType": "audio/mpeg",
+      "sha256": "3ee7cb24a55ebdd3fae422f79aec370d349d155d82abb77d36ab758ea5f0c775"
+    },
+    {
+      "guid": "cc168b04-3189-4646-85b9-542073465ee3",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/45938832/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-0-10%2F241628078-44100-2-90eaa5a04a2c.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-01-10.m4a",
+      "byteLength": 19328918,
+      "mimeType": "audio/x-m4a",
+      "sha256": "0189a7fd0570687a706e71f3feffa531525610cb847924482159e809aac1752d"
+    },
+    {
+      "guid": "d832f047-b214-4cab-83a8-d65b8ef06b70",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/46214474/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-0-16%2Fa5ae4f0c-b09f-fe25-3baa-b3126e350a15.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-01-16.mp3",
+      "byteLength": 23727961,
+      "mimeType": "audio/mpeg",
+      "sha256": "a69d9582a9db6591029c4128ad28fbda473dbb718911e8ad8f8a21aedfc44789"
+    },
+    {
+      "guid": "08c3759e-6dc4-42de-9749-ae31ed8d7cb9",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/46752110/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-0-27%2Fc1bf683f-9546-98e2-047a-366eda7c362b.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-01-27.mp3",
+      "byteLength": 17657940,
+      "mimeType": "audio/mpeg",
+      "sha256": "f5efe9cfecfc94dc6b2663affe95d08dab3d726be3349b8ef85a253b9855130a"
+    },
+    {
+      "guid": "276d9e3f-4dc2-4f9b-a6a1-01faeff6f4c8",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47115030/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-3%2F1c63dc5c-f1c9-dcaf-407d-13b51ed0aadc.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-03.mp3",
+      "byteLength": 11500983,
+      "mimeType": "audio/mpeg",
+      "sha256": "66525e4bca65f75c5d449775e3e6703f083b025f9ffc2182e5141de67d7c96d5"
+    },
+    {
+      "guid": "cf14592b-8b07-400b-a207-1a558e264bdc",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47262477/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-6%2F206b2fed-9c7c-3bf0-8893-cc206150f5c4.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-06.mp3",
+      "byteLength": 16933584,
+      "mimeType": "audio/mpeg",
+      "sha256": "dbbea582a87d18813d9f1d56bdee489811d6f5c4c0afd343bb501bab9a2b4858"
+    },
+    {
+      "guid": "5b4b9de8-8a25-4793-a2ee-3c3a3b3663e7",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47516111/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-11%2Fd642aa5e-42e9-fea4-9392-0b69ed260598.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-11.mp3",
+      "byteLength": 44003161,
+      "mimeType": "audio/mpeg",
+      "sha256": "58ec066d098323f66fbaac0c0f6aeb4048075e9848eb1be3f7b00745af212784"
+    },
+    {
+      "guid": "a40ac89a-d38d-4389-8bfc-0a4e70bd0e8d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47640090/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-14%2F247892891-44100-2-96065c8d40426.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-14.m4a",
+      "byteLength": 85331522,
+      "mimeType": "audio/x-m4a",
+      "sha256": "f33d94b9fcb010bfed37de59eaf04abadb65280c8206bfd2ec8f4f98ecbc667d"
+    },
+    {
+      "guid": "10983db6-9bd2-427e-b70d-d4e4e5b3c305",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47734434/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-16%2F248322568-44100-2-2b796c6da1b43.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-16.m4a",
+      "byteLength": 87451407,
+      "mimeType": "audio/x-m4a",
+      "sha256": "8f43197cdf4dd147397a8b6a566852c25ea709b52cfb0d5c964efc69c6fb6ece"
+    },
+    {
+      "guid": "09774df9-cf30-4527-a9c2-2a72c13034d1",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/47806285/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-17%2Fe7366ea0-b0e6-4b2f-bc39-7ee5e9465177.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-17.mp3",
+      "byteLength": 18599184,
+      "mimeType": "audio/mpeg",
+      "sha256": "e04e408789388d0a0433981d9e271c9e3a5aa9e94c70ef5df626e1766dcc9b5c"
+    },
+    {
+      "guid": "44163e0d-38db-4751-a436-436dbeb3e053",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/48093906/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-23%2F250053342-44100-2-bc4349834da67.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-23-v2.m4a",
+      "byteLength": 90306076,
+      "mimeType": "audio/x-m4a",
+      "sha256": "ef345f248e8e3200622ed9f2d560ef40a01673601b2d4f05c680012fbd2a008b"
+    },
+    {
+      "guid": "28cd3828-7ad8-4312-a54a-33db40316192",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/48081694/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-23%2F250011457-44100-2-222861003ebfb.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-23.m4a",
+      "byteLength": 78403978,
+      "mimeType": "audio/x-m4a",
+      "sha256": "48f3acd4141a49ab48b27a73e26690ccfd7a8564f9ef321fb59d9bf9d03871e1"
+    },
+    {
+      "guid": "624b9122-b069-4b44-b48b-6d257e5a44ca",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/48282264/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-1-27%2Fbd6b34a2-4d88-90ed-618b-800f5fbc0b04.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-02-27.mp3",
+      "byteLength": 13254740,
+      "mimeType": "audio/mpeg",
+      "sha256": "637743e537d7dd33079e4b95d2e82b7bef32f7afcd1fc4668f4b0c2ac2e52599"
+    },
+    {
+      "guid": "8bb56376-b0b0-4877-a2d7-de0b6713e419",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/48980088/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-13%2Feeb66b98-fdfb-5af0-4d92-82691d30f602.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-13.mp3",
+      "byteLength": 26596833,
+      "mimeType": "audio/mpeg",
+      "sha256": "6ff7e927988e19a03c8aa8279489ea11bcb9a32f40e2b647c6d5deef964832e9"
+    },
+    {
+      "guid": "fcf4c8e9-6625-43df-bcb2-6c424ecc9b1b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49202408/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-17%2F254350559-44100-2-0321500c36e14.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-17.m4a",
+      "byteLength": 75494043,
+      "mimeType": "audio/x-m4a",
+      "sha256": "b106a609451b20027ec02298bc51be400ffc84cba037ba9a5327b1ff2c3ef45d"
+    },
+    {
+      "guid": "a8a61a1c-0656-4c5c-8003-71c8b927bc0b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49236330/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-18%2F3fad4e7a-cee1-1c95-9e7a-e7532e692b51.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-18.m4a",
+      "byteLength": 46763062,
+      "mimeType": "audio/x-m4a",
+      "sha256": "212afdb5ee4441cc5796788dd42e81ff6dd9268d3270a521da0dc0b3b6ff1c57"
+    },
+    {
+      "guid": "c78c4ed5-0711-4e44-9762-fad03c4ff114",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49383759/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-21%2Faac8b5a8-f24a-7b49-6de8-dcb07fe02ec6.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-21.mp3",
+      "byteLength": 9595507,
+      "mimeType": "audio/mpeg",
+      "sha256": "af265c19c11445710357275ff4e8d80e422f8da2216acebf30cfbbaf2597b2ae"
+    },
+    {
+      "guid": "c718fe35-dbac-4646-9e37-edfbc3d47510",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49588204/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-25%2F46d97097-46db-1d65-fdab-cce90c3633be.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-25.m4a",
+      "byteLength": 114226533,
+      "mimeType": "audio/x-m4a",
+      "sha256": "229f62a7bd5f99d155aadbb1e77cb5d6c515d4a65caa0f8c5a92e0d35fe1b9d6"
+    },
+    {
+      "guid": "67359c49-91e7-4e68-aad3-224a732de53f",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49741745/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-28%2Ff4e017c4-f939-b0c9-e190-54a40005f3f9.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-28.m4a",
+      "byteLength": 9836190,
+      "mimeType": "audio/x-m4a",
+      "sha256": "21abd9e6627f5bb16fd28b3a852e159ad61336130263d526f7ffcbc97fcc5d6c"
+    },
+    {
+      "guid": "1f3a961b-5539-4895-a574-080808a35903",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/49907321/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-2-31%2F00f35354-6f28-5709-d508-2a2b4551e91c.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-03-31.mp3",
+      "byteLength": 26941649,
+      "mimeType": "audio/mpeg",
+      "sha256": "10623722f825910db02383fa2f63e4848bd8e97b6861f5de4a7b935ada89961d"
+    },
+    {
+      "guid": "7f9a63bc-669a-4641-80c9-2ac372e9738b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50199526/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-6%2F1298210e-4bdf-6efb-d69e-40c2799b19e6.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-06.mp3",
+      "byteLength": 16777764,
+      "mimeType": "audio/mpeg",
+      "sha256": "a26b5fcf3b3464f20b70d927bd474d759f9640d110558d2c22b0d983482770ca"
+    },
+    {
+      "guid": "30aa18ea-d03e-4fb3-8c12-aca862afe462",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50256812/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-7%2F87414d17-6b75-eafa-98cf-c436f1d44c72.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-07.m4a",
+      "byteLength": 101628443,
+      "mimeType": "audio/x-m4a",
+      "sha256": "04fbeaffae527a6e508d13e0d408cabcf2f412445b05eb90fe28f5f2eccced38"
+    },
+    {
+      "guid": "6f424c53-68da-4df3-88ac-705640549c8e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50424315/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-11%2Fe4e0528b-1fed-a941-32e0-89c980f2042a.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-11.mp3",
+      "byteLength": 10106253,
+      "mimeType": "audio/mpeg",
+      "sha256": "810d48ef179c34f7285703b8f1d78859ea38f7588e59f765270ce63847a841e2"
+    },
+    {
+      "guid": "b8b81a3d-7c50-4578-9478-013b72666739",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50689101/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-17%2F8f75565b-4989-3b08-94bd-d7a9ef468484.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-17.m4a",
+      "byteLength": 118263979,
+      "mimeType": "audio/x-m4a",
+      "sha256": "84cbc9e3dbd0d9e7615638f8c6ce7b37b7aa9615ce2f40c878e013a298b339cf"
+    },
+    {
+      "guid": "b3d7f84c-f676-4d1a-ae44-e36bbe38ad31",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50745395/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-18%2F8178764f-109b-fc83-db58-30c1009c86a8.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-18.mp3",
+      "byteLength": 16878028,
+      "mimeType": "audio/mpeg",
+      "sha256": "af1a80dc55a69dc455e50732ae00a4bad0c8bb29872e1e106421964e7162256c"
+    },
+    {
+      "guid": "3c37cfb0-1cd3-40fb-8e88-980b1c73a711",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/50988394/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-23%2F6f24d0d1-9da3-7597-296f-9e77e3a2cd9e.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-23.m4a",
+      "byteLength": 113806173,
+      "mimeType": "audio/x-m4a",
+      "sha256": "09304707d1c5a7ad838cd9ef6464a4d80762bc6ef369e6ce37b6386d1e6ec453"
+    },
+    {
+      "guid": "9c7aed24-76e6-4a6f-8150-8b3fc819c416",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/51221221/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-3-28%2F3bda05b4-ff9e-bc7b-617d-4ff71cd8bbe8.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-28.mp3",
+      "byteLength": 5486968,
+      "mimeType": "audio/mpeg",
+      "sha256": "7a16b96e0c430d56126be0ec17aeeb4cea556b16ddceb215ff9f1122e9cc657c"
+    },
+    {
+      "guid": "28a34e63-df5f-484d-afdd-ca8e603d3795",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/51331527/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-4-1%2F431c34fa-ceaf-3ce9-3331-a71f96b54e46.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-04-30.mp3",
+      "byteLength": 85203963,
+      "mimeType": "audio/mpeg",
+      "sha256": "3770dc2b7601fe32ab4afb6bb3bd2f1dd4ee42c3eaba8462a11cc59a4a92e399"
+    },
+    {
+      "guid": "b7c50489-7ec3-4e64-95e9-c0304a94faca",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/51655326/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-4-7%2F8d0bbeb9-4e2f-6313-9974-88125312e044.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-05-07.mp3",
+      "byteLength": 12057704,
+      "mimeType": "audio/mpeg",
+      "sha256": "62b5018b32d1c9c96091ba333bd98e7211e82204664841740b1c4ec8f493cc9a"
+    },
+    {
+      "guid": "d55fd619-341a-4007-967b-cc0aa1860c7b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/52023992/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-4-15%2F2bd6b324-2c71-04d9-61ad-71b29527f7a8.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-05-15.mp3",
+      "byteLength": 28878472,
+      "mimeType": "audio/mpeg",
+      "sha256": "ce872c128522d7a237b53a6a2f3713f59f1f15d56443b2d6f9cc923261e76cb1"
+    },
+    {
+      "guid": "45eae5c9-42c8-4574-a29b-bb431b92922e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/53011371/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-4%2F7e00a612-675e-b161-03c4-ccfb31a35475.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-06-04.mp3",
+      "byteLength": 32524748,
+      "mimeType": "audio/mpeg",
+      "sha256": "b34d4fc415a0171d9483a9a3633fa02e9eddca06d9cebc3c05ce7037c44f0af9"
+    },
+    {
+      "guid": "74febad5-33b2-4277-bd8c-fb3bd127beda",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/53347426/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-11%2F0dd668bf-c4ac-9b7b-0d25-559762e77fa8.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-06-11.mp3",
+      "byteLength": 22943033,
+      "mimeType": "audio/mpeg",
+      "sha256": "5d7d90994c390a6de6c9ef16d7f986ec28bcaab3cb53ab687d78e3d7793bbe9d"
+    },
+    {
+      "guid": "7680ae7f-0c17-466f-8680-2435e62c9f30",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/53662481/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-18%2Fbe00f6e1-20a3-ad10-a028-d43e7ece738b.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-06-18.mp3",
+      "byteLength": 32176194,
+      "mimeType": "audio/mpeg",
+      "sha256": "ee22c7b2f41a0ce5a4f5c497e65ab7d5f3365ad682f5650dad0dc8819c06035b"
+    },
+    {
+      "guid": "ce7ccdef-d550-4114-9ec3-7bac44de127d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/53986141/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-25%2F601d1adf-5824-5855-b48f-e9aa5218f506.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-06-25-v2.mp3",
+      "byteLength": 20031948,
+      "mimeType": "audio/mpeg",
+      "sha256": "17b97fc6442d9116527be720062f636f353c97a28d837a73f57979d6ff932082"
+    },
+    {
+      "guid": "15ceb830-4d80-449d-bd22-ebd8c9ee6e50",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/53983219/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-25%2Fbc9e913e-bbc2-6e4d-7c3e-508f07067b4f.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-06-25.m4a",
+      "byteLength": 167306635,
+      "mimeType": "audio/x-m4a",
+      "sha256": "c93bbc00baf3e87b9589ff6ffc230b89de91bcce74c21dbbb079089f55b5488c"
+    },
+    {
+      "guid": "62881cda-e3f8-4e4b-8bc5-4202d85d223e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/54028772/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-5-26%2F273676816-44100-2-1dd33019af671.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-08-14-v2.m4a",
+      "byteLength": 77151547,
+      "mimeType": "audio/x-m4a",
+      "sha256": "8b5e1b9191c9f478ecb18bf0382831aac5b860891f3b91e25b616cf624ca80b3"
+    },
+    {
+      "guid": "9102e9c3-fad5-42a9-b4d5-63bba17a5f9d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/56150075/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-7-14%2F874663ab-8842-fee1-cba4-3f45cb8f5c40.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-08-14.mp3",
+      "byteLength": 120467591,
+      "mimeType": "audio/mpeg",
+      "sha256": "0effa54d76cd992bfc8d4bdfc6b3504f03472046a6d3dcb1c8786ea802cf486f"
+    },
+    {
+      "guid": "127669e0-254a-40c5-ad5d-178c2767dee9",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/58007079/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-8-23%2F63e8b442-e1a3-335a-5097-0da2bbb99c93.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-09-23.m4a",
+      "byteLength": 197708192,
+      "mimeType": "audio/x-m4a",
+      "sha256": "9d5137b7045d7e3236a16fc6e4a091366f8e04a2f90713a727f25ad1c0893a29"
+    },
+    {
+      "guid": "daa0411b-88b8-4e1c-a230-e9e2c7355a89",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/58364373/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-8-30%2Fbcdfb236-277a-d9e2-0513-7fa1fad44f32.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-09-30-v2.m4a",
+      "byteLength": 130854217,
+      "mimeType": "audio/x-m4a",
+      "sha256": "39f039c1e2a952f1a0dae21afed2d8010f0d35248ec07943197fcce618a3e3cf"
+    },
+    {
+      "guid": "6ac29836-78be-43b5-9f1b-5a21bc99f92d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/58365103/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-8-30%2F0274cac5-0b5c-9788-dc84-37bba6ffae63.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-09-30-v3.m4a",
+      "byteLength": 70808148,
+      "mimeType": "audio/x-m4a",
+      "sha256": "1ca8894eafcc678379dd06e43c3ade0a7f3aca6d404e84eb1a5e498c2f1e8095"
+    },
+    {
+      "guid": "72c91901-6df7-4a68-bb05-554011c25173",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/58363149/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-8-30%2F9765d102-30ee-3022-dfcf-a34b8a89a0d8.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-09-30.m4a",
+      "byteLength": 199901294,
+      "mimeType": "audio/x-m4a",
+      "sha256": "a82ae9a81d3167f3fbbb529c5f6708d1f838c314b2ae517418533660d319f5d8"
+    },
+    {
+      "guid": "e00b0480-9b6a-4058-b141-9960a0796ff7",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/59090690/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-9-15%2Fc27c04f6-d77d-672a-e091-ffad2a3e396f.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-10-15-v2.m4a",
+      "byteLength": 168157340,
+      "mimeType": "audio/x-m4a",
+      "sha256": "77c92cb5102392fed05269318c356a4d23734105294ba29654e9046978f580ea"
+    },
+    {
+      "guid": "6ede3287-63c2-43c3-8ebd-cf607d58e5cb",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/59090545/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-9-15%2F839aba40-93a7-3a12-9ae2-7a975f45f02d.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-10-15.m4a",
+      "byteLength": 130632206,
+      "mimeType": "audio/x-m4a",
+      "sha256": "0a4ca72e6b34b3d122337263b432c05fdfc047f68dde2116487f068cf81a334f"
+    },
+    {
+      "guid": "20962d16-8c74-40d7-873b-5d93cc153a18",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/51994063/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-9-16%2Ffe307a4e-8b49-5a11-90a2-40785652ee70.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-10-16.m4a",
+      "byteLength": 204983120,
+      "mimeType": "audio/x-m4a",
+      "sha256": "11f42ded1759c2a82a19b42870fe34e4e1886a347f50250545b0408d5a04dcaf"
+    },
+    {
+      "guid": "78d066fb-fad0-432e-9ba5-b86748e684bf",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/60171490/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-10-6%2Fbf65d739-0ad7-34f3-f084-309b77f47000.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-11-06-v2.m4a",
+      "byteLength": 100494555,
+      "mimeType": "audio/x-m4a",
+      "sha256": "567cfbf3853d9ef68a64d27ee5ca72c05fd1a52ce3cbf5a541fd286b11297898"
+    },
+    {
+      "guid": "a779eb9c-8520-4e40-89a6-ec182f27877c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/60169541/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-10-6%2F91840bfc-346e-8ed5-73d3-e896415aa54b.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-11-06.m4a",
+      "byteLength": 52897931,
+      "mimeType": "audio/x-m4a",
+      "sha256": "c124cddfedb503f48711e8e58201f7c47b287f6e3171b1e6bd597f54188d8582"
+    },
+    {
+      "guid": "e15c6083-28d7-40c2-9377-0b785695e717",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/60901568/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-10-19%2F7304b7da-99af-0e5a-6220-71dd49d562e7.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-11-19.m4a",
+      "byteLength": 96325645,
+      "mimeType": "audio/x-m4a",
+      "sha256": "2766a2f96238c2e1c98345c50c9ae6ff99b98f965cd2c591078a7aa9a386f662"
+    },
+    {
+      "guid": "805df38f-4dae-4c1e-886a-566028081140",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/60962685/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-10-21%2F298316921-44100-2-4b890c3c77686.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-11-21.m4a",
+      "byteLength": 40539215,
+      "mimeType": "audio/x-m4a",
+      "sha256": "c2b1a9ce1485ba0da38255780d1608ba5c82b87b9ec7c632c24e946a41f44fac"
+    },
+    {
+      "guid": "ea62f886-61c2-4726-a1f7-7a17689d5267",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/61315678/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-10-28%2F57624239-1297-b93b-24a7-e368679597b9.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-11-28.mp3",
+      "byteLength": 56567148,
+      "mimeType": "audio/mpeg",
+      "sha256": "0d5275dd9cf79a7ee7d04471262b1345c2ac9f1de98896c96d95e7003d78ffec"
+    },
+    {
+      "guid": "00cb9783-2a12-4960-ada2-1aabb7df344f",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/61560849/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-2%2Fffdeed4b-293e-7d4b-7b10-f3c0ab971e1f.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-02-v2.m4a",
+      "byteLength": 85558877,
+      "mimeType": "audio/x-m4a",
+      "sha256": "2b9c62efb5d91898e6471b8a381a214c0c0688d42af967a8718b84a31b246e95"
+    },
+    {
+      "guid": "c3a291d1-f83b-4efb-bb7e-fd0df18e7ed2",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/61558662/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-2%2F6c2c0783-5094-84ae-f456-442d79f3bdd8.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-02.m4a",
+      "byteLength": 54054967,
+      "mimeType": "audio/x-m4a",
+      "sha256": "573f603390bfb2818dba402433ae67afc7b7e2a0d88270cf1ed11f8526a1588a"
+    },
+    {
+      "guid": "5e0efd5e-5a0f-40bd-83e4-50928cb1b3e4",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62010581/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-11%2F926d4b60-5bf4-1a92-d93e-dcbf00c499b6.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-11.mp3",
+      "byteLength": 189512946,
+      "mimeType": "audio/mpeg",
+      "sha256": "5ddf3a209e22922a1d4db8f9cf3819ff1fe4a3b4c7f0b4ea52ea0140793ed1bc"
+    },
+    {
+      "guid": "b948ab23-9b28-448b-adba-a205627a67bc",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62056907/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-12%2F80e336a0-c3b7-7c76-134f-b98971f957d4.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-12.mp3",
+      "byteLength": 63186528,
+      "mimeType": "audio/mpeg",
+      "sha256": "2a566056bfdc2d98dbc10d1a98e2f7f0c1dd61fe58cf9fd08e5e59d5d73c21a3"
+    },
+    {
+      "guid": "f7229901-e60a-41fb-8ded-309099f3d85b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62288175/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-16%2F4777b276-aa73-947f-1216-9c36b1b98ded.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-16.m4a",
+      "byteLength": 59187897,
+      "mimeType": "audio/x-m4a",
+      "sha256": "5fc8a2de9dd601840d26431402224920e0b0fb238847c77752c57fb623770663"
+    },
+    {
+      "guid": "8d611079-d10f-4729-bae7-25f3c29f541c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62332353/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-17%2F9634525a-1615-f800-ba14-d997ac3dc48c.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-17.m4a",
+      "byteLength": 10275911,
+      "mimeType": "audio/x-m4a",
+      "sha256": "76efd9a1b86edd6cb0130660449cc5a0cc546694ef7aa36a603159c15b9b33ba"
+    },
+    {
+      "guid": "fb6b870c-b890-4d0e-a843-ed852f70ae6c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62419205/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-19%2F247d7f68-6ff6-13ab-0a3f-437990aad1cb.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-19.mp3",
+      "byteLength": 59489400,
+      "mimeType": "audio/mpeg",
+      "sha256": "5bc0ea0376cc685b0bd63a68a4a88267100c3ec24282aba0c3a342a2c1e18ef9"
+    },
+    {
+      "guid": "fc256c7b-d47e-490a-94f4-1381045eea39",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62659214/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-24%2F4751eb20-1bab-ebc3-e372-3f2770d653ff.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-25.m4a",
+      "byteLength": 51711980,
+      "mimeType": "audio/x-m4a",
+      "sha256": "773289912aec3af8989a9e23111a470b8edf1eb3b1a8613f6d75011d99f0c81b"
+    },
+    {
+      "guid": "ed151bb0-bcf2-4eac-84c0-20c0ed18506b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62692914/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-26%2F05cb68b2-5651-01eb-439a-1d3e34a842fa.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-26.mp3",
+      "byteLength": 67410552,
+      "mimeType": "audio/mpeg",
+      "sha256": "2bddb7d95c250f417224ce64d0d461dd0fecb4f8d8a79c7a367de93200f889a0"
+    },
+    {
+      "guid": "d970eee1-fda7-4ce8-b248-169cde3477da",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/62896800/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2022-11-31%2Ffa774454-c3c4-812a-55af-fdcfa2cdce6b.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2022-12-31.m4a",
+      "byteLength": 28924953,
+      "mimeType": "audio/x-m4a",
+      "sha256": "a8d700904671cdde5fb6bad7f46457701021b055cead786aaf61a2cd1f395496"
+    },
+    {
+      "guid": "81cd669c-a566-4c2f-9bab-b79f35dceba1",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63051081/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-4%2Fe56b5084-2988-c43e-02c3-3b853311510f.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-04.mp3",
+      "byteLength": 123124104,
+      "mimeType": "audio/mpeg",
+      "sha256": "f200e7d7cc42f9d682ef73dc38e98b198633c7c9b3c0fb28ace5615900523e8d"
+    },
+    {
+      "guid": "9ee2dccb-bc7d-47d6-b828-0ec066a2cdb4",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63140717/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-6%2F5ed9ac5f-fa3a-cc93-287b-8a5daccb9fd4.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-06.m4a",
+      "byteLength": 60771119,
+      "mimeType": "audio/x-m4a",
+      "sha256": "9b4b2e4185cf5fc73da2865713bb6ecd8f35212a5bcb0d9124a09e7bcb3e52b0"
+    },
+    {
+      "guid": "ae923eb3-6180-4e37-a078-a563ef2e9bee",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63242391/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-9%2F3f26ed64-b806-d7ac-b1c2-e4ad49450c46.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-09.mp3",
+      "byteLength": 61956216,
+      "mimeType": "audio/mpeg",
+      "sha256": "3e3999844a516d34a350349d04b209147de0c80a50362398b335d9af1f2fd2f7"
+    },
+    {
+      "guid": "8285a3e7-2f9d-4f46-a23c-d4326b422d6c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63509695/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-15%2F2e1e30e8-7de5-2c55-ea67-8463f17c286f.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-15.m4a",
+      "byteLength": 45415631,
+      "mimeType": "audio/x-m4a",
+      "sha256": "7df00bf140fe4bef7f5f9776f6b92a3649c0ac2328988fc6815f8af954774863"
+    },
+    {
+      "guid": "e3ba1e86-3599-4679-8fd5-9fdf34566dd5",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63553198/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-16%2Fa3ba2f14-5ba2-21f7-c75b-10aaa66ce875.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-16.mp3",
+      "byteLength": 62294184,
+      "mimeType": "audio/mpeg",
+      "sha256": "4e0a9657174b7e02759483b4f06b5798be9d4c946d6ec62c5c2ef14bab0bc026"
+    },
+    {
+      "guid": "d040e6f1-3ceb-4e86-8692-659195351233",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63829350/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-21%2Fdf5cb797-cbbc-174a-a39b-708f8e82b1dd.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-21.m4a",
+      "byteLength": 46252298,
+      "mimeType": "audio/x-m4a",
+      "sha256": "8e5de43856dd616d585853ab8ea90f309cf7eff4ff0956c00b634c7dca00c88f"
+    },
+    {
+      "guid": "cd72c4b8-a05a-4179-a150-3387e90724ac",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63846322/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-22%2F13a466e9-182c-84a5-33dd-dee3197ae843.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-22.m4a",
+      "byteLength": 65351572,
+      "mimeType": "audio/x-m4a",
+      "sha256": "a5b96978c455e6c0ca869acf8980d40b697f47204291c81dcfa1ed8e9674d572"
+    },
+    {
+      "guid": "6f05e8c9-479e-4220-b016-1b09cb50c536",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/63898563/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-23%2Fcd96a676-8c98-daed-fcd7-456b3b3b113f.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-23.mp3",
+      "byteLength": 64027200,
+      "mimeType": "audio/mpeg",
+      "sha256": "78b466cef0f62b8fcdc67a1876c350836f3fa7a1bcd587a0be5b87f170ab4656"
+    },
+    {
+      "guid": "118bea6c-6f9e-4d19-b518-8be9aca44916",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64195099/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-29%2Fb36a2aec-d4d8-a24b-2c08-836f777bf039.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-29.m4a",
+      "byteLength": 94519131,
+      "mimeType": "audio/x-m4a",
+      "sha256": "1b2af72b7029f1fedc80c67ada44d85fbfd01797c0fc272e138b3193170d6fd7"
+    },
+    {
+      "guid": "ac16f11e-4a00-49e2-99b3-554f588f7e33",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64231265/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-0-30%2F2dcb8413-9a7b-b05d-4d17-ba0390bed980.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-01-30.mp3",
+      "byteLength": 36469200,
+      "mimeType": "audio/mpeg",
+      "sha256": "80afd907775626ee0ec0458ba4a7a2aa15480a9925615fd6248bc717283daf00"
+    },
+    {
+      "guid": "707c82f8-82da-445c-90ab-0865edd4a9b6",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64538324/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-5%2Ff73f9285-3621-a16d-ab4b-6500b8147568.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-05.m4a",
+      "byteLength": 52593153,
+      "mimeType": "audio/x-m4a",
+      "sha256": "7ab153f9e41a0fa2ac0fee2756fc67330fdd8738c71733d4965d578769701fc4"
+    },
+    {
+      "guid": "cab59efd-3d38-49e0-965b-a42ef3aed348",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64594942/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-6%2F99bb1689-85c9-f5bc-4017-c9eeefe513cf.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-06.mp3",
+      "byteLength": 72880916,
+      "mimeType": "audio/mpeg",
+      "sha256": "301bcd8bf94f4a7b42ac749457d0c1c5d7f48af143ff2ef3eca1acafedde1696"
+    },
+    {
+      "guid": "ea9c1895-d472-410d-b9ed-67621ae27a26",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64874938/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-11%2Fa3783e9a-7185-7d7c-6927-c5ef438a2800.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-11.mp3",
+      "byteLength": 235783727,
+      "mimeType": "audio/mpeg",
+      "sha256": "1e292e03b1b0f687c4de8b02944292b404c19109a0551e5cc78d9c0ea4dbdd0e"
+    },
+    {
+      "guid": "c1fb32af-7758-4cc4-960c-4ea23bdf179e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/64960476/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-13%2F67200a7b-c300-b38c-4bed-833924d746c5.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-13.mp3",
+      "byteLength": 86363856,
+      "mimeType": "audio/mpeg",
+      "sha256": "a45cc14c3bad20dd2d8f359237862965daf4788c9b6f9483b0eda1b7db6d60e1"
+    },
+    {
+      "guid": "a9b1ecc2-721f-4c4f-b2fa-6e7cf6471b54",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/65238254/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-18%2F038ecb9d-4249-c1bb-915a-19021363077f.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-19.m4a",
+      "byteLength": 45481347,
+      "mimeType": "audio/x-m4a",
+      "sha256": "182db7e1ec62bf9fd5bce76611e8a680b58e821e9c490532eafc0307432bbcc3"
+    },
+    {
+      "guid": "8f29c295-5ce1-4c19-a008-38eb872da300",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/65331981/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-20%2F3f2af309-8de1-f229-4fc3-6d942af1383d.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-20.mp3",
+      "byteLength": 42904176,
+      "mimeType": "audio/mpeg",
+      "sha256": "13f865027647ee0199a21374e8582b8ac5023a65cf0f1debb91c6ab805e03a1d"
+    },
+    {
+      "guid": "af529034-fcdd-4e96-b207-72010bed25b9",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/65465886/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-22%2F1a44275b-9c1b-2f09-ad34-cebd341f6d9b.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-22.m4a",
+      "byteLength": 53910652,
+      "mimeType": "audio/x-m4a",
+      "sha256": "f5cbf047ab42f251aeb86b62650e02d91ba170f0d5c855e9219a7f980324f58c"
+    },
+    {
+      "guid": "a2fafb1c-98ea-4693-8beb-bb8dce85ee50",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/65639069/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-1-26%2Fa8449f6f-b354-df6b-ff43-24b3085d7c57.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-02-26.m4a",
+      "byteLength": 43358155,
+      "mimeType": "audio/x-m4a",
+      "sha256": "e11165b73044d5965e0bd25160e5de0a9f7e71d2678cbfb1288bd59bebedb1b6"
+    },
+    {
+      "guid": "56c04dff-5632-4285-91b5-113b419d9f4d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/65995829/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-5%2Fccaed9bf-3d1f-7349-c4b8-73e2c2eaf14d.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-05.mp3",
+      "byteLength": 56967974,
+      "mimeType": "audio/mpeg",
+      "sha256": "766339ee079c82ca6d82919014bf422dfa00cc9210ff995a4722fc2242bb52c3"
+    },
+    {
+      "guid": "4f111909-d06f-4ba6-8235-1fc2e77d081d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/66058276/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-6%2F08c00cac-8881-fbd4-a135-8cdc6b6cdc01.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-06.mp3",
+      "byteLength": 33009480,
+      "mimeType": "audio/mpeg",
+      "sha256": "4c58dc9bba7ca7560532bd8626ca322f771c5cf4f202cd4608fe3447a0ff51c1"
+    },
+    {
+      "guid": "80d294c4-53f9-4a15-a2c0-aebb96b8939e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/66464748/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-13%2F3fa3dea2-98d1-e8f0-4440-fbed603edd62.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-13.mp3",
+      "byteLength": 39504840,
+      "mimeType": "audio/mpeg",
+      "sha256": "eb435c599f7afb54503d586d281c5dff4a9cdc1f49f99b985013c3b7f187427e"
+    },
+    {
+      "guid": "6a709e84-6b76-4b8d-bb6e-31fdecdc3a53",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/66860589/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-19%2F05b5badb-00a3-7ba0-d9ab-5576e1346820.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-19.mp3",
+      "byteLength": 52068657,
+      "mimeType": "audio/mpeg",
+      "sha256": "3a5e8061822fcec477cbb7e5a0f37ebf94b0d541f30c50424534e7bd2cedb850"
+    },
+    {
+      "guid": "e9d50f17-e78a-4dd5-bbca-68aab87711d1",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/66918426/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-20%2F2cbcdd9c-5574-0bec-114b-7d7f0c20e2c6.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-20.mp3",
+      "byteLength": 64912608,
+      "mimeType": "audio/mpeg",
+      "sha256": "67e808bb33932bce9d89a00a2ef1c74e107e96d68b2f65265add9cbad38929f5"
+    },
+    {
+      "guid": "368bc879-13b8-4fe3-bd8e-c2a66ace26de",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/67455039/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-28%2F0df07c31-5d91-d551-315b-8d6836943b3f.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-03-28.mp3",
+      "byteLength": 40424976,
+      "mimeType": "audio/mpeg",
+      "sha256": "c3098d9715442d78f04890df3f09eed20f69893e196418d09f93e213ad6c66d1"
+    },
+    {
+      "guid": "86f4a7c8-f01b-425c-b0bf-7154244fb3ea",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/67844705/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-3%2F770af3c5-ba91-5b1e-60d0-2bd3d158eca0.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-03.mp3",
+      "byteLength": 108500160,
+      "mimeType": "audio/mpeg",
+      "sha256": "e1f66a8b7cfc62782336c878a6f7ea41958215c7ef2a3bc52972a1ba618cc836"
+    },
+    {
+      "guid": "360db856-650d-4486-bd1c-536766adadc7",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/68231038/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-8%2F189e8ef6-1964-cedf-4b2d-baef92a46af7.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-08.mp3",
+      "byteLength": 184534080,
+      "mimeType": "audio/mpeg",
+      "sha256": "bb4ba77a9cb45e3eff0eab59631ac2f9c55fbf248b6c774d0baaf41052303826"
+    },
+    {
+      "guid": "fe6fe9a2-f5ae-40e9-8061-a9a67eebe6d3",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/68328629/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-10%2Fdc34f9d0-a118-2bc6-97d2-c26bf8072e37.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-10.mp3",
+      "byteLength": 85744843,
+      "mimeType": "audio/mpeg",
+      "sha256": "a96b42ddf465f4573b8f4248ae3da425870e4d863c5ad4e892020b19e23143a2"
+    },
+    {
+      "guid": "7835c6c2-279e-4e1a-a68f-62aaa3078d14",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/68552448/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-13%2F492e7d4a-3e65-fcaa-14f6-200a87d195c7.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-13.m4a",
+      "byteLength": 68993949,
+      "mimeType": "audio/x-m4a",
+      "sha256": "7b7ea921ff61cea92150aed5d0a768f0124ad399d758cbbb53e02fe58d0a9709"
+    },
+    {
+      "guid": "f4d2fa9f-5b2a-48a0-91a5-e1b2ced98c4e",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/68778132/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-17%2F5715b84c-ec7d-d241-6a99-7eabfcdf29aa.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-17.mp3",
+      "byteLength": 127583040,
+      "mimeType": "audio/mpeg",
+      "sha256": "ce1b8eca6dbc24c136be47093e0657d5ad51f14e69100065dff5ba244cc87586"
+    },
+    {
+      "guid": "9de8b89d-5eca-42e1-bafe-eb9875ecca3a",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/69201639/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-3-24%2F7667d8fd-28bd-7b25-931b-fd2675cf8b7a.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-04-24.mp3",
+      "byteLength": 171988555,
+      "mimeType": "audio/mpeg",
+      "sha256": "7b2a040d895652632492dbcfb25c4694428e86251a6405228b2c2b9d3f2d4d8e"
+    },
+    {
+      "guid": "cd699218-a5e0-476b-b128-d340770498b3",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/69594577/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-1%2Fbb52d904-bfe9-1c29-4638-17f93b3fc5aa.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-01.mp3",
+      "byteLength": 174958080,
+      "mimeType": "audio/mpeg",
+      "sha256": "ef2c292c8b16276f233010631c344cc7e591efb7c5c8bac5e5dd9095e059f2b6"
+    },
+    {
+      "guid": "fab3435a-b884-4b05-badf-1eb10d785e23",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/69977288/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-8%2Fdc676798-c4af-c248-8b19-17c512f78f51.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-08.mp3",
+      "byteLength": 205662720,
+      "mimeType": "audio/mpeg",
+      "sha256": "a81a07b8ff94cb091474f2ec74b30f8bf92889bcc04c923f71b5c838e5fcad76"
+    },
+    {
+      "guid": "cee4ed01-363c-4012-b197-e3d44a06259d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/70400915/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-15%2F8ce8b626-f2b0-951c-8cad-e1f76e3f590c.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-15.m4a",
+      "byteLength": 76362805,
+      "mimeType": "audio/x-m4a",
+      "sha256": "7a75dc212d520a3c02c0c7035c5d096f2d4ef3bfc8d1eb7b0ad95fbe6514b94e"
+    },
+    {
+      "guid": "10a8060c-5f0c-41ae-8235-cdee48d12b5c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/70825784/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-22%2Fb5bb0b24-56d7-ee18-2ac0-4d0690a13ac6.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-22.mp3",
+      "byteLength": 90116503,
+      "mimeType": "audio/mpeg",
+      "sha256": "878ccb89f9cc6324f0c21bd61ac59b74540e8e5858a730696e11e5643cde61f1"
+    },
+    {
+      "guid": "289ecfc6-2e5a-4951-8874-17d11212b56b",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/71123048/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-27%2F9e070968-3d6a-b163-8017-6c801b7e6733.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-27.m4a",
+      "byteLength": 30618059,
+      "mimeType": "audio/x-m4a",
+      "sha256": "5e3675433149f68b0bcf88095a4d582b494556272d00becf111a009702d58944"
+    },
+    {
+      "guid": "0b908fae-8bc0-46a2-aa50-5ab096b7fdb0",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/71208771/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-4-29%2F4831783d-6100-4e22-d136-8cb473c59062.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-05-29.m4a",
+      "byteLength": 62080544,
+      "mimeType": "audio/x-m4a",
+      "sha256": "fa6f4b12a3c6d6d85753318964c3a5c84acf54cecd12bba9e375bc77b3f62efe"
+    },
+    {
+      "guid": "5da355d0-d0ce-485d-9cf0-03f8fbee79ef",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/71622757/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-5-5%2Fa8c38119-3290-c902-5e49-9d63ffb0b34d.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-06-05.mp3",
+      "byteLength": 204088986,
+      "mimeType": "audio/mpeg",
+      "sha256": "491d69dc25756ff8073bb1f62e914d434f797cd56e6c8ecb2f94c4fa8bde2f30"
+    },
+    {
+      "guid": "5b615407-65d4-4c1e-9af4-e1cda8a830e7",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/72381058/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-5-20%2Ff334ca8d-73f3-8ffe-a024-176f0973b6d7.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-06-20.mp3",
+      "byteLength": 131481255,
+      "mimeType": "audio/mpeg",
+      "sha256": "fe84349fa44638699805fcf3db472752ac8fc3926d5d9706ad5f060eafe1644e"
+    },
+    {
+      "guid": "3a153603-48b6-491c-a880-fd179a051c6f",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/72933381/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-6-3%2F90f550db-3e54-e608-5501-b7d2b3bbe303.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-07-03-v2.mp3",
+      "byteLength": 113937076,
+      "mimeType": "audio/mpeg",
+      "sha256": "d2af82b282d9e237d02ef906137d742509393f43dcb752ced493209633db3c9b"
+    },
+    {
+      "guid": "74bb5201-99a6-4b39-a47a-5e00c5fbf30d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/72933143/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-6-3%2F74874f6b-e171-60e8-ed49-d9261c901d1a.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-07-03.mp3",
+      "byteLength": 160208916,
+      "mimeType": "audio/mpeg",
+      "sha256": "b743175d8896bac9164886fbe077488632519452ce1d3033e68dad13c065fc25"
+    },
+    {
+      "guid": "a74a4612-5eda-4dc9-a3ea-59f55cf36249",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/80345148/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-11-22%2Fe294afce-74ae-5cc4-5b8f-2c6e2d7d3add.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-12-22-v2.m4a",
+      "byteLength": 24732434,
+      "mimeType": "audio/x-m4a",
+      "sha256": "623a46d35ddc30d8e5637cc4bcad531153d7642533ce3c930f23dc0f33a005ad"
+    },
+    {
+      "guid": "c9a1064c-217b-4219-8e88-b3ddf68ec96a",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/80342042/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-11-22%2Fa0a8d9f9-643f-1b77-ead9-67eee5c61e50.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-12-22.m4a",
+      "byteLength": 53386667,
+      "mimeType": "audio/x-m4a",
+      "sha256": "83bba5afd2d098f510492fe8e3bff3579f78b4015cdda1fce0ef00a301a2e303"
+    },
+    {
+      "guid": "aa4361e8-0d8e-4cb3-a8f0-f2d550913009",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/80609080/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-11-30%2F361629784-44100-2-3eb5afda04fd2.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2023-12-30.m4a",
+      "byteLength": 26653581,
+      "mimeType": "audio/x-m4a",
+      "sha256": "8af82467051be8e1f6e37292d4b0332cdea5f1f3f09f1d7aed8675317a3b81ff"
+    },
+    {
+      "guid": "f0d33f98-67d1-43e7-8b90-b61e7dfbf847",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/81168046/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-0-12%2F462fa103-f85b-995e-1dfe-94e97723a342.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-01-12.m4a",
+      "byteLength": 69763370,
+      "mimeType": "audio/x-m4a",
+      "sha256": "23ad236cb1a9605611e002edc3b277c27b93e185955e5a40ae433be98b2e2315"
+    },
+    {
+      "guid": "cfe9e03c-bf69-44db-bb5e-42b00a10a02c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/84339665/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-2-21%2F8907f85a-a8e6-9640-c140-5240cc2f4121.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-03-21-v2.m4a",
+      "byteLength": 49888949,
+      "mimeType": "audio/x-m4a",
+      "sha256": "fb0e5da4d3da57ff136048e931e89d058db63be77447b70b28e3cfe557445e00"
+    },
+    {
+      "guid": "663e69e2-4c41-4e67-9f4f-96836ddbe9ca",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/84339372/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-2-21%2Fc1fc5edc-7035-7803-a619-cc60f04ad9bc.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-03-21.mp3",
+      "byteLength": 44325962,
+      "mimeType": "audio/mpeg",
+      "sha256": "99e9fc6184513e137f4f9de327388d2b96ede30c63276c90bdec662b290af93f"
+    },
+    {
+      "guid": "1d853ffb-7953-4f99-879b-7cd4d4f53bba",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/87253932/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-4-27%2F8723fc80-1e79-40eb-a399-bc3b89405536.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-05-27.m4a",
+      "byteLength": 82196113,
+      "mimeType": "audio/x-m4a",
+      "sha256": "f781103d0a86c303ea3d3bbbdebfae367c37c98ce4107f3af1826e1808c530c7"
+    },
+    {
+      "guid": "d084e57d-925e-441c-853b-68f340f3df1c",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/92646646/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-9-6%2F0f82aca9-6913-671e-e145-fe6fee4ae2f2.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-10-06.m4a",
+      "byteLength": 54607601,
+      "mimeType": "audio/x-m4a",
+      "sha256": "da3ad1757f9db5a9f03955d5daa33ebe80e45e49fecffa4fad240d99fe62c99a"
+    },
+    {
+      "guid": "8793d79d-6840-49f0-913a-2fddaeea2ce2",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/92872603/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-9-11%2F5d42214d-4318-df7e-29fe-1bce4d7085d1.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-10-11.mp3",
+      "byteLength": 50262888,
+      "mimeType": "audio/mpeg",
+      "sha256": "a610a88a6d030db45f7c37bad49f3a3615d5d09d0ed8df0c4243a024e0cfd921"
+    },
+    {
+      "guid": "a042ae17-9295-46b7-ae6d-2378701bac78",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/93864149/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-10-2%2Fb78b6265-dca2-9b28-f230-27e90d0d6a12.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-11-02-v2.m4a",
+      "byteLength": 29468129,
+      "mimeType": "audio/x-m4a",
+      "sha256": "10f3d6a69b95a21f234cd34f4b9a6f9cb7b4495e0f1b8d1b2f986b5fca9411f0"
+    },
+    {
+      "guid": "3f4ee78f-e2d5-423a-ae45-67fea1fe0e00",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/93864256/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-10-2%2Fac854993-d46e-8e4b-73c7-31731f56ff99.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-11-02-v3.m4a",
+      "byteLength": 19689263,
+      "mimeType": "audio/x-m4a",
+      "sha256": "e2d561c79e588366041ac320710165817aac35ab808d5596a35f734e462f3a2a"
+    },
+    {
+      "guid": "257ecddf-b0fe-42e8-b691-ebe32421eead",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/93864339/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-10-2%2F9b547775-0a71-9b46-b3da-edeb0ed51311.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-11-02-v4.m4a",
+      "byteLength": 23014760,
+      "mimeType": "audio/x-m4a",
+      "sha256": "adf5b2c6f3e7fd20cdfad812d424840f5fc4b709d82526eb7b78d7336038633e"
+    },
+    {
+      "guid": "b6214638-7a83-4f03-9b7a-a0a9c773e517",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/93843952/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-10-1%2Fdc3e78fa-a901-76be-d86e-1685a82d8baf.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-11-02.mp3",
+      "byteLength": 79993368,
+      "mimeType": "audio/mpeg",
+      "sha256": "3a4bdbb9e9966d7baaebaf9b7df0e0e0c12a67885ce458b54665856fc5c911be"
+    },
+    {
+      "guid": "88c8f06d-116a-478f-9d80-59eb51f61139",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/94461188/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2024-10-15%2F56595bb0-15b0-bc8e-d735-f13fc18a02c2.mp3",
+      "url": "https://audio.21ideas.org/podcasts/archive/2024-11-15.mp3",
+      "byteLength": 67734456,
+      "mimeType": "audio/mpeg",
+      "sha256": "389b43715608b25b72ea30dca08b048281f4d803f288618054499b94acac9343"
+    },
+    {
+      "guid": "ffad21d5-d1aa-4a63-8c94-59d00d3e0414",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/98778733/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2025-1-20%2F474101d9-187c-a6ae-a737-e1df4c5042c6.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2025-02-20.m4a",
+      "byteLength": 58167212,
+      "mimeType": "audio/x-m4a",
+      "sha256": "5e304a7e96698e29f73f1f2b047986c078d1a1061d69b60cce17c9fd901b21fa"
+    },
+    {
+      "guid": "80e6022d-9a6a-4096-80f6-01fdc6838fe7",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/108273411/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2025-8-14%2F7c6261b4-d6c3-6ef8-35e0-d696528eaa18.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2025-09-14-v2.m4a",
+      "byteLength": 65267891,
+      "mimeType": "audio/x-m4a",
+      "sha256": "b3cebb74a9f9a55674869a7cf7cb0b6f3cbdb5435e04e1ad18efe909aedf5c21"
+    },
+    {
+      "guid": "6cd75e73-a871-44ad-b412-498b36f94a60",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/108273475/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2025-8-14%2F8bbaf120-1b46-ba8c-7c37-a280ee6c485b.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2025-09-14-v3.m4a",
+      "byteLength": 30130864,
+      "mimeType": "audio/x-m4a",
+      "sha256": "a04587c14f3461603d2f32e148f8926886543a5f1325d4d903200753ddc9aab0"
+    },
+    {
+      "guid": "6564a203-3ccc-4174-a30c-2fc3670ca877",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/108273545/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2025-8-14%2F0c69caa0-ffad-bccb-83fb-9429bc2b446e.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2025-09-14-v4.m4a",
+      "byteLength": 59355909,
+      "mimeType": "audio/x-m4a",
+      "sha256": "ff57dd25201bf81c0fc4f934e7184a2eeb3ed1b28d315753593a096c4c691254"
+    },
+    {
+      "guid": "c755aae8-1c62-478e-88ec-150c9b7b252d",
+      "sourceUrl": "https://anchor.fm/s/69c8de58/podcast/play/108273234/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2025-8-14%2F1982dc82-73b1-225e-b00f-3df91c598d84.m4a",
+      "url": "https://audio.21ideas.org/podcasts/archive/2025-09-14.m4a",
+      "byteLength": 66599184,
+      "mimeType": "audio/x-m4a",
+      "sha256": "ae5b00924750eaaf4a8e041e9786b30e4d49299292aad7e16ee8dc50e955f2ec"
+    }
+  ]
+}

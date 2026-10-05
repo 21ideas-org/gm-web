@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import { audioEpisodes } from '../lib/audio.mjs';
 import { formatRuDate } from '../lib/date';
 import archive from '../data/podcast/21ideas-archive.json';
+import archiveMedia from '../data/podcast/21ideas-media.json';
 import { PODCAST_SHOW } from '../lib/podcast-config.mjs';
 import { podcastFeedPaths, renderPodcastFeed } from '../lib/podcast.mjs';
 
@@ -18,6 +19,6 @@ export async function GET() {
 		dateLabel: formatRuDate(p.data.pubDate),
 		draft: p.data.draft,
 	}));
-	const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio: audioEpisodes(), archive });
+	const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio: audioEpisodes(), archive, archiveMedia });
 	return new Response(xml, { headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' } });
 }

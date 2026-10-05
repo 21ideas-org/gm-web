@@ -54,3 +54,35 @@ test('archive and daily episode identity collisions are rejected', () => {
 test('historical metadata stays identical to the source snapshot verified during migration', () => {
   assert.equal(createHash('sha256').update(JSON.stringify(archive.episodes)).digest('hex'), '664914f85dd5037f636bf07d6a09d8c5b48b4e1b3a9bdbdf3c7f382e25fe25f5');
 });
+
+const media = JSON.parse(readFileSync(new URL('../src/data/podcast/21ideas-media.json', import.meta.url), 'utf8'));
+test('self-hosted feed replaces every archived enclosure URL while preserving all other bytes', () => {
+  const before = JSON.stringify(archive);
+  const original = render(archive);
+  const moved = renderPodcastFeed({ show, digests: [], audio: new Map(), archive, archiveMedia: media });
+  let expected = original;
+  for (const e of media.episodes) {
+    const escape = (s) => s.replaceAll('&', '&amp;');
+    expected = expected.replace(`url="${escape(e.sourceUrl)}"`, `url="${escape(e.url)}"`);
+  }
+  assert.equal(moved, expected);
+  assert.equal(JSON.stringify(archive), before, 'source snapshot must not be mutated');
+  assert.equal((moved.match(/<enclosure url="https:\/\/audio.21ideas.org\/podcasts\/archive\//g) ?? []).length, 134);
+});
+test('incomplete, mismatched, duplicate or untrusted media mappings fail before producing a partial migration', () => {
+  const renderMedia = (m) => renderPodcastFeed({ show, digests: [], audio: new Map(), archive, archiveMedia: m });
+  const first = media.episodes[0];
+  for (const m of [
+    { ...media, version: 2 },
+    { ...media, episodes: media.episodes.slice(1) },
+    { ...media, episodes: [...media.episodes, first] },
+    ...[
+      { guid: 'unknown' }, { sourceUrl: 'https://other.example/audio.mp3' },
+      { byteLength: first.byteLength + 1 }, { mimeType: 'audio/ogg' }, { sha256: 'bad' },
+      { url: 'https://other.example/2021-01-01.mp3' },
+      { url: 'https://audio.21ideas.org/podcasts/archive/2021-01-01.mp3?token=x' },
+      { url: first.url.replace(/\.(mp3|m4a)$/, first.mimeType === 'audio/mpeg' ? '.m4a' : '.mp3') },
+      { url: media.episodes[1].url },
+    ].map((over) => ({ ...media, episodes: [{ ...first, ...over }, ...media.episodes.slice(1)] })),
+  ]) assert.throws(() => renderMedia(m), /archive media/i);
+});

@@ -208,11 +208,13 @@ host (`https://audio.21ideas.org`, the 21ideas box). The site itself stays on Gi
 The channel continues the existing **21ideas** podcast; its identity is independent of the daily
 digest brand. `src/data/podcast/21ideas-archive.json` is a frozen import of the historical Anchor
 episodes. `src/lib/podcast-archive.mjs` validates and renders that archive; the feed merges it with
-new sidecar-backed digest episodes, newest first. Original GUIDs, enclosure URLs/types/lengths,
-dates, descriptions and iTunes episode metadata are retained. Historical media stays external and
-is not subject to the new digest audio loader's URL/duration restrictions. Duplicate archive or
+new sidecar-backed digest episodes, newest first. Original GUIDs, enclosure types/lengths,
+dates, descriptions and iTunes episode metadata are retained. `src/data/podcast/21ideas-media.json`
+is a complete verified GUID-keyed mapping to self-hosted archive files; only enclosure URLs change.
+The original source URLs stay in the frozen snapshot. Missing, duplicate, mismatched or untrusted
+mappings fail explicitly. Historical audio is not subject to the new digest loader's duration limits. Duplicate archive or
 archive/digest identities fail the build rather than silently lose episodes. Migration steps and
-the external-media retention boundary are in `docs/podcast/21ideas-migration.md`.
+server route and migration checks are in `docs/podcast/21ideas-migration.md`.
 
 A separate RSS 2.0 + iTunes feed of the audio episodes; `/rss.xml` stays the full-text feed and is
 unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pages/[feed].xml.js`.

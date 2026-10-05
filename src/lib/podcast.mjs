@@ -10,7 +10,7 @@
 // show config — never taken from digest text.
 
 import { SITE_NAME } from '../site-identity.mjs';
-import { validatePodcastArchive, renderArchivedEpisode } from './podcast-archive.mjs';
+import { selfHostedArchive, renderArchivedEpisode } from './podcast-archive.mjs';
 
 /** @typedef {import('./podcast-config.mjs').PodcastShow} PodcastShow */
 /** @typedef {import('./audio.mjs').AudioEpisode} AudioEpisode */
@@ -148,13 +148,13 @@ export function podcastEpisodes({ digests, audio }) {
 
 /**
  * The full podcast RSS 2.0 + iTunes document, or null when the show identity is incomplete.
- * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode>, archive?: import('./podcast-archive.mjs').PodcastArchive }} opts
+ * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode>, archive?: import('./podcast-archive.mjs').PodcastArchive, archiveMedia?: import('./podcast-archive.mjs').ArchiveMediaManifest }} opts
  * @returns {string | null}
  */
-export function renderPodcastFeed({ show, digests, audio, archive }) {
+export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia }) {
   if (!show || !podcastShowStatus(show).complete) return null;
   const s = /** @type {PodcastShow} */ (show);
-  const historical = validatePodcastArchive(archive);
+  const historical = selfHostedArchive(archive, archiveMedia);
   const current = podcastEpisodes({ digests, audio });
   const guids = new Set(historical.map((e) => e.guid));
   const urls = new Set(historical.map((e) => e.enclosure.url));
