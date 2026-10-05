@@ -1,15 +1,10 @@
 ---
 interface Props { url: string; }
 const { url } = Astro.props;
-const textUrl = new URL('/rss.xml', url).href;
 ---
 <section class="section podcast-feed" aria-labelledby="podcast-rss">
-  <div class="section-header"><h2 id="podcast-rss">любое приложение по rss</h2></div>
-  <p class="subscribe-lead">"Доброе утро, биткоинер" доступен по rss как в аудио, так и в текстовой версии. Скопируй ссылку на rss-ленту и вставь в любимое приложение, чтобы всегда быть в курсе последних биткоин-событий.</p>
-  <div class="subscribe-actions">
-    <a class="cta-btn" href={textUrl} data-feed-copy data-feed-label="текстовую">Текст <span class="arrow">→</span></a>
-    <a class="cta-btn" href={url} data-feed-copy data-feed-label="аудио">Аудио <span class="arrow">→</span></a>
-  </div>
+  <div class="section-header"><h2 id="podcast-rss">Подкаст «Доброе утро, биткоинер»</h2></div>
+  <p class="subscribe-lead">«Доброе утро, биткоинер» доступен в аудиоверсии по rss. Найди 21ideas на любимой подкаст-площадке или скопируй <a href={url} data-feed-copy data-feed-label="аудио">ссылку на rss-ленту</a> и вставь в приложение.</p>
   <p class="podcast-copy-status" role="status" aria-live="polite" data-feed-status></p>
   <a class="podcast-feed-url" data-feed-fallback hidden></a>
 </section>
