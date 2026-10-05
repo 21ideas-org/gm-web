@@ -29,6 +29,7 @@ const ORIGIN = 'https://media.fixture.test';
 /** A valid v1 record for `episodeId` whose digest hash matches `digestBytes`. */
 function record(episodeId = '2026-10-04', digestBytes = DIGEST_BYTES, over = {}) {
   const hash = over.sha256 ?? MP3_HASH;
+  const v = over.mediaVersion ?? 1;
   return {
     version: 1,
     episodeId,
@@ -36,7 +37,8 @@ function record(episodeId = '2026-10-04', digestBytes = DIGEST_BYTES, over = {})
     publishedAt: `${episodeId}T05:00:00Z`,
     coveredDate: '2026-10-03',
     digestSha256: sha256(digestBytes),
-    url: `${ORIGIN}/podcasts/${episodeId}/${hash}.mp3`,
+    mediaVersion: v,
+    url: `${ORIGIN}/podcasts/${episodeId}${v === 1 ? '' : `-v${v}`}.mp3`,
     mimeType: 'audio/mpeg',
     byteLength: 4855585,
     durationSeconds: 303.4,
@@ -75,7 +77,8 @@ test('valid matching record is exposed as a normalized episode', () => {
     publishedAt: '2026-10-04T05:00:00Z',
     coveredDate: '2026-10-03',
     digestSha256: sha256(DIGEST_BYTES),
-    url: `${ORIGIN}/podcasts/2026-10-04/${MP3_HASH}.mp3`,
+    mediaVersion: 1,
+    url: `${ORIGIN}/podcasts/2026-10-04.mp3`,
     mimeType: 'audio/mpeg',
     byteLength: 4855585,
     durationSeconds: 303.4,
@@ -83,6 +86,16 @@ test('valid matching record is exposed as a normalized episode', () => {
   });
   assert.deepEqual(status, { files: 1, valid: 1, skipped: 0, reasons: [] });
   assert.deepEqual(logs, ['[audio] sidecars ok=1 skipped=0']);
+});
+
+test('a later distinct take loads with its versioned date URL; the guid stays the episode guid', () => {
+  const { episodes, status } = site({ sidecars: { '2026-10-04.json': record(undefined, undefined, { mediaVersion: 2 }) } });
+  assert.deepEqual(status.reasons, []);
+  const e = episodes.get('2026-10-04');
+  assert.equal(e?.url, `${ORIGIN}/podcasts/2026-10-04-v2.mp3`);
+  assert.equal(e?.mediaVersion, 2);
+  assert.equal(e?.guid, 'gm-audio:2026-10-04');
+  assert.equal(e?.sha256, MP3_HASH, 'the MP3 hash stays integrity metadata, not part of the name');
 });
 
 test('unknown extra fields are tolerated but not exposed', () => {
@@ -169,7 +182,7 @@ const reason = (over, omit) => {
 };
 
 test('every v1 field is required', () => {
-  for (const f of ['version', 'episodeId', 'guid', 'publishedAt', 'coveredDate', 'digestSha256', 'url', 'mimeType', 'byteLength', 'durationSeconds', 'sha256']) {
+  for (const f of ['version', 'episodeId', 'guid', 'publishedAt', 'coveredDate', 'digestSha256', 'mediaVersion', 'url', 'mimeType', 'byteLength', 'durationSeconds', 'sha256']) {
     assert.notEqual(reason({}, f), 'ok', `missing ${f} must be rejected`);
   }
   assert.equal(reason({}), 'ok');
@@ -206,8 +219,15 @@ test('byte length and duration must be positive numbers of the right kind', () =
   for (const v of [0, -3, '303.4', Number.POSITIVE_INFINITY, null]) assert.equal(reason({ durationSeconds: v }), 'duration', String(v));
 });
 
+test('media version must be a positive safe integer (1 = plain date name)', () => {
+  for (const v of [0, -1, 1.5, '1', '2', null, Number.NaN, 2 ** 53]) assert.equal(reason({ mediaVersion: v }), 'media_version', String(v));
+  assert.equal(reason({}, 'mediaVersion'), 'media_version');
+  assert.equal(reason({ mediaVersion: 2 }), 'ok');
+  assert.equal(reason({ mediaVersion: 12 }), 'ok');
+});
+
 test('hashes must be 64 lowercase hex characters; digest hash must match the Markdown bytes', () => {
-  assert.equal(reason({ sha256: MP3_HASH.toUpperCase(), url: expectedAudioUrl(ORIGIN, '2026-10-04', MP3_HASH.toUpperCase()) }), 'sha256');
+  assert.equal(reason({ sha256: MP3_HASH.toUpperCase() }), 'sha256');
   assert.equal(reason({ sha256: 'abc' }), 'sha256');
   assert.equal(reason({ digestSha256: 'not-a-hash' }), 'digest_sha256');
   assert.equal(reason({ digestSha256: sha256('other digest') }), 'digest_hash_mismatch');
@@ -215,54 +235,77 @@ test('hashes must be 64 lowercase hex characters; digest hash must match the Mar
 
 // ── URL trust ────────────────────────────────────────────────────────────────
 
-test('media URL must be exactly <origin>/podcasts/<episodeId>/<sha256>.mp3', () => {
-  const ok = `${ORIGIN}/podcasts/2026-10-04/${MP3_HASH}.mp3`;
-  const opts = { origin: ORIGIN, episodeId: '2026-10-04', sha256: MP3_HASH };
+test('media URL must be exactly <origin>/podcasts/<episodeId>.mp3, or <episodeId>-v<N>.mp3 for N ≥ 2', () => {
+  const ok = `${ORIGIN}/podcasts/2026-10-04.mp3`;
+  const opts = { origin: ORIGIN, episodeId: '2026-10-04', mediaVersion: 1 };
   assert.equal(checkAudioUrl(ok, opts), null);
-  assert.equal(expectedAudioUrl(ORIGIN, '2026-10-04', MP3_HASH), ok);
+  assert.equal(expectedAudioUrl(ORIGIN, '2026-10-04', 1), ok);
+  const v2 = `${ORIGIN}/podcasts/2026-10-04-v2.mp3`;
+  assert.equal(expectedAudioUrl(ORIGIN, '2026-10-04', 2), v2);
+  assert.equal(expectedAudioUrl(ORIGIN, '2026-10-04', 10), `${ORIGIN}/podcasts/2026-10-04-v10.mp3`);
+  assert.equal(checkAudioUrl(v2, { ...opts, mediaVersion: 2 }), null);
 
   const cases = {
     url_origin: [
-      `https://evil.test/podcasts/2026-10-04/${MP3_HASH}.mp3`,
-      `http://media.fixture.test/podcasts/2026-10-04/${MP3_HASH}.mp3`,
-      `https://media.fixture.test:8443/podcasts/2026-10-04/${MP3_HASH}.mp3`,
-      `https://media.fixture.test.evil.test/podcasts/2026-10-04/${MP3_HASH}.mp3`,
+      `https://evil.test/podcasts/2026-10-04.mp3`,
+      `http://media.fixture.test/podcasts/2026-10-04.mp3`,
+      `https://media.fixture.test:8443/podcasts/2026-10-04.mp3`,
+      `https://media.fixture.test.evil.test/podcasts/2026-10-04.mp3`,
     ],
-    url_credentials: [`https://user:pw@media.fixture.test/podcasts/2026-10-04/${MP3_HASH}.mp3`, `https://user@media.fixture.test/podcasts/2026-10-04/${MP3_HASH}.mp3`],
+    url_credentials: [`https://user:pw@media.fixture.test/podcasts/2026-10-04.mp3`, `https://user@media.fixture.test/podcasts/2026-10-04.mp3`],
     url_query: [`${ok}?x=1`, `${ok}?`],
     url_fragment: [`${ok}#t=10`, `${ok}#`],
     url_path: [
-      `${ORIGIN}/podcasts/2026-10-05/${MP3_HASH}.mp3`,
-      `${ORIGIN}/podcasts/2026-10-04/${sha256('other')}.mp3`,
-      `${ORIGIN}/podcasts/x/../2026-10-04/${MP3_HASH}.mp3`,
-      `${ORIGIN}/podcasts/2026-10-04/%2e%2e/2026-10-04/${MP3_HASH}.mp3`,
-      `${ORIGIN}/media/2026-10-04/${MP3_HASH}.mp3`,
-      `${ORIGIN}/podcasts/2026-10-04/${MP3_HASH}.MP3`,
-      `${ORIGIN}//podcasts/2026-10-04/${MP3_HASH}.mp3`,
-      `${ORIGIN}/podcasts\\2026-10-04\\${MP3_HASH}.mp3`,
+      `${ORIGIN}/podcasts/2026-10-05.mp3`,
+      `${ORIGIN}/podcasts/2026-10-03.mp3`, // the covered day never names the file
+      `${ORIGIN}/podcasts/2026-10-04/${MP3_HASH}.mp3`, // the superseded hashed layout
+      `${ORIGIN}/podcasts/2026-10-04-v1.mp3`,
+      v2, // a versioned name for a version-1 record
+      `${ORIGIN}/podcasts/x/../2026-10-04.mp3`,
+      `${ORIGIN}/podcasts/%2e%2e/podcasts/2026-10-04.mp3`,
+      `${ORIGIN}/podcasts/2026-10-04%2Emp3`,
+      `${ORIGIN}/podcasts/%32026-10-04.mp3`,
+      `${ORIGIN}/media/2026-10-04.mp3`,
+      `${ORIGIN}/2026-10-04.mp3`,
+      `${ORIGIN}/podcasts/2026-10-04.MP3`,
+      `${ORIGIN}/podcasts/2026-10-04.mp3/`,
+      `${ORIGIN}//podcasts/2026-10-04.mp3`,
+      `${ORIGIN}/podcasts\\2026-10-04.mp3`,
     ],
-    url_invalid: ['not a url', '', ` ${ok}`, `/podcasts/2026-10-04/${MP3_HASH}.mp3`],
+    url_invalid: ['not a url', '', ` ${ok}`, `/podcasts/2026-10-04.mp3`],
   };
   for (const [code, urls] of Object.entries(cases)) {
     for (const u of urls) assert.equal(checkAudioUrl(u, opts), code, u);
   }
+  // A version-2 record accepts only its own exact name: no zero padding, case variants or other versions.
+  for (const u of [ok, `${ORIGIN}/podcasts/2026-10-04-v02.mp3`, `${ORIGIN}/podcasts/2026-10-04-V2.mp3`, `${ORIGIN}/podcasts/2026-10-04-v3.mp3`, `${ORIGIN}/podcasts/2026-10-04_v2.mp3`]) {
+    assert.equal(checkAudioUrl(u, { ...opts, mediaVersion: 2 }), 'url_path', u);
+  }
+  for (const v of [0, -1, 1.5, '2', undefined]) assert.equal(checkAudioUrl(ok, { ...opts, mediaVersion: v }), 'url_path', String(v));
   assert.equal(checkAudioUrl(42, opts), 'url_invalid');
 });
 
 test('the configured origin must itself be a bare HTTPS origin', () => {
-  const url = `http://media.fixture.test/podcasts/2026-10-04/${MP3_HASH}.mp3`;
-  assert.equal(checkAudioUrl(url, { origin: 'http://media.fixture.test', episodeId: '2026-10-04', sha256: MP3_HASH }), 'config_origin');
-  assert.equal(checkAudioUrl(url, { origin: 'https://media.fixture.test/base', episodeId: '2026-10-04', sha256: MP3_HASH }), 'config_origin');
+  const url = `http://media.fixture.test/podcasts/2026-10-04.mp3`;
+  assert.equal(checkAudioUrl(url, { origin: 'http://media.fixture.test', episodeId: '2026-10-04', mediaVersion: 1 }), 'config_origin');
+  assert.equal(checkAudioUrl(url, { origin: 'https://media.fixture.test/base', episodeId: '2026-10-04', mediaVersion: 1 }), 'config_origin');
 });
 
-test('the approved production origin is the default', () => {
-  assert.equal(AUDIO_MEDIA_ORIGIN, 'https://gm.21ideas.org');
-  const res = parseAudioRecord(
-    record(undefined, undefined, { url: `https://gm.21ideas.org/podcasts/2026-10-04/${MP3_HASH}.mp3` }),
-    { episodeId: '2026-10-04', digestSha256: sha256(DIGEST_BYTES) },
-  );
-  assert.equal(res.ok, true);
-  assert.equal(parseAudioRecord(record(), { episodeId: '2026-10-04', digestSha256: sha256(DIGEST_BYTES) }).ok, false);
+test('the approved production origin is the dedicated audio host, not the GitHub Pages site', () => {
+  assert.equal(AUDIO_MEDIA_ORIGIN, 'https://audio.21ideas.org');
+  const ctx = { episodeId: '2026-10-04', digestSha256: sha256(DIGEST_BYTES) };
+  for (const [over, ok] of [
+    [{ url: 'https://audio.21ideas.org/podcasts/2026-10-04.mp3' }, true],
+    [{ mediaVersion: 3, url: 'https://audio.21ideas.org/podcasts/2026-10-04-v3.mp3' }, true],
+    [{ url: 'https://gm.21ideas.org/podcasts/2026-10-04.mp3' }, false],
+    [{ url: `https://gm.21ideas.org/podcasts/2026-10-04/${MP3_HASH}.mp3` }, false],
+    [{ url: `https://audio.21ideas.org/podcasts/2026-10-04/${MP3_HASH}.mp3` }, false],
+  ]) {
+    assert.equal(parseAudioRecord(record(undefined, undefined, over), ctx).ok, ok, over.url);
+  }
+  assert.deepEqual(parseAudioRecord(record(undefined, undefined, { url: 'https://gm.21ideas.org/podcasts/2026-10-04.mp3' }), ctx),
+    { ok: false, reason: 'url_origin' });
+  assert.equal(parseAudioRecord(record(), ctx).ok, false, 'the fixture origin is not trusted by default');
 });
 
 // ── Unique identity across records ───────────────────────────────────────────

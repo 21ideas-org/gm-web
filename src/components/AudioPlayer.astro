@@ -8,7 +8,9 @@ interface Props {
 }
 const { episode, dateLabel } = Astro.props;
 // Only validated episodes reach here (src/lib/audio.mjs): the URL is the trusted
-// {origin}/podcasts/{episodeId}/{sha256}.mp3. preload="none" — nothing is downloaded until play.
+// {origin}/podcasts/{episodeId}.mp3 (or -vN.mp3) on the separate audio host. preload="none" — nothing is
+// downloaded until play. Browsers ignore `download` on a cross-origin link, so the download link may open
+// the MP3 instead of saving it; the file name is already the readable episode date either way.
 const label = `Аудиоверсия дайджеста за ${dateLabel}`;
 const duration = formatAudioDuration(episode.durationSeconds);
 ---

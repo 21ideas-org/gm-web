@@ -167,19 +167,31 @@ the project's only native dependency). Both were removed when the loader moved t
 
 A digest page shows a compact native audio player (`src/components/AudioPlayer.astro`, rendered by
 `Post.astro` under the header) only when a valid sidecar exists for it. Pages without one are
-unchanged. MP3s are never committed, fetched or read by the build; they live on the media host.
+unchanged. MP3s are never committed, fetched or read by the build; they live on a separate audio
+host (`https://audio.21ideas.org`, the 21ideas box). The site itself stays on GitHub Pages at
+`https://gm.21ideas.org`; its DNS, pages and feed URLs do not change.
 
 - **Sidecar** — `src/data/audio/{episodeId}.json` (outside the content collection, so the digest
   Markdown/schema the bot writes is untouched). v1 fields: `version` (1), `episodeId`
   (`YYYY-MM-DD`, must equal the file name and an existing `src/content/digests/{episodeId}.md`),
   `guid` (exactly `gm-audio:{episodeId}`), `publishedAt` (UTC `…T…Z`), `coveredDate` (real date
-  before the episode), `digestSha256` (sha256 of the digest file's **original bytes**), `url`,
-  `mimeType` (`audio/mpeg`), `byteLength` (positive integer), `durationSeconds` (positive), `sha256`
-  (MP3 hash, 64 lowercase hex). Unknown extra fields are ignored.
-- **Trusted URL** — must be exactly `https://gm.21ideas.org/podcasts/{episodeId}/{sha256}.mp3`
-  (`AUDIO_MEDIA_ORIGIN` in `src/lib/audio.mjs`; the configured value must be a bare HTTPS origin).
-  Other origins/ports/schemes, credentials, queries, fragments, traversal or encoded/variant paths
-  are rejected. A guid/URL/hash shared by two records rejects both.
+  before the episode), `digestSha256` (sha256 of the digest file's **original bytes**),
+  `mediaVersion` (positive integer: which file of that day the URL names), `url`, `mimeType`
+  (`audio/mpeg`), `byteLength` (positive integer), `durationSeconds` (positive), `sha256` (MP3
+  hash, 64 lowercase hex — integrity metadata, not part of the file name). Unknown extra fields are
+  ignored.
+- **Trusted URL** — must be exactly `https://audio.21ideas.org/podcasts/{episodeId}.mp3` when
+  `mediaVersion` is 1, or `…/podcasts/{episodeId}-v{mediaVersion}.mp3` for a later distinct take of
+  the same day (`-v2`, `-v3`, … — no zero padding, no `-v1`). The date is the episode (publication)
+  date, never the covered day. `AUDIO_MEDIA_ORIGIN` in `src/lib/audio.mjs` is the trusted origin (the
+  configured value must be a bare HTTPS origin). Other origins (including `gm.21ideas.org`),
+  ports/schemes, credentials, queries, fragments, traversal, encoded/variant paths, a version that
+  disagrees with the URL, and the superseded `/podcasts/{episodeId}/{sha256}.mp3` layout are
+  rejected. A guid/URL/hash shared by two records rejects both.
+- **Immutable files, immutable sidecars** — each published MP3 URL is immutable on the audio host;
+  a new distinct take gets a new `-vN` name rather than overwriting one. That naming rule does
+  **not** make published sidecars or digests replaceable: both stay create-only, and there is no
+  automatic re-generation or back-fill of an already published day.
 - **One loader** — `src/lib/audio.mjs`: `loadAudioEpisodes()` (pure, injectable dirs/origin/log),
   memoized `audioEpisodes()` (`Map<episodeId, AudioEpisode>`) and `audioForDigest(id)`. The
   podcast feed consumes the same map, looked up by published (non-draft) digest ids.
@@ -187,7 +199,8 @@ unchanged. MP3s are never committed, fetched or read by the build; they live on 
   sidecar is skipped with `[audio] skip <file>: <reason>` plus one `[audio] sidecars ok=N skipped=M`
   line on stderr. It never fails the build.
 - **Player** — `<audio controls preload="none">` with an accessible label, duration
-  (`<time datetime="PT…">`) and a direct MP3 download link with its size. Offline tests:
+  (`<time datetime="PT…">`) and a direct MP3 download link with its size (the `download` attribute is
+  only a hint on the cross-origin audio host; the readable date file name is what users get). Offline tests:
   `node --test scripts/audio.test.mjs` (also part of `npm test`).
 
 ## Podcast feed (`/podcast.xml`)
@@ -199,8 +212,9 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   `audioEpisodes()` map (all sidecar validation, URL trust and guid/URL/hash de-duplication stay in
   `src/lib/audio.mjs`). Drafts, digests without audio, and orphan/invalid/mismatched/conflicting
   records never produce an item. Newest first by `publishedAt`. Per item: `guid` (`gm-audio:{id}`,
-  `isPermaLink="false"`), RFC 822 `pubDate` from the sidecar's UTC `publishedAt`, `enclosure`
-  (sidecar `url`, `byteLength`, `mimeType`), `itunes:duration` (whole measured seconds), the digest
+  `isPermaLink="false"`; never derived from the MP3 file name or version), RFC 822 `pubDate` from the
+  sidecar's UTC `publishedAt`, `enclosure` (sidecar `url` — `…/podcasts/{id}.mp3` or `…-vN.mp3` —
+  `byteLength`, `mimeType`), `itunes:duration` (whole measured seconds), the digest
   title, and the canonical digest `link`.
 - **Show notes** — built in code from the publication-card fields, in this order:
   `Доброе утро, биткоинер`, the `formatRuDate` label (with year — the spoken no-year rule is

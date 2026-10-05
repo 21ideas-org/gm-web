@@ -1,5 +1,5 @@
 // src/lib/audio.mjs — build-time only. Reads the per-episode audio sidecars src/data/audio/{episodeId}.json
-// (v1 contract, written by the bot; MP3s live on the media host, never in Git) and returns the
+// (v1 contract, written by the bot; MP3s live on the dedicated audio host, never in Git) and returns the
 // normalized episodes whose record matches a digest Markdown file byte-for-byte. The ONE shared
 // loader for the digest-page player and any later podcast-feed consumer. Pure ESM (no astro:*
 // imports) so scripts/audio.test.mjs can drive it offline. MP3s are never fetched or read.
@@ -22,6 +22,7 @@ import { join, resolve } from 'node:path';
  *   publishedAt: string,
  *   coveredDate: string,
  *   digestSha256: string,
+ *   mediaVersion: number,
  *   url: string,
  *   mimeType: string,
  *   byteLength: number,
@@ -34,9 +35,11 @@ import { join, resolve } from 'node:path';
 /** @typedef {{ ok: true, episode: AudioEpisode } | { ok: false, reason: string }} AudioParse */
 
 export const AUDIO_RECORD_VERSION = 1;
-// Approved public media origin + path prefix; the final URL is {origin}/podcasts/{episodeId}/{sha256}.mp3.
-// Change the origin here (or pass `mediaOrigin`) — it must stay a bare HTTPS origin.
-export const AUDIO_MEDIA_ORIGIN = 'https://gm.21ideas.org';
+// Approved public media origin + path prefix; the final URL is {origin}/podcasts/{episodeId}.mp3, or
+// {origin}/podcasts/{episodeId}-v{N}.mp3 (N ≥ 2) for a later distinct take of the same day. The MP3 host
+// is separate from this GitHub Pages site. Change the origin here (or pass `mediaOrigin`) — it must stay
+// a bare HTTPS origin.
+export const AUDIO_MEDIA_ORIGIN = 'https://audio.21ideas.org';
 export const AUDIO_MEDIA_PATH_PREFIX = '/podcasts/';
 export const AUDIO_MIME_TYPES = Object.freeze(['audio/mpeg']);
 export const AUDIO_GUID_PREFIX = 'gm-audio:';
@@ -72,9 +75,13 @@ function isUtcInstant(v) {
 /** @param {string} episodeId */
 export const audioGuid = (episodeId) => `${AUDIO_GUID_PREFIX}${episodeId}`;
 
-/** @param {string} origin @param {string} episodeId @param {string} sha256 */
-export const expectedAudioUrl = (origin, episodeId, sha256) =>
-  `${origin}${AUDIO_MEDIA_PATH_PREFIX}${episodeId}/${sha256}.mp3`;
+// The media file version: 1 is the plain date name, N ≥ 2 a later distinct take ("-vN", never padded).
+/** @param {unknown} v @returns {v is number} */
+const isMediaVersion = (v) => Number.isSafeInteger(v) && /** @type {number} */ (v) >= 1;
+
+/** @param {string} origin @param {string} episodeId @param {number} mediaVersion */
+export const expectedAudioUrl = (origin, episodeId, mediaVersion) =>
+  `${origin}${AUDIO_MEDIA_PATH_PREFIX}${episodeId}${mediaVersion === 1 ? '' : `-v${mediaVersion}`}.mp3`;
 
 /** @param {string} origin */
 function isBareHttpsOrigin(origin) {
@@ -87,15 +94,16 @@ function isBareHttpsOrigin(origin) {
 }
 
 /**
- * Trust check for a record's media URL: it must equal exactly {origin}/podcasts/{episodeId}/{sha256}.mp3.
- * Returns null when trusted, else a reason code. The exact-string comparison is the real gate (it
- * also rejects dot segments, percent-encoding, backslashes, case/port variants); the earlier steps
- * only pick a precise diagnostic.
+ * Trust check for a record's media URL: it must equal exactly {origin}/podcasts/{episodeId}.mp3
+ * (mediaVersion 1) or {origin}/podcasts/{episodeId}-v{mediaVersion}.mp3. Returns null when trusted,
+ * else a reason code. The exact-string comparison is the real gate (it also rejects dot segments,
+ * percent-encoding, backslashes, case/port variants, zero-padded or mismatched versions); the earlier
+ * steps only pick a precise diagnostic.
  * @param {unknown} url
- * @param {{ origin: string, episodeId: string, sha256: string }} opts
+ * @param {{ origin: string, episodeId: string, mediaVersion: unknown }} opts
  * @returns {string | null}
  */
-export function checkAudioUrl(url, { origin, episodeId, sha256 }) {
+export function checkAudioUrl(url, { origin, episodeId, mediaVersion }) {
   if (!isBareHttpsOrigin(origin)) return 'config_origin';
   if (typeof url !== 'string' || /[\s\u0000-\u001f\u007f]/.test(url)) return 'url_invalid';
   let parsed;
@@ -108,8 +116,8 @@ export function checkAudioUrl(url, { origin, episodeId, sha256 }) {
   if (parsed.origin !== origin) return 'url_origin';
   if (parsed.search || url.includes('?')) return 'url_query';
   if (parsed.hash || url.includes('#')) return 'url_fragment';
-  if (!isCalendarDay(episodeId) || !SHA256_HEX.test(sha256)) return 'url_path';
-  return url === expectedAudioUrl(origin, episodeId, sha256) ? null : 'url_path';
+  if (!isCalendarDay(episodeId) || !isMediaVersion(mediaVersion)) return 'url_path';
+  return url === expectedAudioUrl(origin, episodeId, mediaVersion) ? null : 'url_path';
 }
 
 /**
@@ -136,7 +144,9 @@ export function parseAudioRecord(raw, { episodeId, digestSha256, mediaOrigin = A
     return fail('duration');
   }
   if (typeof raw.sha256 !== 'string' || !SHA256_HEX.test(raw.sha256)) return fail('sha256');
-  const urlReason = checkAudioUrl(raw.url, { origin: mediaOrigin, episodeId, sha256: raw.sha256 });
+  // Which file of the day the URL names; the MP3 hash above stays integrity metadata, not the name.
+  if (!isMediaVersion(raw.mediaVersion)) return fail('media_version');
+  const urlReason = checkAudioUrl(raw.url, { origin: mediaOrigin, episodeId, mediaVersion: raw.mediaVersion });
   if (urlReason) return fail(urlReason);
   if (digestSha256 === null) return fail('orphan');
   if (raw.digestSha256 !== digestSha256) return fail('digest_hash_mismatch');
@@ -148,6 +158,7 @@ export function parseAudioRecord(raw, { episodeId, digestSha256, mediaOrigin = A
       publishedAt: raw.publishedAt,
       coveredDate: raw.coveredDate,
       digestSha256: raw.digestSha256,
+      mediaVersion: raw.mediaVersion,
       url: /** @type {string} */ (raw.url),
       mimeType: raw.mimeType,
       byteLength: /** @type {number} */ (raw.byteLength),
