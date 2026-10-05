@@ -244,7 +244,10 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   artwork is preserved. An invalid configured episode cover suppresses feed publication.
   Optional `guid` preserves the verified existing Podcast Index UUIDv5 across hosting moves;
   invalid configured GUIDs also suppress publication. The Podcast Namespace funding tag points to
-  `/support/`. Payment migration boundaries are documented in `docs/podcast/21ideas-migration.md`.
+  `/support/`. `archiveValue` preserves the existing channel-level keysend splits;
+  `dailyLightningAddress` overrides them per daily episode with one Coinos recipient at 100%.
+  Invalid payment config suppresses publication. Payment routing and compatibility limits are
+  documented in `docs/podcast/21ideas-migration.md`.
 - **Unadvertised until complete** — `podcastShowStatus()` lists missing/untrusted fields. While any
   is missing, `getStaticPaths()` returns no path, so the build emits **no** `/podcast.xml`, and
   `BaseHead.astro` omits the feed's `<link rel="alternate">`. Text builds are unaffected. Once

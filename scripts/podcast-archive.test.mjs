@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { renderPodcastFeed } from '../src/lib/podcast.mjs';
+import { renderPodcastFeed, escapeXml } from '../src/lib/podcast.mjs';
+import { PODCAST_SHOW } from '../src/lib/podcast-config.mjs';
 import { validatePodcastArchive } from '../src/lib/podcast-archive.mjs';
 const archive = JSON.parse(readFileSync(new URL('../src/data/podcast/21ideas-archive.json', import.meta.url), 'utf8'));
 const show = { siteOrigin: 'https://gm.21ideas.org', title: '21ideas', description: 'Bitcoin podcast', language: 'ru', author: 'Tony Lightning', ownerName: '21ideas', ownerEmail: 'podcast@example.test', category: 'Education', imageUrl: 'https://example.test/cover.jpg' };
@@ -85,4 +86,29 @@ test('incomplete, mismatched, duplicate or untrusted media mappings fail before 
       { url: media.episodes[1].url },
     ].map((over) => ({ ...media, episodes: [{ ...first, ...over }, ...media.episodes.slice(1)] })),
   ]) assert.throws(() => renderMedia(m), /archive media/i);
+});
+
+
+test('approved payment routing retains every archive item and its existing four-way split', () => {
+  const base = { show, archive, archiveMedia: media, digests: [], audio: new Map() };
+  const original = renderPodcastFeed(base);
+  const configured = renderPodcastFeed({ ...base, show: { ...show, archiveValue: PODCAST_SHOW.archiveValue, dailyLightningAddress: PODCAST_SHOW.dailyLightningAddress } });
+  const items = (xml) => [...xml.matchAll(/<item>[\s\S]*?<\/item>/g)].map((m) => m[0]);
+  assert.deepEqual(items(configured), items(original), 'all historical items must remain byte-identical');
+  assert.ok(!configured.includes('method="lnaddress"'), 'archive must not receive the GM override');
+  const split = configured.match(/<podcast:value[^>]*>([\s\S]*?)<\/podcast:value>/)?.[1];
+  assert.ok(split);
+  const expected = [
+    ['tony_lightning@fountain.fm', '03b6f613e88bd874177c28c6ad83b3baba43c4c656f56be1f8df84669556054b79', 74, '906608', '01F4o1zomYItiSp2yxeHhD', false],
+    ['bitkorn@fountain.fm', '03b6f613e88bd874177c28c6ad83b3baba43c4c656f56be1f8df84669556054b79', 21, '906608', '01RjOT2ii5o5u9o7UAIxil', false],
+    ['Fountain', '03b6f613e88bd874177c28c6ad83b3baba43c4c656f56be1f8df84669556054b79', 4, '906608', '01FOUNTAIN', false],
+    ['Podcastindex.org', '03ae9f91a0cb8ff43840e3c322c4c61f019d8c1c3cea15a25cfc425ac605e61a4a', 1, undefined, undefined, true],
+  ];
+  assert.equal((split.match(/<podcast:valueRecipient /g) ?? []).length, 4);
+  for (const [name, address, shares, key, value, fee] of expected) {
+    const recipient = [...split.matchAll(/<podcast:valueRecipient [^>]*\/>/g)].map((m) => m[0]).find((tag) => tag.includes(`name="${escapeXml(name)}"`));
+    assert.ok(recipient, name);
+    assert.ok(recipient.includes(`address="${address}"`) && recipient.includes(`split="${shares}"`) && recipient.includes(`fee="${fee}"`));
+    if (key) assert.ok(recipient.includes(`customKey="${key}"`) && recipient.includes(`customValue="${value}"`));
+  }
 });

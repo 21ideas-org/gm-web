@@ -50,16 +50,26 @@ independent and unchanged. A missing optional show GUID is omitted; a configured
 invalid UUIDv5 follows the existing incomplete-identity guard.
 
 `podcast:funding` links to the canonical `/support/` page. That page already exposes
-the project Lightning Address `gmbitcoiner@coinos.io`; this funding link does not
-change payment routing or introduce a `podcast:value` block.
+the project Lightning Address `gmbitcoiner@coinos.io`. Funding is a support-page link;
+actual Lightning routing is specified separately by the value blocks below.
 
 ### Payment migration boundary
 
 On 2026-10-05 both public directory responses agreed on the current external keysend
 split: `tony_lightning@fountain.fm` 74 shares, `bitkorn@fountain.fm` 21,
 Fountain 4, and Podcastindex.org 1 (marked as a fee). These are existing recipient
-settings, not new fees approved by this change. The current RSS has no value block.
-Do not silently replace this distribution with a single Coinos recipient.
+settings, not new fees introduced by this change. The deployed RSS originally had
+no value block. The operator approved preserving these archive splits and routing
+100% of each daily GM episode to `gmbitcoiner@coinos.io`.
+
+`PODCAST_SHOW.archiveValue` reproduces the exact existing keysend recipients,
+shares, custom routing records, fee flags and suggested rate at channel level.
+Each validated daily digest audio item has its own `method="lnaddress"` value block,
+with one `type="lnaddress"` recipient and `split="100"`, from
+`PODCAST_SHOW.dailyLightningAddress`. Daily blocks contain no Fountain/Bitkorn
+recipients or additional fee splits. Historical items remain unchanged and inherit
+the channel default. Do not remove that default during future configuration changes.
+Invalid configured payment destinations follow the incomplete-identity guard.
 
 The public Coinos LNURL-pay endpoint for `gmbitcoiner` returned a valid `payRequest`,
 minimum 1 sat, and a 512-character comment allowance. Its corresponding keysend
@@ -68,14 +78,14 @@ receipt or universal podcast-app support. No invoice was requested and no paymen
 was sent during these checks. Never use the shared Coinos node pubkey as a replacement
 for account-specific routing data.
 
-Before activating value payments to Coinos, agree whether the new recipient applies
-only to daily GM episodes or to the entire show, including historical episodes;
-confirm remaining splits; then verify the chosen apps support LNURL/invoice payments
-for `lnaddress` recipients and test a payment with operator authorization. Episode-level
-value blocks can override show recipients, but app support must be checked. Fountain
-documents external wallets and a separate 1% Boost Bot split for dashboard analytics;
-do not add this or any other new split without operator approval. Keep NWC secrets out
-of the public feed and repository.
+After deployment, verify the chosen apps honor the episode-level override and support
+LNURL/invoice payments for `lnaddress` recipients. A keysend-only app cannot pay this
+Coinos address through the unavailable keysend lookup; do not advertise universal
+payment support or mark app payments verified before a real authorized payment test.
+Fountain documents external wallets and a separate 1% Boost Bot split for dashboard
+analytics. The operator chose 100% Coinos for daily episodes, so no Boost Bot share is
+added. The four historical recipients are retained exactly. Keep NWC secrets out of
+the public feed and repository.
 
 Sources: [Fountain show](https://fountain.fm/show/chmjnVB1ZkSY3MC2FxY8),
 [BoostMeBitch directory record](https://www.boostmebitch.com/api/by-guid?guid=fbf0dca5-7cff-5518-a776-91ccda2b6612),
