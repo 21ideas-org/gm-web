@@ -1,4 +1,4 @@
-// Static historical episodes retain the old show's identity and external media URLs.
+// The frozen historical snapshot retains original identity and media URLs for auditing.
 // This path is separate from new digest sidecars: their trusted-media rules stay unchanged.
 
 /** @typedef {{ title: string, description: string, link: string, guid: string, guidIsPermaLink: string, pubDate: string, enclosure: {url: string, length: string, type: string}, creator?: string, itunes: Record<string, string> }} ArchivedEpisode */
@@ -56,4 +56,33 @@ export function renderArchivedEpisode(item, escape) {
       : `      <itunes:${key}>${escape(value)}</itunes:${key}>`);
   }
   return [...lines, '    </item>'].join('\n');
+}
+
+/** @typedef {{ guid: string, sourceUrl: string, url: string, byteLength: number, mimeType: string, sha256: string }} ArchiveMedia */
+/** @typedef {{ version: number, episodes: ArchiveMedia[] }} ArchiveMediaManifest */
+
+/** Apply a complete, verified media migration without modifying the frozen source snapshot.
+ * Only enclosure URLs change; GUIDs and original enclosure lengths/types remain intact.
+ * @param {PodcastArchive | undefined} archive
+ * @param {ArchiveMediaManifest | undefined} media
+ * @returns {ArchivedEpisode[]}
+ */
+export function selfHostedArchive(archive, media) {
+  const episodes = validatePodcastArchive(archive);
+  if (media === undefined) return episodes;
+  const fail = () => { throw new Error('podcast archive media: invalid or incomplete mapping'); };
+  if (!media || media.version !== 1 || !Array.isArray(media.episodes) || media.episodes.length !== episodes.length) return fail();
+  const originals = new Map(episodes.map((e) => [e.guid, e]));
+  const mapping = new Map(); const urls = new Set();
+  for (const entry of media.episodes) {
+    const original = entry && originals.get(entry.guid);
+    if (!original || mapping.has(entry.guid) || urls.has(entry.url)
+      || entry.sourceUrl !== original.enclosure.url || entry.byteLength !== Number(original.enclosure.length)
+      || entry.mimeType !== original.enclosure.type || typeof entry.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(entry.sha256)
+      || typeof entry.url !== 'string'
+      || !/^https:\/\/audio\.21ideas\.org\/podcasts\/archive\/\d{4}-\d{2}-\d{2}(?:-v(?:[2-9]|[1-9]\d+))?\.(?:mp3|m4a)$/.test(entry.url)
+      || !entry.url.endsWith(entry.mimeType === 'audio/mpeg' ? '.mp3' : '.m4a')) return fail();
+    mapping.set(entry.guid, entry.url); urls.add(entry.url);
+  }
+  return episodes.map((episode) => ({ ...episode, enclosure: { ...episode.enclosure, url: mapping.get(episode.guid) } }));
 }
