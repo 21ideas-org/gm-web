@@ -43,7 +43,7 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
 
 ## Routing
 
-`/` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
+`/` · `/listen` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
 `/rss.xml` · `/podcast.xml` (only once the show is configured) · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
 · `/og/*.png` · `robots.txt`.
 
@@ -279,3 +279,29 @@ never served), merged in `readDonations()`:
 `.github/workflows/deploy.yml` (build → lychee internal-link check → deploy to GitHub Pages), then
 the `indexnow` job. CI gates that every change must pass: `npm ci`, `npm run check`, `npm run
 build`, and the lychee internal-link check.
+
+## Listening page
+
+`/listen/` is the permanent audio landing page; `/digests/{episodeId}/` remains the canonical
+episode URL. It reuses `audioEpisodes()` and the progressively enhanced custom `AudioPlayer.astro`,
+showing all published digests with matching validated audio as newest-first cards. Each card has
+a date without terminal prefixes, a player, a tree of verified show links and a text/source button.
+Stable `episode-{episodeId}` fragments resolve to cards; clicking a date copies its full URL without
+scrolling, with success/error feedback and the address bar as the clipboard-failure fallback.
+No media is fetched at build time; every player keeps `preload="none"`. Missing audio renders a
+usable text-digest fallback.
+
+`src/lib/listen-state.ts` shares the page state with navigation, the homepage audio action, and
+the compact digest subscription block. Subscription actions require `podcastShowStatus()` from
+the podcast RSS implementation to accept the show identity and at least one published playable
+episode; a newer text-only digest does not hide them. `/rss.xml` remains the text feed.
+
+`src/lib/podcast-apps.mjs` owns the typed app registry: Fountain, Spotify, Apple Podcasts and
+Boost Me Bitch. Only configured HTTPS show URLs render; directory rollout supplies
+them later. Show links are independent of RSS readiness; episode-specific external URLs are deferred.
+Fountain and Boost Me Bitch have inline Tabler Bolt badges with a Lightning-capability tooltip on
+hover, focus and tap. These describe the app, not our payment setup; Fountain support copy still
+requires explicitly verified payments. YouTube is deferred. `PodcastApps.astro` shares these links
+between the landing page and digest pages.
+`PodcastFeed.astro` provides text/audio RSS copy actions styled like the homepage subscription
+buttons; failed copying reveals a selectable URL, and success/failure is announced accessibly.

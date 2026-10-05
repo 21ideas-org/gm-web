@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { AudioEpisode } from '../lib/audio.mjs';
+import type { PodcastApp } from '../lib/podcast-apps.mjs';
+import AudioPlayer from './AudioPlayer.astro';
+import PodcastApps from './PodcastApps.astro';
+import { formatRuDate } from '../lib/date';
+interface Props { post: CollectionEntry<'digests'>; audio: AudioEpisode; apps: PodcastApp[]; }
+const { post, audio, apps } = Astro.props;
+const anchor = `episode-${post.id}`;
+const date = formatRuDate(post.data.pubDate);
+---
+<article class="listen-episode" id={anchor} aria-labelledby={`${anchor}-heading`}>
+  <h2 id={`${anchor}-heading`} class="episode-heading">
+    <a href={`#${anchor}`} class="episode-date-link" data-episode-link>
+      <time datetime={post.data.pubDate.toISOString()}>{date}</time>
+      <span class="episode-link-icon" aria-hidden="true" data-episode-feedback>↗</span>
+    </a>
+  </h2>
+  <span class="episode-share-status" role="status" aria-live="polite" data-episode-status></span>
+  <AudioPlayer episode={audio} dateLabel={date} />
+  <PodcastApps apps={apps} tree idPrefix={anchor} />
+  <a class="cta-btn episode-text-button" href={`/digests/${post.id}/`}>Текст и источники <span class="arrow">→</span></a>
+</article>
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-episode-link]').forEach(link => {
+    const feedback = link.querySelector<HTMLElement>('[data-episode-feedback]');
+    const status = link.closest('.listen-episode')?.querySelector<HTMLElement>('[data-episode-status]');
+    let timer: ReturnType<typeof setTimeout>;
+    link.addEventListener('click', async event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const url = new URL(link.href);
+      clearTimeout(timer);
+      try {
+        await navigator.clipboard.writeText(url.href);
+        history.replaceState(null, '', url.hash);
+        link.dataset.state = 'copied';
+        if (feedback) feedback.textContent = '✓';
+        if (status) status.textContent = 'Ссылка на выпуск скопирована.';
+      } catch {
+        history.replaceState(null, '', url.hash);
+        link.dataset.state = 'error';
+        if (feedback) feedback.textContent = '×';
+        if (status) status.textContent = 'Не удалось скопировать. Скопируйте ссылку из адресной строки.';
+      }
+      timer = setTimeout(() => {
+        delete link.dataset.state;
+        if (status) status.textContent = '';
+        if (feedback) feedback.textContent = '↗';
+      }, 1500);
+    });
+  });
+</script>
