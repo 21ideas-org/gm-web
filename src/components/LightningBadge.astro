@@ -30,7 +30,7 @@ const { id } = Astro.props;
     badge.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') show(true); });
     badge.addEventListener('pointerleave', () => { if (!pinned && !button.matches(':focus-visible')) show(false); });
     button.addEventListener('focus', () => show(true));
-    button.addEventListener('blur', () => { if (!pinned) show(false); });
+    button.addEventListener('blur', () => { pinned = false; show(false); });
     button.addEventListener('click', () => { pinned = !pinned; show(pinned); });
     document.addEventListener('click', event => {
       if (event.target instanceof Node && !badge.contains(event.target)) { pinned = false; show(false); }
