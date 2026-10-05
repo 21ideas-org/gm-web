@@ -1,11 +1,6 @@
-// src/lib/podcast-config.mjs — podcast show identity for /podcast.xml (see docs/ARCHITECTURE.md →
-// Podcast feed). Pure ESM so scripts/podcast.test.mjs can import it. The feed is built and advertised
-// ONLY when every field passes podcastShowStatus() (src/lib/podcast.mjs); until the human rollout fills
-// in `imageUrl` and `ownerEmail` the site simply has no /podcast.xml and no feed link — text builds
-// are unaffected. Do not put a personal address here, and do not point `imageUrl` at the 1200×630
-// OG card: directories need a square 1400–3000 px JPEG/PNG cover.
-
-import { SITE_NAME, SITE_DESCRIPTION } from '../site-identity.mjs';
+// Existing 21ideas show identity for /podcast.xml. See docs/podcast/21ideas-migration.md.
+// The operator approved the public project email. Square podcast artwork is separate from OG cards.
+// Missing or invalid identity fields still suppress feed generation and advertisement.
 
 /**
  * @typedef {{
@@ -18,18 +13,20 @@ import { SITE_NAME, SITE_DESCRIPTION } from '../site-identity.mjs';
  *   ownerEmail: string,
  *   category: string,
  *   imageUrl: string,
+ *   episodeImageUrl?: string,
  * }} PodcastShow
  */
 
 /** @type {Readonly<PodcastShow>} */
 export const PODCAST_SHOW = Object.freeze({
   siteOrigin: 'https://gm.21ideas.org', // bare HTTPS origin for the self, digest and support URLs
-  title: SITE_NAME,
-  description: SITE_DESCRIPTION,
+  title: '21ideas',
+  description: 'Первый всеобъемлющий подкаст о Биткоине на русском',
   language: 'ru',
-  author: SITE_NAME, // org-as-author, like the schema.org Organization
-  ownerName: SITE_NAME,
-  ownerEmail: '', // ← rollout: project ownership contact (blank ⇒ feed unpublished)
-  category: 'News', // Apple Podcasts category text
-  imageUrl: '', // ← rollout: square HTTPS cover, 1400–3000 px (blank ⇒ feed unpublished)
+  author: 'Tony Lightning', // preserve the existing show's author during migration
+  ownerName: '21ideas',
+  ownerEmail: 'bitcoin.translated@gmail.com', // operator-approved public ownership contact
+  category: 'Education', // Apple Podcasts category text
+  imageUrl: 'https://gm.21ideas.org/podcasts/21ideas-cover.jpg', // existing 21ideas cover, verified 3000×3000 JPEG
+  episodeImageUrl: 'https://gm.21ideas.org/podcasts/gm-bitcoiner-cover.png',
 });

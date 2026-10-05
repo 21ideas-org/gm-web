@@ -10,6 +10,7 @@
 // show config — never taken from digest text.
 
 import { SITE_NAME } from '../site-identity.mjs';
+import { validatePodcastArchive, renderArchivedEpisode } from './podcast-archive.mjs';
 
 /** @typedef {import('./podcast-config.mjs').PodcastShow} PodcastShow */
 /** @typedef {import('./audio.mjs').AudioEpisode} AudioEpisode */
@@ -74,6 +75,7 @@ export function podcastShowStatus(show) {
     ['ownerEmail', typeof s.ownerEmail === 'string' && EMAIL.test(s.ownerEmail)],
     ['category', filled(s.category)],
     ['imageUrl', isCoverUrl(s.imageUrl)],
+    ['episodeImageUrl', s.episodeImageUrl === undefined || isCoverUrl(s.episodeImageUrl)],
   ];
   const missing = checks.filter(([, ok]) => !ok).map(([key]) => key);
   return { complete: missing.length === 0, missing };
@@ -103,10 +105,10 @@ const oneLine = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
 export function showNotes({ siteOrigin, episodeId, dateLabel, teaser }) {
   const t = oneLine(teaser);
   return [
-    `${PODCAST_BRAND}\n${oneLine(dateLabel)}`,
+    `${PODCAST_BRAND} — ${oneLine(dateLabel)}`,
     ...(t ? [t] : []),
-    digestUrl(siteOrigin, episodeId),
-    `${SUPPORT_LEAD} ${supportUrl(siteOrigin)}`,
+    `Текстовая версия со ссылками на источники:\n${digestUrl(siteOrigin, episodeId)}`,
+    `${SUPPORT_LEAD}\n${supportUrl(siteOrigin)}`,
   ].join('\n\n');
 }
 
@@ -118,10 +120,10 @@ export function showNotesHtml({ siteOrigin, episodeId, dateLabel, teaser }) {
   const t = oneLine(teaser);
   const link = (/** @type {string} */ url) => `<a href="${escapeXml(url)}">${escapeXml(url)}</a>`;
   return [
-    `<p>${escapeXml(PODCAST_BRAND)}<br>${escapeXml(oneLine(dateLabel))}</p>`,
+    `<p>${escapeXml(PODCAST_BRAND)} — ${escapeXml(oneLine(dateLabel))}</p>`,
     ...(t ? [`<p>${escapeXml(t)}</p>`] : []),
-    `<p>${link(digestUrl(siteOrigin, episodeId))}</p>`,
-    `<p>${escapeXml(SUPPORT_LEAD)} ${link(supportUrl(siteOrigin))}</p>`,
+    `<p>Текстовая версия со ссылками на источники:<br>${link(digestUrl(siteOrigin, episodeId))}</p>`,
+    `<p>${escapeXml(SUPPORT_LEAD)}<br>${link(supportUrl(siteOrigin))}</p>`,
   ].join('');
 }
 
@@ -146,13 +148,21 @@ export function podcastEpisodes({ digests, audio }) {
 
 /**
  * The full podcast RSS 2.0 + iTunes document, or null when the show identity is incomplete.
- * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode> }} opts
+ * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode>, archive?: import('./podcast-archive.mjs').PodcastArchive }} opts
  * @returns {string | null}
  */
-export function renderPodcastFeed({ show, digests, audio }) {
+export function renderPodcastFeed({ show, digests, audio, archive }) {
   if (!show || !podcastShowStatus(show).complete) return null;
   const s = /** @type {PodcastShow} */ (show);
-  const items = podcastEpisodes({ digests, audio }).map(({ digest, episode }) => {
+  const historical = validatePodcastArchive(archive);
+  const current = podcastEpisodes({ digests, audio });
+  const guids = new Set(historical.map((e) => e.guid));
+  const urls = new Set(historical.map((e) => e.enclosure.url));
+  for (const { episode } of current) {
+    if (guids.has(episode.guid) || urls.has(episode.url)) throw new Error('podcast archive: duplicate identity with daily episode');
+    guids.add(episode.guid); urls.add(episode.url);
+  }
+  const items = current.map(({ digest, episode }) => {
     const notes = { siteOrigin: s.siteOrigin, episodeId: digest.id, dateLabel: digest.dateLabel, teaser: digest.description };
     return [
       '    <item>',
@@ -164,15 +174,20 @@ export function renderPodcastFeed({ show, digests, audio }) {
       `      <content:encoded>${escapeXml(showNotesHtml(notes))}</content:encoded>`,
       `      <enclosure url="${escapeXml(episode.url)}" length="${episode.byteLength}" type="${escapeXml(episode.mimeType)}"/>`,
       `      <itunes:duration>${Math.max(1, Math.round(episode.durationSeconds))}</itunes:duration>`,
+      ...(s.episodeImageUrl ? [`      <itunes:image href="${escapeXml(s.episodeImageUrl)}"/>`] : []),
       '      <itunes:episodeType>full</itunes:episodeType>',
       '      <itunes:explicit>false</itunes:explicit>',
       '    </item>',
     ].join('\n');
   });
+  const ordered = [
+    ...items.map((xml, i) => ({ xml, publishedAt: Date.parse(current[i].episode.publishedAt), guid: current[i].episode.guid })),
+    ...historical.map((e) => ({ xml: renderArchivedEpisode(e, escapeXml), publishedAt: Date.parse(e.pubDate), guid: e.guid })),
+  ].sort((a, b) => b.publishedAt - a.publishedAt || (a.guid < b.guid ? 1 : a.guid > b.guid ? -1 : 0));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">',
-    '  <channel>',
+    historical.length ? '  <channel xmlns:dc="http://purl.org/dc/elements/1.1/">' : '  <channel>',
     `    <title>${escapeXml(s.title)}</title>`,
     `    <link>${escapeXml(`${s.siteOrigin}/`)}</link>`,
     `    <description>${escapeXml(s.description)}</description>`,
@@ -187,7 +202,7 @@ export function renderPodcastFeed({ show, digests, audio }) {
     `    <itunes:category text="${escapeXml(s.category)}"/>`,
     '    <itunes:explicit>false</itunes:explicit>',
     '    <itunes:type>episodic</itunes:type>',
-    ...items,
+    ...ordered.map((i) => i.xml),
     '  </channel>',
     '</rss>',
     '',
