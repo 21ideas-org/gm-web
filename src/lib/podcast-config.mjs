@@ -14,11 +14,13 @@
  *   category: string,
  *   imageUrl: string,
  *   episodeImageUrl?: string,
+ *   guid?: string,
  * }} PodcastShow
  */
 
 /** @type {Readonly<PodcastShow>} */
 export const PODCAST_SHOW = Object.freeze({
+  guid: 'fbf0dca5-7cff-5518-a776-91ccda2b6612', // existing Podcast Index/Fountain identity; preserve across hosting moves
   siteOrigin: 'https://gm.21ideas.org', // bare HTTPS origin for the self, digest and support URLs
   title: '21ideas',
   description: 'Первый всеобъемлющий подкаст о Биткоине на русском',

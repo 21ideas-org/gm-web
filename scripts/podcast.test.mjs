@@ -293,3 +293,30 @@ test('site branding updates daily notes while preserving the existing 21ideas sh
   assert.ok(xml.includes('<title>21ideas</title>'));
   assert.ok(xml.includes('<description>Первый всеобъемлющий подкаст о Биткоине на русском</description>'));
 });
+
+
+test('Podcasting 2.0 metadata preserves show identity and leaves payment routing untouched', () => {
+  const { audio, digests } = scenario();
+  const baseline = renderPodcastFeed({ show: SHOW, digests, audio });
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio });
+  assert.match(xml, /xmlns:podcast="https:\/\/podcastindex\.org\/namespace\/1\.0"/);
+  assert.equal(PODCAST_SHOW.guid, 'fbf0dca5-7cff-5518-a776-91ccda2b6612');
+  assert.equal((xml.match(/<podcast:guid>/g) ?? []).length, 1);
+  assert.ok(xml.includes(`<podcast:guid>${PODCAST_SHOW.guid}</podcast:guid>`));
+  assert.ok(xml.includes('<podcast:funding url="https://gm.21ideas.org/support/">Поддержать подкаст</podcast:funding>'));
+  assert.ok(!xml.includes('<podcast:value'), 'existing external payment splits must not be overridden');
+  const identities = (feed) => [...feed.matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g)].map((m) => m[1]);
+  assert.deepEqual(identities(xml), identities(baseline), 'show GUID must not change episode GUIDs');
+});
+
+test('optional show GUID is never derived from the new feed URL and invalid GUIDs are rejected', () => {
+  const opts = { digests: [], audio: new Map() };
+  assert.ok(!renderPodcastFeed({ ...opts, show: SHOW }).includes('<podcast:guid>'));
+  for (const guid of ['', 'not-a-uuid', '</podcast:guid><podcast:value/>', 'fbf0dca5-7cff-4518-a776-91ccda2b6612']) {
+    assert.deepEqual(podcastShowStatus({ ...SHOW, guid }).missing, ['guid']);
+    assert.equal(renderPodcastFeed({ ...opts, show: { ...SHOW, guid } }), null);
+  }
+  const xml = renderPodcastFeed({ ...opts, show: { ...SHOW, guid: PODCAST_SHOW.guid, siteOrigin: 'https://new.example.org' } });
+  assert.ok(xml.includes(`<podcast:guid>${PODCAST_SHOW.guid}</podcast:guid>`));
+  assert.ok(xml.includes('<podcast:funding url="https://new.example.org/support/">'));
+});

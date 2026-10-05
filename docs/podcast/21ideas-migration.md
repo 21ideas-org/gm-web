@@ -38,6 +38,53 @@ This PR prepares the new feed; it does not redirect Anchor or alter existing dir
 
 References: [Spotify migration](https://support.spotify.com/us/creators/article/switching-away-from-spotify-for-creators-with-a-301-redirect/) and [Apple migration and stable GUIDs](https://podcasters.apple.com/support/3965-how-to-change-hosting-providers).
 
+## Podcasting 2.0 identity and funding
+
+The feed declares the Podcast Namespace and publishes the existing show GUID
+`fbf0dca5-7cff-5518-a776-91ccda2b6612` from `PODCAST_SHOW.guid`. This UUID was confirmed
+on 2026-10-05 in the public Fountain show data (`_guid`, with RSS now pointing to
+`https://gm.21ideas.org/podcast.xml`) and the BoostMeBitch public directory response
+(`podcastGuid`, Podcast Index ID 4255963, Apple ID 1584949114). Preserve it on future
+hosting moves; do not derive another UUID from the new feed URL. Episode GUIDs are
+independent and unchanged. A missing optional show GUID is omitted; a configured
+invalid UUIDv5 follows the existing incomplete-identity guard.
+
+`podcast:funding` links to the canonical `/support/` page. That page already exposes
+the project Lightning Address `gmbitcoiner@coinos.io`; this funding link does not
+change payment routing or introduce a `podcast:value` block.
+
+### Payment migration boundary
+
+On 2026-10-05 both public directory responses agreed on the current external keysend
+split: `tony_lightning@fountain.fm` 74 shares, `bitkorn@fountain.fm` 21,
+Fountain 4, and Podcastindex.org 1 (marked as a fee). These are existing recipient
+settings, not new fees approved by this change. The current RSS has no value block.
+Do not silently replace this distribution with a single Coinos recipient.
+
+The public Coinos LNURL-pay endpoint for `gmbitcoiner` returned a valid `payRequest`,
+minimum 1 sat, and a 512-character comment allowance. Its corresponding keysend
+lookup returned HTTP 404. This confirms address discovery, not successful payment
+receipt or universal podcast-app support. No invoice was requested and no payment
+was sent during these checks. Never use the shared Coinos node pubkey as a replacement
+for account-specific routing data.
+
+Before activating value payments to Coinos, agree whether the new recipient applies
+only to daily GM episodes or to the entire show, including historical episodes;
+confirm remaining splits; then verify the chosen apps support LNURL/invoice payments
+for `lnaddress` recipients and test a payment with operator authorization. Episode-level
+value blocks can override show recipients, but app support must be checked. Fountain
+documents external wallets and a separate 1% Boost Bot split for dashboard analytics;
+do not add this or any other new split without operator approval. Keep NWC secrets out
+of the public feed and repository.
+
+Sources: [Fountain show](https://fountain.fm/show/chmjnVB1ZkSY3MC2FxY8),
+[BoostMeBitch directory record](https://www.boostmebitch.com/api/by-guid?guid=fbf0dca5-7cff-5518-a776-91ccda2b6612),
+[Coinos LNURL discovery](https://coinos.io/.well-known/lnurlp/gmbitcoiner),
+[Podcast GUID](https://podcasting2.org/docs/podcast-namespace/tags/guid),
+[funding](https://podcasting2.org/docs/podcast-namespace/tags/funding),
+[Lightning Address payment metadata](https://podcasting2.org/docs/podcast-namespace/examples/value/metadata),
+and [Fountain external wallets](https://support.fountain.fm/article/86-can-i-run-my-own-node-using-the-fountain-podcaster-wallet).
+
 ## Prepared-feed verification (2026-10-05)
 
 The built `/podcast.xml` contains 135 unique episodes: the 134 historical records and the accepted 2026-10-05 daily digest. A fresh Anchor XML fetch matched every historical title, description, link, GUID and its attributes, publication date, enclosure attributes, creator and iTunes field. The daily item matches its validated audio sidecar, has its own artwork, dynamic teaser and full text/support URLs. The archive remains a static snapshot.

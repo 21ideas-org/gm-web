@@ -23,6 +23,7 @@ export const PODCAST_FEED_PARAM = 'podcast'; // [feed].xml.js → /podcast.xml
 
 const EPISODE_ID = /^\d{4}-\d{2}-\d{2}$/;
 const LANGUAGE = /^[a-z]{2}(?:-[a-z]{2})?$/i;
+const SHOW_GUID = /^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const EMAIL = /^[^\s@<>"',;]+@[^\s@<>"',;.]+(?:\.[^\s@<>"',;.]+)+$/;
 // Characters XML 1.0 forbids outright (C0 controls except tab/LF/CR, lone surrogates, U+FFFE/U+FFFF).
 const XML_ILLEGAL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
@@ -76,6 +77,7 @@ export function podcastShowStatus(show) {
     ['category', filled(s.category)],
     ['imageUrl', isCoverUrl(s.imageUrl)],
     ['episodeImageUrl', s.episodeImageUrl === undefined || isCoverUrl(s.episodeImageUrl)],
+    ['guid', s.guid === undefined || (typeof s.guid === 'string' && SHOW_GUID.test(s.guid))],
   ];
   const missing = checks.filter(([, ok]) => !ok).map(([key]) => key);
   return { complete: missing.length === 0, missing };
@@ -186,13 +188,15 @@ export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia 
   ].sort((a, b) => b.publishedAt - a.publishedAt || (a.guid < b.guid ? 1 : a.guid > b.guid ? -1 : 0));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0">',
     historical.length ? '  <channel xmlns:dc="http://purl.org/dc/elements/1.1/">' : '  <channel>',
     `    <title>${escapeXml(s.title)}</title>`,
     `    <link>${escapeXml(`${s.siteOrigin}/`)}</link>`,
     `    <description>${escapeXml(s.description)}</description>`,
     `    <language>${escapeXml(s.language)}</language>`,
     `    <atom:link href="${escapeXml(`${s.siteOrigin}${PODCAST_FEED_PATH}`)}" rel="self" type="application/rss+xml"/>`,
+    ...(s.guid ? [`    <podcast:guid>${escapeXml(s.guid)}</podcast:guid>`] : []),
+    `    <podcast:funding url="${escapeXml(supportUrl(s.siteOrigin))}">Поддержать подкаст</podcast:funding>`,
     `    <itunes:author>${escapeXml(s.author)}</itunes:author>`,
     '    <itunes:owner>',
     `      <itunes:name>${escapeXml(s.ownerName)}</itunes:name>`,
