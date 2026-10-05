@@ -29,7 +29,50 @@ test('app registry hides empty/unsafe/homepage URLs and deferred services, and o
     { id: 'youtube', name: 'YouTube', url: 'https://youtube.com/show/verified', order: -1 },
   ];
   assert.deepEqual(configuredPodcastApps(apps).map(a => a.id), ['fountain', 'spotify']);
-  assert.deepEqual(configuredPodcastApps(), []);
+  assert.deepEqual(configuredPodcastApps(PODCAST_APPS.map(app => ({ ...app, url: '' }))), []);
+});
+
+const BOOST_URL = 'https://www.boostmebitch.com/?podcast=fbf0dca5-7cff-5518-a776-91ccda2b6612';
+
+test('default registry renders the verified existing show URLs in order', () => {
+  assert.deepEqual(configuredPodcastApps().map(({ id, url }) => [id, url]), [
+    ['fountain', 'https://fountain.fm/show/chmjnVB1ZkSY3MC2FxY8'],
+    ['spotify', 'https://open.spotify.com/show/1vjCoEDFPYaqKm3HasOZrK'],
+    ['apple', 'https://podcasts.apple.com/ua/podcast/21ideas/id1584949114'],
+    ['boost-me-bitch', BOOST_URL],
+  ]);
+  assert.equal(configuredPodcastApps().find(app => app.id === 'fountain').description, undefined);
+});
+
+test('Boost Me Bitch root URL requires its exact HTTPS host and a podcast UUID', () => {
+  const boost = PODCAST_APPS.find(app => app.id === 'boost-me-bitch');
+  const uuid = 'fbf0dca5-7cff-5518-a776-91ccda2b6612';
+  const accepts = url => configuredPodcastApps([{ ...boost, url }]).length === 1;
+  assert.equal(accepts(BOOST_URL), true);
+  assert.equal(accepts(`https://boostmebitch.com/?podcast=${uuid}`), true);
+  for (const url of [
+    'https://www.boostmebitch.com/',
+    'https://www.boostmebitch.com/?podcast=',
+    'https://www.boostmebitch.com/?podcast',
+    'https://www.boostmebitch.com/?podcast=not-a-uuid',
+    `https://www.boostmebitch.com/?podcast=${uuid}x`,
+    `https://www.boostmebitch.com/?podcast=${uuid}&podcast=${uuid}`,
+    `https://www.boostmebitch.com/?episode=${uuid}`,
+    'https://www.boostmebitch.com/?utm_source=x',
+    `https://boostmebitch.com.example.org/?podcast=${uuid}`,
+    `https://example.org/?podcast=${uuid}`,
+    `https://cdn.boostmebitch.com/?podcast=${uuid}`,
+    `http://www.boostmebitch.com/?podcast=${uuid}`,
+    `javascript:alert(1)//www.boostmebitch.com/?podcast=${uuid}`,
+    `https://user:pass@www.boostmebitch.com/?podcast=${uuid}`,
+    `https://user@www.boostmebitch.com/?podcast=${uuid}`,
+  ]) assert.equal(accepts(url), false, url);
+  const fountain = PODCAST_APPS.find(app => app.id === 'fountain');
+  assert.deepEqual(configuredPodcastApps([
+    { ...fountain, url: `https://fountain.fm/?podcast=${uuid}` },
+    { ...fountain, url: `https://www.boostmebitch.com/?podcast=${uuid}` },
+    { id: 'youtube', name: 'YouTube', url: BOOST_URL, order: -1 },
+  ]), []);
 });
 
 test('Lightning badges describe app capability independently of show payment setup', () => {

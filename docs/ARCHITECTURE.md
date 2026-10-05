@@ -297,8 +297,9 @@ the podcast RSS implementation to accept the show identity and at least one publ
 episode; a newer text-only digest does not hide them. `/rss.xml` remains the text feed.
 
 `src/lib/podcast-apps.mjs` owns the typed app registry: Fountain, Spotify, Apple Podcasts and
-Boost Me Bitch. Only configured HTTPS show URLs render; directory rollout supplies
-them later. Show links are independent of RSS readiness; episode-specific external URLs are deferred.
+Boost Me Bitch, each configured with the existing 21ideas show URL. Only safe HTTPS show URLs
+render; homepages are rejected except Boost Me Bitch's `/?podcast={uuid}` show format on its own
+host. Show links are independent of RSS readiness; episode-specific external URLs are deferred.
 Fountain and Boost Me Bitch have inline Tabler Bolt badges with a Lightning-capability tooltip on
 hover, focus and tap. These describe the app, not our payment setup; Fountain support copy still
 requires explicitly verified payments. YouTube is deferred. `PodcastApps.astro` shares these links
