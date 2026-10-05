@@ -7,7 +7,6 @@ import Subscribe from '../components/Subscribe.astro';
 import Support from '../components/Support.astro';
 import History from '../components/History.astro';
 import AudioPlayer from '../components/AudioPlayer.astro';
-import PodcastApps from '../components/PodcastApps.astro';
 import { listeningState } from '../lib/listen-state';
 import type { AudioEpisode } from '../lib/audio.mjs';
 
@@ -84,8 +83,7 @@ const schema = [
       <AudioPlayer episode={audio} dateLabel={dateLabel} />
       {podcast?.ready && (
         <div class="podcast-subscribe">
-          <a href="/listen/">Подписаться в приложении →</a>
-          <PodcastApps apps={podcast.apps} compact />
+          <a href="/listen/">Слушать в подкаст-приложении →</a>
         </div>
       )}
       <div class="prose" set:html={body} />

@@ -7,7 +7,6 @@ const { apps, compact = false, tree = false, idPrefix = 'podcast-apps' } = Astro
 {apps.length > 0 && (
   <section class:list={["podcast-apps", { section: !compact && !tree, 'podcast-apps--compact': compact, 'podcast-apps--tree': tree }]} aria-label="Слушать в приложении">
     {tree ? <p class="podcast-platform-lead">Слушать на популярных подкаст-платформах:</p> : !compact && <div class="section-header"><h2>слушать в приложении</h2></div>}
-    {tree && <p class="podcast-show-note">21ideas на платформах</p>}
     <ul>{apps.map((app, index) => <li>
       {tree && <span class="branch" aria-hidden="true">{index === apps.length - 1 ? '└──' : '├──'}</span>}
       <a href={app.url} rel="noopener"><span>{app.name}{app.description && <small>{app.description}</small>}</span>{!tree && <span class="arrow" aria-hidden="true">→</span>}</a>

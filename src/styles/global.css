@@ -1217,7 +1217,6 @@ hr {
 .listen-episode .audio-player { margin: 0 0 20px; background: var(--bg); }
 .episode-share-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .podcast-platform-lead { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-sm); line-height: var(--lh-prose); }
-.podcast-show-note { margin: 0 0 4px; font-size: var(--fs-xs); color: var(--muted); }
 .podcast-apps--tree ul { border: 0; }
 .podcast-apps--tree li { border: 0; gap: 8px; }
 .podcast-apps--tree li > a { flex: 0 1 auto; min-height: 24px; padding: 0; color: var(--accent); font-size: var(--fs-sm); }
