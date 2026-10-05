@@ -24,6 +24,12 @@ const chips = tags.map((s) => tagBySlug(s)).filter(Boolean);
 const dateStr = formatDate(pubDate);
 const dateLabel = formatRuDate(pubDate);
 const pubIso = pubDate.toISOString();
+// Render only audio days here; split at the existing statistics heading so the complete
+// Markdown introduction stays above the player without changing the published digest bytes.
+const content = audio ? await Astro.slots.render('default') : '';
+const statsStart = content.search(/<h2\b[^>]*\bid="статистика-сети"/u);
+const introduction = statsStart >= 0 ? content.slice(0, statsStart) : '';
+const body = statsStart >= 0 ? content.slice(statsStart) : content;
 const ogImage = new URL(`/og/${id}.png`, Astro.site).href;
 const schema = [
   newsArticleNode({ title, description, slug: id, pubDate, image: ogImage }),
@@ -69,11 +75,17 @@ const schema = [
     )}
   </header>
 
-  {audio && <AudioPlayer episode={audio} dateLabel={dateLabel} />}
-
-  <article class="prose">
-    <slot />
-  </article>
+  {audio ? (
+    <article>
+      <div class="prose" set:html={introduction} />
+      <AudioPlayer episode={audio} dateLabel={dateLabel} />
+      <div class="prose" set:html={body} />
+    </article>
+  ) : (
+    <article class="prose">
+      <slot />
+    </article>
+  )}
 
   <History pubDate={pubDate} />
 

@@ -762,33 +762,28 @@ hr {
 
 /* ─── Audio player (digest pages with a valid sidecar; AudioPlayer.astro) ─── */
 .audio-player {
-  margin: 4px 0 20px;
-  padding: 12px 14px;
+  margin: 16px 0 20px;
+  padding: 0;
   border: 1px solid var(--border);
+  border-radius: 0;
   background: var(--surface);
-  font-size: var(--fs-sm);
 }
-.audio-title { margin: 0 0 8px; color: var(--muted); }
-.audio-title::before { content: "\25B6\FE0E "; color: var(--accent); } /* VS15: text, not emoji */
 /* Native controls follow the site theme (incl. the explicit toggle), not just the OS preference. */
-.audio-player audio { display: block; width: 100%; color-scheme: dark; }
+.audio-player audio {
+  display: block;
+  width: 100%;
+  height: 54px;
+  border-radius: 0;
+  background: var(--surface);
+  color-scheme: dark;
+}
+.audio-player audio::-webkit-media-controls-enclosure { border-radius: 0; }
+.audio-player audio::-webkit-media-controls-panel { background: var(--surface); color: var(--text); }
 :root[data-theme="light"] .audio-player audio { color-scheme: light; }
 .audio-player audio:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
-.audio-meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px 16px;
-  margin: 8px 0 0;
-  color: var(--muted);
-}
-.audio-sep { color: var(--dim); }
-/* Color, underline-on-hover and focus ring come from the global `a` rules. */
-.audio-download { display: inline-block; padding-block: 3px; }
-
 /* ─── Prev / next ─── */
 .post-nav {
   display: grid;
