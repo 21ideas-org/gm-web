@@ -1,0 +1,48 @@
+---
+interface Props { id: string; }
+const { id } = Astro.props;
+---
+<span class="lightning-badge" data-lightning-badge>
+  <button type="button" class="lightning-info" aria-label="Поддержка Lightning" aria-describedby={id} aria-expanded="false" data-lightning-button>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bolt" aria-hidden="true">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+    </svg>
+  </button>
+  <span class="lightning-tooltip" id={id} role="tooltip" hidden>Платформа поддерживает сеть Lightning</span>
+</span>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-lightning-badge]').forEach(badge => {
+    const button = badge.querySelector<HTMLButtonElement>('[data-lightning-button]');
+    const tooltip = badge.querySelector<HTMLElement>('[role="tooltip"]');
+    if (!button || !tooltip) return;
+    let pinned = false;
+    const show = (visible: boolean) => {
+      tooltip.hidden = !visible;
+      button.setAttribute('aria-expanded', String(visible));
+      if (visible) {
+        const rect = button.getBoundingClientRect();
+        const box = tooltip.getBoundingClientRect();
+        tooltip.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - box.width - 12))}px`;
+        tooltip.style.top = `${rect.bottom + box.height + 6 < window.innerHeight ? rect.bottom + 6 : Math.max(12, rect.top - box.height - 6)}px`;
+      }
+    };
+    badge.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') show(true); });
+    badge.addEventListener('pointerleave', () => { if (!pinned && !button.matches(':focus-visible')) show(false); });
+    button.addEventListener('focus', () => show(true));
+    button.addEventListener('blur', () => { pinned = false; show(false); });
+    button.addEventListener('click', () => { pinned = !pinned; show(pinned); });
+    document.addEventListener('click', event => {
+      if (event.target instanceof Node && !badge.contains(event.target)) { pinned = false; show(false); }
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { pinned = false; show(false); } });
+    const reposition = () => {
+      if (tooltip.hidden) return;
+      const rect = button.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= innerHeight) pinned = false;
+      show(rect.bottom > 0 && rect.top < innerHeight);
+    };
+    window.addEventListener('scroll', reposition, { passive: true });
+    window.addEventListener('resize', reposition);
+  });
+</script>

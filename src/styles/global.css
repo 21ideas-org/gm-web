@@ -1172,3 +1172,64 @@ hr {
 .theme-btn .icon { width: 18px; height: 18px; display: none; }
 :root[data-theme="dark"] .theme-btn .icon-sun { display: block; }
 :root[data-theme="light"] .theme-btn .icon-moon { display: block; }
+
+/* Podcast listening page and shared app links. */
+.listen-intro { padding-top: 44px; }
+.listen-date { color: var(--accent); font-size: var(--fs-sm); }
+.listen-support { margin-top: 32px; font-size: var(--fs-sm); }
+.podcast-apps ul, .listen-archive { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+.podcast-apps li, .listen-archive li { border-bottom: 1px solid var(--border); }
+.podcast-apps li { display: flex; align-items: center; gap: 6px; }
+.podcast-apps li > a { flex: 1; min-width: 0; }
+.podcast-apps a, .listen-archive a {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  min-height: 48px; padding: 12px 0; border-bottom: none; color: var(--text);
+  font-size: var(--fs-base);
+}
+.podcast-apps a:hover, .listen-archive a:hover { color: var(--accent); }
+.podcast-apps small { display: block; margin-top: 4px; color: var(--muted); font-size: var(--fs-xs); }
+.podcast-apps .arrow, .listen-duration { color: var(--muted); }
+.podcast-apps--compact { margin: 12px 0 20px; }
+.podcast-apps--compact ul { display: flex; flex-wrap: wrap; gap: 0 20px; border: 0; }
+.podcast-apps--compact li { border: 0; }
+.podcast-apps--compact a { font-size: var(--fs-sm); }
+.podcast-feed-url { overflow-wrap: anywhere; min-width: 0; user-select: all; }
+.podcast-copy-status { min-height: 1.5em; color: var(--muted); font-size: var(--fs-sm); }
+.podcast-subscribe { margin: -8px 0 20px; font-size: var(--fs-sm); }
+.podcast-feed button { cursor: pointer; font-family: inherit; background: transparent; }
+.podcast-apps a:focus-visible, .listen-archive a:focus-visible,
+.podcast-feed-url:focus-visible, .podcast-subscribe > a:focus-visible,
+.podcast-feed button:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 560px) {
+  .listen-archive a { flex-wrap: wrap; gap: 6px 16px; }
+}
+
+/* Audio episode cards follow the project-card surface, without a terminal prefix on dates. */
+.listen-episodes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 32px; }
+.listen-episode { min-width: 0; padding: 20px; border: 1px solid var(--border); background: var(--surface); scroll-margin-top: 24px; }
+.episode-heading { margin: 0 0 16px; font-size: var(--fs-lg); font-weight: 500; }
+.episode-date-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; color: var(--text); border: 0; }
+.episode-link-icon { color: var(--muted); font-size: var(--fs-sm); }
+.episode-date-link:hover, .episode-date-link[data-state="copied"] .episode-link-icon,
+.listen-episode:target .episode-date-link { color: var(--accent); }
+.episode-date-link[data-state="error"] .episode-link-icon { color: var(--red); }
+.episode-date-link:focus-visible, .lightning-info:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+.listen-episode .audio-player { margin: 0 0 20px; background: var(--bg); }
+.episode-share-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.podcast-platform-lead { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-sm); line-height: var(--lh-prose); }
+.podcast-show-note { margin: 0 0 4px; font-size: var(--fs-xs); color: var(--muted); }
+.podcast-apps--tree ul { border: 0; }
+.podcast-apps--tree li { border: 0; gap: 8px; }
+.podcast-apps--tree li > a { flex: 0 1 auto; min-height: 24px; padding: 0; color: var(--accent); font-size: var(--fs-sm); }
+.podcast-apps--tree .branch { flex: 0 0 auto; color: var(--dim); font-size: var(--fs-sm); white-space: pre; }
+.episode-text-button { margin-top: 20px; }
+.lightning-badge { display: inline-flex; flex: 0 0 auto; }
+.lightning-info { display: grid; place-items: center; width: 40px; height: 40px; padding: 8px; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+.lightning-info svg { display: block; width: 18px; height: 18px; }
+.podcast-apps--tree .lightning-info { width: 24px; height: 24px; padding: 3px; }
+.lightning-tooltip { position: fixed; z-index: 20; width: max-content; max-width: min(260px, calc(100vw - 24px)); padding: 8px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: var(--fs-xs)/var(--lh-prose) var(--font); }
+.lightning-tooltip[hidden] { display: none; }
+@media (max-width: 400px) {
+  .listen-episode { padding: 14px; }
+  .episode-heading { font-size: 18px; }
+}

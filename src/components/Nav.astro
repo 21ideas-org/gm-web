@@ -1,12 +1,15 @@
 ---
+import { listeningState } from '../lib/listen-state';
 interface Props {
-  active?: 'home' | 'digests' | 'projects' | 'about' | 'tags' | 'support' | 'buy-bitcoin';
+  active?: 'home' | 'digests' | 'projects' | 'about' | 'tags' | 'support' | 'buy-bitcoin' | 'listen';
 }
 const { active } = Astro.props;
+const { ready } = await listeningState();
 ---
 <nav class="nav" aria-label="Primary" data-scroller>
   <a href="/" aria-current={active === 'home' ? 'page' : undefined}>главная</a>
   <a href="/digests" aria-current={active === 'digests' ? 'page' : undefined}>дайджесты</a>
+  {ready && <a href="/listen/" aria-current={active === 'listen' ? 'page' : undefined}>слушать</a>}
   <a href="/tags" aria-current={active === 'tags' ? 'page' : undefined}>топики</a>
   <a href="/support" aria-current={active === 'support' ? 'page' : undefined}>поддержать</a>
   <a href="/about" aria-current={active === 'about' ? 'page' : undefined}>о gm_₿</a>

@@ -1,0 +1,38 @@
+---
+interface Props { url: string; }
+const { url } = Astro.props;
+const textUrl = new URL('/rss.xml', url).href;
+---
+<section class="section podcast-feed" aria-labelledby="podcast-rss">
+  <div class="section-header"><h2 id="podcast-rss">любое приложение по rss</h2></div>
+  <p class="subscribe-lead">"Доброе утро, биткоинер" доступен по rss как в аудио, так и в текстовой версии. Скопируй ссылку на rss-ленту и вставь в любимое приложение, чтобы всегда быть в курсе последних биткоин-событий.</p>
+  <div class="subscribe-actions">
+    <a class="cta-btn" href={textUrl} data-feed-copy data-feed-label="текстовую">Текст <span class="arrow">→</span></a>
+    <a class="cta-btn" href={url} data-feed-copy data-feed-label="аудио">Аудио <span class="arrow">→</span></a>
+  </div>
+  <p class="podcast-copy-status" role="status" aria-live="polite" data-feed-status></p>
+  <a class="podcast-feed-url" data-feed-fallback hidden></a>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('.podcast-feed').forEach(section => {
+    const status = section.querySelector<HTMLElement>('[data-feed-status]');
+    const fallback = section.querySelector<HTMLAnchorElement>('[data-feed-fallback]');
+    section.querySelectorAll<HTMLAnchorElement>('[data-feed-copy]').forEach(link => {
+      link.addEventListener('click', async event => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (!status || !fallback) return;
+        event.preventDefault();
+        fallback.hidden = true;
+        try {
+          await navigator.clipboard.writeText(link.href);
+          status.textContent = link.dataset.feedLabel === 'аудио' ? 'Ссылка на аудио RSS скопирована.' : 'Ссылка на текстовую RSS скопирована.';
+        } catch {
+          status.textContent = 'Не удалось скопировать. Выдели адрес и скопируй его вручную.';
+          fallback.href = link.href;
+          fallback.textContent = link.href;
+          fallback.hidden = false;
+        }
+      });
+    });
+  });
+</script>
