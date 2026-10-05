@@ -23,6 +23,9 @@ export const PODCAST_FEED_PARAM = 'podcast'; // [feed].xml.js → /podcast.xml
 
 const EPISODE_ID = /^\d{4}-\d{2}-\d{2}$/;
 const LANGUAGE = /^[a-z]{2}(?:-[a-z]{2})?$/i;
+const SHOW_GUID = /^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const EPISODE_UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const LIGHTNING_ADDRESS = /^[a-z0-9._+-]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
 const EMAIL = /^[^\s@<>"',;]+@[^\s@<>"',;.]+(?:\.[^\s@<>"',;.]+)+$/;
 // Characters XML 1.0 forbids outright (C0 controls except tab/LF/CR, lone surrogates, U+FFFE/U+FFFF).
 const XML_ILLEGAL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
@@ -56,6 +59,33 @@ function isCoverUrl(url) {
   }
 }
 
+/** Validate the existing keysend routing before publishing it. @param {unknown} value */
+function isArchiveValue(value) {
+  const v = /** @type {import('./podcast-config.mjs').ArchiveValue | null} */ (value);
+  return !!v && v.type === 'lightning' && v.method === 'keysend'
+    && typeof v.suggested === 'string' && /^0\.\d{1,16}$/.test(v.suggested) && Number(v.suggested) > 0
+    && Array.isArray(v.recipients) && v.recipients.length > 0
+    && v.recipients.every((r) => r && filled(r.name) && r.type === 'node'
+      && typeof r.address === 'string' && /^(?:02|03)[a-f0-9]{64}$/i.test(r.address)
+      && Number.isSafeInteger(r.split) && r.split > 0
+      && (r.fee === undefined || typeof r.fee === 'boolean')
+      && ((r.customKey === undefined && r.customValue === undefined)
+        || (typeof r.customKey === 'string' && /^\d+$/.test(r.customKey) && filled(r.customValue))));
+}
+
+/** Archive default or book-specific override. @param {import('./podcast-config.mjs').ArchiveValue} value @param {string} indent */
+function archiveValueXml(value, indent = '    ') {
+  return [
+    `${indent}<podcast:value type="lightning" method="keysend" suggested="${escapeXml(value.suggested)}">`,
+    ...value.recipients.map((r) => {
+      const custom = r.customKey === undefined ? '' : ` customKey="${escapeXml(r.customKey)}" customValue="${escapeXml(r.customValue)}"`;
+      const fee = r.fee === undefined ? '' : ` fee="${r.fee}"`;
+      return `${indent}  <podcast:valueRecipient name="${escapeXml(r.name)}" type="node" address="${escapeXml(r.address)}" split="${r.split}"${custom}${fee}/>`;
+    }),
+    `${indent}</podcast:value>`,
+  ].join('\n');
+}
+
 /**
  * Which show-identity fields are missing or untrusted. The feed is published and advertised only
  * when `complete` is true. Never throws.
@@ -76,6 +106,12 @@ export function podcastShowStatus(show) {
     ['category', filled(s.category)],
     ['imageUrl', isCoverUrl(s.imageUrl)],
     ['episodeImageUrl', s.episodeImageUrl === undefined || isCoverUrl(s.episodeImageUrl)],
+    ['guid', s.guid === undefined || (typeof s.guid === 'string' && SHOW_GUID.test(s.guid))],
+    ['archiveValue', s.archiveValue === undefined || isArchiveValue(s.archiveValue)],
+    ['archiveValueOverrides', s.archiveValueOverrides === undefined || (s.archiveValue !== undefined
+      && s.archiveValueOverrides !== null && typeof s.archiveValueOverrides === 'object' && !Array.isArray(s.archiveValueOverrides)
+      && Object.entries(s.archiveValueOverrides).every(([guid, value]) => EPISODE_UUID.test(guid) && isArchiveValue(value)))],
+    ['dailyLightningAddress', s.dailyLightningAddress === undefined || (typeof s.dailyLightningAddress === 'string' && LIGHTNING_ADDRESS.test(s.dailyLightningAddress))],
   ];
   const missing = checks.filter(([, ok]) => !ok).map(([key]) => key);
   return { complete: missing.length === 0, missing };
@@ -177,22 +213,33 @@ export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia 
       ...(s.episodeImageUrl ? [`      <itunes:image href="${escapeXml(s.episodeImageUrl)}"/>`] : []),
       '      <itunes:episodeType>full</itunes:episodeType>',
       '      <itunes:explicit>false</itunes:explicit>',
+      ...(s.dailyLightningAddress ? [
+        '      <podcast:value type="lightning" method="lnaddress">',
+        `        <podcast:valueRecipient name="${escapeXml(PODCAST_BRAND)}" type="lnaddress" address="${escapeXml(s.dailyLightningAddress)}" split="100"/>`,
+        '      </podcast:value>',
+      ] : []),
       '    </item>',
     ].join('\n');
   });
   const ordered = [
     ...items.map((xml, i) => ({ xml, publishedAt: Date.parse(current[i].episode.publishedAt), guid: current[i].episode.guid })),
-    ...historical.map((e) => ({ xml: renderArchivedEpisode(e, escapeXml), publishedAt: Date.parse(e.pubDate), guid: e.guid })),
+    ...historical.map((e) => {
+      const override = s.archiveValueOverrides && Object.hasOwn(s.archiveValueOverrides, e.guid) ? s.archiveValueOverrides[e.guid] : undefined;
+      return { xml: renderArchivedEpisode(e, escapeXml, override ? archiveValueXml(override, '      ') : undefined), publishedAt: Date.parse(e.pubDate), guid: e.guid };
+    }),
   ].sort((a, b) => b.publishedAt - a.publishedAt || (a.guid < b.guid ? 1 : a.guid > b.guid ? -1 : 0));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0">',
     historical.length ? '  <channel xmlns:dc="http://purl.org/dc/elements/1.1/">' : '  <channel>',
     `    <title>${escapeXml(s.title)}</title>`,
     `    <link>${escapeXml(`${s.siteOrigin}/`)}</link>`,
     `    <description>${escapeXml(s.description)}</description>`,
     `    <language>${escapeXml(s.language)}</language>`,
     `    <atom:link href="${escapeXml(`${s.siteOrigin}${PODCAST_FEED_PATH}`)}" rel="self" type="application/rss+xml"/>`,
+    ...(s.guid ? [`    <podcast:guid>${escapeXml(s.guid)}</podcast:guid>`] : []),
+    `    <podcast:funding url="${escapeXml(supportUrl(s.siteOrigin))}">Поддержать подкаст</podcast:funding>`,
+    ...(s.archiveValue ? [archiveValueXml(s.archiveValue)] : []),
     `    <itunes:author>${escapeXml(s.author)}</itunes:author>`,
     '    <itunes:owner>',
     `      <itunes:name>${escapeXml(s.ownerName)}</itunes:name>`,

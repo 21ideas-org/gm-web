@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { renderPodcastFeed } from '../src/lib/podcast.mjs';
+import { renderPodcastFeed, escapeXml } from '../src/lib/podcast.mjs';
+import { PODCAST_SHOW } from '../src/lib/podcast-config.mjs';
 import { validatePodcastArchive } from '../src/lib/podcast-archive.mjs';
 const archive = JSON.parse(readFileSync(new URL('../src/data/podcast/21ideas-archive.json', import.meta.url), 'utf8'));
 const show = { siteOrigin: 'https://gm.21ideas.org', title: '21ideas', description: 'Bitcoin podcast', language: 'ru', author: 'Tony Lightning', ownerName: '21ideas', ownerEmail: 'podcast@example.test', category: 'Education', imageUrl: 'https://example.test/cover.jpg' };
@@ -85,4 +86,72 @@ test('incomplete, mismatched, duplicate or untrusted media mappings fail before 
       { url: media.episodes[1].url },
     ].map((over) => ({ ...media, episodes: [{ ...first, ...over }, ...media.episodes.slice(1)] })),
   ]) assert.throws(() => renderMedia(m), /archive media/i);
+});
+
+
+test('archive default excludes Bitkorn and redistributes his share to the owner', () => {
+  const base = { show, archive, archiveMedia: media, digests: [], audio: new Map() };
+  const original = renderPodcastFeed(base);
+  const configured = renderPodcastFeed({ ...base, show: { ...show, archiveValue: PODCAST_SHOW.archiveValue, dailyLightningAddress: PODCAST_SHOW.dailyLightningAddress } });
+  const items = (xml) => [...xml.matchAll(/<item>[\s\S]*?<\/item>/g)].map((m) => m[0]);
+  assert.deepEqual(items(configured), items(original), 'all historical items must remain byte-identical');
+  assert.ok(!configured.includes('method="lnaddress"'), 'archive must not receive the GM override');
+  const split = configured.match(/<podcast:value[^>]*>([\s\S]*?)<\/podcast:value>/)?.[1];
+  assert.ok(split);
+  const expected = [
+    ['tony_lightning@fountain.fm', '03b6f613e88bd874177c28c6ad83b3baba43c4c656f56be1f8df84669556054b79', 95, '906608', '01F4o1zomYItiSp2yxeHhD', false],
+    ['Fountain', '03b6f613e88bd874177c28c6ad83b3baba43c4c656f56be1f8df84669556054b79', 4, '906608', '01FOUNTAIN', false],
+    ['Podcastindex.org', '03ae9f91a0cb8ff43840e3c322c4c61f019d8c1c3cea15a25cfc425ac605e61a4a', 1, undefined, undefined, true],
+  ];
+  assert.equal((split.match(/<podcast:valueRecipient /g) ?? []).length, 3);
+  assert.ok(!split.includes('bitkorn@fountain.fm'));
+  for (const [name, address, shares, key, value, fee] of expected) {
+    const recipient = [...split.matchAll(/<podcast:valueRecipient [^>]*\/>/g)].map((m) => m[0]).find((tag) => tag.includes(`name="${escapeXml(name)}"`));
+    assert.ok(recipient, name);
+    assert.ok(recipient.includes(`address="${address}"`) && recipient.includes(`split="${shares}"`) && recipient.includes(`fee="${fee}"`));
+    if (key) assert.ok(recipient.includes(`customKey="${key}"`) && recipient.includes(`customValue="${value}"`));
+  }
+});
+
+
+test('only the twelve Price of Tomorrow episodes receive the original 21% Bitkorn split', () => {
+  const expected = new Set(archive.episodes.filter((e) => e.title.includes('Цена завтрашнего дня')).map((e) => e.guid));
+  assert.equal(expected.size, 12);
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, archive, archiveMedia: media, digests: [], audio: new Map() });
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
+  assert.equal(items.length, 134);
+  for (const item of items) {
+    const guid = item.match(/<guid[^>]*>([^<]+)<\/guid>/)[1];
+    const blocks = [...item.matchAll(/<podcast:value[^>]*>([\s\S]*?)<\/podcast:value>/g)];
+    assert.equal(blocks.length, expected.has(guid) ? 1 : 0, guid);
+    if (expected.has(guid)) {
+      assert.equal((blocks[0][1].match(/<podcast:valueRecipient /g) ?? []).length, 4);
+      assert.match(blocks[0][1], /name="bitkorn@fountain\.fm"[^>]*split="21"[^>]*customValue="01RjOT2ii5o5u9o7UAIxil"/);
+      assert.match(blocks[0][1], /name="tony_lightning@fountain\.fm"[^>]*split="74"[^>]*customValue="01F4o1zomYItiSp2yxeHhD"[^>]*fee="false"/);
+      assert.match(blocks[0][1], /name="Fountain"[^>]*split="4"[^>]*customValue="01FOUNTAIN"[^>]*fee="false"/);
+      assert.match(blocks[0][1], /name="Podcastindex\.org"[^>]*split="1"[^>]*fee="true"/);
+    } else assert.ok(!item.includes('bitkorn@fountain.fm'), guid);
+  }
+  assert.deepEqual(new Set(Object.keys(PODCAST_SHOW.archiveValueOverrides)), expected);
+});
+
+test('book routing follows stable episode GUIDs rather than mutable titles', () => {
+  const book = archive.episodes.find((e) => e.title.includes('Цена завтрашнего дня'));
+  const other = archive.episodes.find((e) => !e.title.includes('Цена завтрашнего дня'));
+  const renamed = { ...archive, episodes: [{ ...book, title: 'Renamed book chapter' }, { ...other, title: 'Цена завтрашнего дня mentioned in another episode' }] };
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, archive: renamed, digests: [], audio: new Map() });
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
+  const b = items.find((item) => item.includes(book.guid));
+  const o = items.find((item) => item.includes(other.guid));
+  assert.ok(b.includes('bitkorn@fountain.fm'));
+  assert.ok(!o.includes('bitkorn@fountain.fm'));
+});
+
+
+test('an opaque archive GUID cannot accidentally select an inherited object property as a payment override', () => {
+  const episode = { ...archive.episodes[0], guid: 'constructor' };
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, archive: { ...archive, episodes: [episode] }, digests: [], audio: new Map() });
+  const item = xml.match(/<item>([\s\S]*?)<\/item>/)[1];
+  assert.ok(item.includes('<guid isPermaLink="false">constructor</guid>'));
+  assert.ok(!item.includes('<podcast:value'), 'opaque GUID must inherit the configured default');
 });

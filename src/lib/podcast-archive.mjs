@@ -38,8 +38,8 @@ export function validatePodcastArchive(archive) {
   return [...archive.episodes];
 }
 
-/** @param {ArchivedEpisode} item @param {(s: unknown) => string} escape */
-export function renderArchivedEpisode(item, escape) {
+/** @param {ArchivedEpisode} item @param {(s: unknown) => string} escape @param {string | undefined} valueXml */
+export function renderArchivedEpisode(item, escape, valueXml = undefined) {
   const lines = [
     '    <item>',
     `      <title>${escape(item.title)}</title>`,
@@ -55,7 +55,7 @@ export function renderArchivedEpisode(item, escape) {
       ? `      <itunes:image href="${escape(value)}"/>`
       : `      <itunes:${key}>${escape(value)}</itunes:${key}>`);
   }
-  return [...lines, '    </item>'].join('\n');
+  return [...lines, ...(valueXml ? [valueXml] : []), '    </item>'].join('\n');
 }
 
 /** @typedef {{ guid: string, sourceUrl: string, url: string, byteLength: number, mimeType: string, sha256: string }} ArchiveMedia */

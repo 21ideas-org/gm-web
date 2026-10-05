@@ -22,7 +22,7 @@ One pre-existing metadata discrepancy was found: `2022-01-10.m4a` advertises 121
 
 - Spotify: https://open.spotify.com/show/1vjCoEDFPYaqKm3HasOZrK
 - Apple Podcasts: https://podcasts.apple.com/ru/podcast/21ideas/id1584949114
-- Fountain/Podcast Index: operator reports the existing show is present; verify the exact listing/feed association before cutover.
+- Fountain/Podcast Index: the existing show identity was verified on 2026-10-05; Fountain now points to the new feed. The GUID and payment-routing evidence are recorded below.
 
 The original enclosures were checked before download. Verify all 134 new public URLs with HEAD and `Range: bytes=0-63`: declared size/type must match and the 206 response must equal the local file prefix.
 
@@ -33,10 +33,86 @@ This PR prepares the new feed; it does not redirect Anchor or alter existing dir
 1. Extend the pure podcast builder to merge the static historical archive with validated digest audio. Keep the audio sidecar loader and its strict new-media trust rules unchanged. Preserve historical GUIDs and media bytes/lengths/types; reject duplicate identities rather than silently dropping archive entries. Keep descriptions, episode/season numbers and original timestamps. Test the mixed feed and XML escaping.
 2. Configure channel title/author/category/artwork for the existing 21ideas show, retaining the digest-specific episode descriptions and support line. The public project contact and general cover are approved. Retain the incomplete-identity guard for future invalid configurations.
 3. Build and compare all 134 GUIDs/dates/metadata to the source, allowing only the mapped enclosure URLs to change, plus the accepted new daily episode. Validate the public feed and media. No production directory change before this passes.
-4. Check the existing Fountain/Podcast Index listing and its feed association before creating anything. The source RSS contains no podcast namespace fields; presence in Fountain alone does not confirm value-for-value setup. Preserve known directory identities; sats/payment changes are a separate task.
+4. Preserve the verified existing Fountain/Podcast Index identities; do not create a duplicate show. The original source snapshot has no Podcast Namespace fields. The current feed adds identity, funding and approved payment routing as documented below; publication of these tags alone does not confirm successful payments.
 5. After operator-approved cutover, redirect the old Anchor RSS to https://gm.21ideas.org/podcast.xml through Spotify for Creators. Verify the existing Spotify listing and other subscribed applications receive the next new daily episode without duplicate old episodes. Keep the old account and archive intact.
 
 References: [Spotify migration](https://support.spotify.com/us/creators/article/switching-away-from-spotify-for-creators-with-a-301-redirect/) and [Apple migration and stable GUIDs](https://podcasters.apple.com/support/3965-how-to-change-hosting-providers).
+
+## Podcasting 2.0 identity and funding
+
+The feed declares the Podcast Namespace and publishes the existing show GUID
+`fbf0dca5-7cff-5518-a776-91ccda2b6612` from `PODCAST_SHOW.guid`. This UUID was confirmed
+on 2026-10-05 in the public Fountain show data (`_guid`, with RSS now pointing to
+`https://gm.21ideas.org/podcast.xml`) and the BoostMeBitch public directory response
+(`podcastGuid`, Podcast Index ID 4255963, Apple ID 1584949114). Preserve it on future
+hosting moves; do not derive another UUID from the new feed URL. Episode GUIDs are
+independent and unchanged. A missing optional show GUID is omitted; a configured
+invalid UUIDv5 follows the existing incomplete-identity guard.
+
+`podcast:funding` links to the canonical `/support/` page. That page already exposes
+the project Lightning Address `gmbitcoiner@coinos.io`. Funding is a support-page link;
+actual Lightning routing is specified separately by the value blocks below.
+
+### Payment migration boundary
+
+On 2026-10-05 both public directory responses agreed on the current external keysend
+split: `tony_lightning@fountain.fm` 74 shares, `bitkorn@fountain.fm` 21,
+Fountain 4, and Podcastindex.org 1 (marked as a fee). These are existing recipient
+settings, not new fees introduced by this change. The deployed RSS originally had
+no value block. The operator approved preserving these archive splits and routing
+100% of each daily GM episode to `gmbitcoiner@coinos.io`.
+
+`PODCAST_SHOW.archiveValue` is now the channel default for non-book archive episodes:
+95 shares to the owner, 4 to Fountain, and 1 to Podcastindex.org. The operator requested
+that Bitkorn's 21-share allocation apply only to the audiobook «Цена завтрашнего дня»;
+those shares return to the owner for other archive episodes.
+
+`PODCAST_SHOW.archiveValueOverrides` retains the exact original 74/21/4/1 split,
+custom routing records, fee flags and suggested rate for the twelve book episodes.
+Overrides use the frozen archive's GUIDs, not mutable titles. The archive snapshot,
+media mapping, episode identities and all pre-existing item metadata remain unchanged;
+only the twelve book items gain a value block.
+
+Each validated daily digest audio item has its own `method="lnaddress"` value block,
+with one `type="lnaddress"` recipient and `split="100"`, from
+`PODCAST_SHOW.dailyLightningAddress`. Daily blocks contain no Fountain/Bitkorn
+recipients or additional fee splits. Other historical items inherit the channel default.
+Invalid configured payment destinations follow the incomplete-identity guard.
+
+The public Coinos LNURL-pay endpoint for `gmbitcoiner` returned a valid `payRequest`,
+minimum 1 sat, and a 512-character comment allowance. Its corresponding keysend
+lookup returned HTTP 404. This confirms address discovery, not successful payment
+receipt or universal podcast-app support. No invoice was requested and no payment
+was sent during these checks. Never use the shared Coinos node pubkey as a replacement
+for account-specific routing data.
+
+After deployment, verify the chosen apps honor the episode-level override and support
+LNURL/invoice payments for `lnaddress` recipients. A keysend-only app cannot pay Coinos
+through the unavailable keysend lookup; it may ignore the unsupported item block and
+fall back to the channel's keysend recipient, or decline payment. Do not advertise
+universal Coinos payment support or mark app payments verified before a real authorized
+payment test.
+
+After directories refresh the feed, check both Fountain and Podcast Index: the show
+must expose 95/4/1, each of the twelve book episodes 74/21/4/1, and daily episodes the
+single Coinos recipient. Their existing dashboard/directory value block may take
+priority over RSS; if old 74/21/4/1 persists, reconcile those stored settings in the
+existing account before declaring the routing live. No dashboard settings were
+changed by this PR.
+
+Fountain documents external wallets and a separate 1% Boost Bot split for dashboard
+analytics. The operator chose 100% Coinos for daily episodes, so no Boost Bot share is
+added. The four original recipients are retained exactly for the book; other archive items
+use the three-recipient default. Keep NWC secrets out of
+the public feed and repository.
+
+Sources: [Fountain show](https://fountain.fm/show/chmjnVB1ZkSY3MC2FxY8),
+[BoostMeBitch directory record](https://www.boostmebitch.com/api/by-guid?guid=fbf0dca5-7cff-5518-a776-91ccda2b6612),
+[Coinos LNURL discovery](https://coinos.io/.well-known/lnurlp/gmbitcoiner),
+[Podcast GUID](https://podcasting2.org/docs/podcast-namespace/tags/guid),
+[funding](https://podcasting2.org/docs/podcast-namespace/tags/funding),
+[Lightning Address payment metadata](https://podcasting2.org/docs/podcast-namespace/examples/value/metadata),
+and [Fountain external wallets](https://support.fountain.fm/article/86-can-i-run-my-own-node-using-the-fountain-podcaster-wallet).
 
 ## Prepared-feed verification (2026-10-05)
 

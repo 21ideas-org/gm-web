@@ -293,3 +293,79 @@ test('site branding updates daily notes while preserving the existing 21ideas sh
   assert.ok(xml.includes('<title>21ideas</title>'));
   assert.ok(xml.includes('<description>Первый всеобъемлющий подкаст о Биткоине на русском</description>'));
 });
+
+
+test('Podcasting 2.0 metadata preserves show and episode identity', () => {
+  const { audio, digests } = scenario();
+  const baseline = renderPodcastFeed({ show: SHOW, digests, audio });
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio });
+  assert.match(xml, /xmlns:podcast="https:\/\/podcastindex\.org\/namespace\/1\.0"/);
+  assert.equal(PODCAST_SHOW.guid, 'fbf0dca5-7cff-5518-a776-91ccda2b6612');
+  assert.equal((xml.match(/<podcast:guid>/g) ?? []).length, 1);
+  assert.ok(xml.includes(`<podcast:guid>${PODCAST_SHOW.guid}</podcast:guid>`));
+  assert.ok(xml.includes('<podcast:funding url="https://gm.21ideas.org/support/">Поддержать подкаст</podcast:funding>'));
+  const identities = (feed) => [...feed.matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g)].map((m) => m[1]);
+  assert.deepEqual(identities(xml), identities(baseline), 'show GUID must not change episode GUIDs');
+});
+
+test('optional show GUID is never derived from the new feed URL and invalid GUIDs are rejected', () => {
+  const opts = { digests: [], audio: new Map() };
+  assert.ok(!renderPodcastFeed({ ...opts, show: SHOW }).includes('<podcast:guid>'));
+  for (const guid of ['', 'not-a-uuid', '</podcast:guid><podcast:value/>', 'fbf0dca5-7cff-4518-a776-91ccda2b6612']) {
+    assert.deepEqual(podcastShowStatus({ ...SHOW, guid }).missing, ['guid']);
+    assert.equal(renderPodcastFeed({ ...opts, show: { ...SHOW, guid } }), null);
+  }
+  const xml = renderPodcastFeed({ ...opts, show: { ...SHOW, guid: PODCAST_SHOW.guid, siteOrigin: 'https://new.example.org' } });
+  assert.ok(xml.includes(`<podcast:guid>${PODCAST_SHOW.guid}</podcast:guid>`));
+  assert.ok(xml.includes('<podcast:funding url="https://new.example.org/support/">'));
+});
+
+
+test('daily episodes override archive splits with the approved Coinos recipient', () => {
+  const { audio, digests } = scenario();
+  const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio });
+  const channel = xml.slice(0, xml.indexOf('<item>'));
+  assert.match(channel, /<podcast:value type="lightning" method="keysend" suggested="0.00000005000">/);
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
+  assert.equal(items.length, 2);
+  for (const item of items) {
+    assert.match(item, /<podcast:value type="lightning" method="lnaddress">/);
+    assert.equal((item.match(/<podcast:valueRecipient /g) ?? []).length, 1);
+    assert.match(item, /type="lnaddress" address="gmbitcoiner@coinos.io" split="100"/);
+    assert.ok(!item.includes('fountain.fm') && !item.includes('type="node"'));
+    assert.ok(!item.includes('fee=') && !item.includes('customKey='));
+  }
+});
+
+test('invalid payment configuration cannot publish a different or malformed destination', () => {
+  for (const dailyLightningAddress of ['', 'name', 'name@https://coinos.io', 'name@coinos.io?x', '<tag>@coinos.io']) {
+    assert.deepEqual(podcastShowStatus({ ...SHOW, dailyLightningAddress }).missing, ['dailyLightningAddress']);
+  }
+  for (const archiveValue of [null, {}, { ...PODCAST_SHOW.archiveValue, recipients: [] },
+    { ...PODCAST_SHOW.archiveValue, recipients: [{ ...PODCAST_SHOW.archiveValue.recipients[0], address: 'invalid' }] },
+    { ...PODCAST_SHOW.archiveValue, recipients: [{ ...PODCAST_SHOW.archiveValue.recipients[0], customValue: undefined }] },
+  ]) assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue }).missing, ['archiveValue']);
+});
+
+
+test('malformed archive payment overrides are rejected before feed publication', () => {
+  const base = { ...SHOW, archiveValue: PODCAST_SHOW.archiveValue };
+  for (const archiveValueOverrides of [null, [], { invalid: PODCAST_SHOW.archiveValue },
+    { '6564a203-3ccc-4174-a30c-2fc3670ca877': null },
+  ]) {
+    const show = { ...base, archiveValueOverrides };
+    assert.deepEqual(podcastShowStatus(show).missing, ['archiveValueOverrides']);
+    assert.equal(renderPodcastFeed({ show, digests: [], audio: new Map() }), null);
+  }
+  assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValueOverrides: PODCAST_SHOW.archiveValueOverrides }).missing, ['archiveValueOverrides']);
+});
+
+
+test('archive routing rejects invalid payment shares, fee flags and transport', () => {
+  const value = PODCAST_SHOW.archiveValue;
+  for (const patch of [{ split: 0 }, { split: -1 }, { split: 0.5 }, { fee: 'true' }]) {
+    const archiveValue = { ...value, recipients: [{ ...value.recipients[0], ...patch }, ...value.recipients.slice(1)] };
+    assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue }).missing, ['archiveValue']);
+  }
+  assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue: { ...value, method: 'lnaddress' } }).missing, ['archiveValue']);
+});
