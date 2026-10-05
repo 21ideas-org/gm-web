@@ -346,3 +346,26 @@ test('invalid payment configuration cannot publish a different or malformed dest
     { ...PODCAST_SHOW.archiveValue, recipients: [{ ...PODCAST_SHOW.archiveValue.recipients[0], customValue: undefined }] },
   ]) assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue }).missing, ['archiveValue']);
 });
+
+
+test('malformed archive payment overrides are rejected before feed publication', () => {
+  const base = { ...SHOW, archiveValue: PODCAST_SHOW.archiveValue };
+  for (const archiveValueOverrides of [null, [], { invalid: PODCAST_SHOW.archiveValue },
+    { '6564a203-3ccc-4174-a30c-2fc3670ca877': null },
+  ]) {
+    const show = { ...base, archiveValueOverrides };
+    assert.deepEqual(podcastShowStatus(show).missing, ['archiveValueOverrides']);
+    assert.equal(renderPodcastFeed({ show, digests: [], audio: new Map() }), null);
+  }
+  assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValueOverrides: PODCAST_SHOW.archiveValueOverrides }).missing, ['archiveValueOverrides']);
+});
+
+
+test('archive routing rejects invalid payment shares, fee flags and transport', () => {
+  const value = PODCAST_SHOW.archiveValue;
+  for (const patch of [{ split: 0 }, { split: -1 }, { split: 0.5 }, { fee: 'true' }]) {
+    const archiveValue = { ...value, recipients: [{ ...value.recipients[0], ...patch }, ...value.recipients.slice(1)] };
+    assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue }).missing, ['archiveValue']);
+  }
+  assert.deepEqual(podcastShowStatus({ ...SHOW, archiveValue: { ...value, method: 'lnaddress' } }).missing, ['archiveValue']);
+});

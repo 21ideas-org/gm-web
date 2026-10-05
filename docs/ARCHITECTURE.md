@@ -244,7 +244,8 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   artwork is preserved. An invalid configured episode cover suppresses feed publication.
   Optional `guid` preserves the verified existing Podcast Index UUIDv5 across hosting moves;
   invalid configured GUIDs also suppress publication. The Podcast Namespace funding tag points to
-  `/support/`. `archiveValue` preserves the existing channel-level keysend splits;
+  `/support/`. `archiveValue` defines the archive default at 95/4/1; `archiveValueOverrides` preserves
+  the original 74/21/4/1 split only for the twelve book GUIDs;
   `dailyLightningAddress` overrides them per daily episode with one Coinos recipient at 100%.
   Invalid payment config suppresses publication. Payment routing and compatibility limits are
   documented in `docs/podcast/21ideas-migration.md`.

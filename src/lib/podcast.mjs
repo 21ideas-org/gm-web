@@ -24,6 +24,7 @@ export const PODCAST_FEED_PARAM = 'podcast'; // [feed].xml.js → /podcast.xml
 const EPISODE_ID = /^\d{4}-\d{2}-\d{2}$/;
 const LANGUAGE = /^[a-z]{2}(?:-[a-z]{2})?$/i;
 const SHOW_GUID = /^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const EPISODE_UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const LIGHTNING_ADDRESS = /^[a-z0-9._+-]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
 const EMAIL = /^[^\s@<>"',;]+@[^\s@<>"',;.]+(?:\.[^\s@<>"',;.]+)+$/;
 // Characters XML 1.0 forbids outright (C0 controls except tab/LF/CR, lone surrogates, U+FFFE/U+FFFF).
@@ -72,16 +73,16 @@ function isArchiveValue(value) {
         || (typeof r.customKey === 'string' && /^\d+$/.test(r.customKey) && filled(r.customValue))));
 }
 
-/** Channel default for historical episodes; daily items override it. @param {import('./podcast-config.mjs').ArchiveValue} value */
-function archiveValueXml(value) {
+/** Archive default or book-specific override. @param {import('./podcast-config.mjs').ArchiveValue} value @param {string} indent */
+function archiveValueXml(value, indent = '    ') {
   return [
-    `    <podcast:value type="lightning" method="keysend" suggested="${escapeXml(value.suggested)}">`,
+    `${indent}<podcast:value type="lightning" method="keysend" suggested="${escapeXml(value.suggested)}">`,
     ...value.recipients.map((r) => {
       const custom = r.customKey === undefined ? '' : ` customKey="${escapeXml(r.customKey)}" customValue="${escapeXml(r.customValue)}"`;
       const fee = r.fee === undefined ? '' : ` fee="${r.fee}"`;
-      return `      <podcast:valueRecipient name="${escapeXml(r.name)}" type="node" address="${escapeXml(r.address)}" split="${r.split}"${custom}${fee}/>`;
+      return `${indent}  <podcast:valueRecipient name="${escapeXml(r.name)}" type="node" address="${escapeXml(r.address)}" split="${r.split}"${custom}${fee}/>`;
     }),
-    '    </podcast:value>',
+    `${indent}</podcast:value>`,
   ].join('\n');
 }
 
@@ -107,6 +108,9 @@ export function podcastShowStatus(show) {
     ['episodeImageUrl', s.episodeImageUrl === undefined || isCoverUrl(s.episodeImageUrl)],
     ['guid', s.guid === undefined || (typeof s.guid === 'string' && SHOW_GUID.test(s.guid))],
     ['archiveValue', s.archiveValue === undefined || isArchiveValue(s.archiveValue)],
+    ['archiveValueOverrides', s.archiveValueOverrides === undefined || (s.archiveValue !== undefined
+      && s.archiveValueOverrides !== null && typeof s.archiveValueOverrides === 'object' && !Array.isArray(s.archiveValueOverrides)
+      && Object.entries(s.archiveValueOverrides).every(([guid, value]) => EPISODE_UUID.test(guid) && isArchiveValue(value)))],
     ['dailyLightningAddress', s.dailyLightningAddress === undefined || (typeof s.dailyLightningAddress === 'string' && LIGHTNING_ADDRESS.test(s.dailyLightningAddress))],
   ];
   const missing = checks.filter(([, ok]) => !ok).map(([key]) => key);
@@ -219,7 +223,10 @@ export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia 
   });
   const ordered = [
     ...items.map((xml, i) => ({ xml, publishedAt: Date.parse(current[i].episode.publishedAt), guid: current[i].episode.guid })),
-    ...historical.map((e) => ({ xml: renderArchivedEpisode(e, escapeXml), publishedAt: Date.parse(e.pubDate), guid: e.guid })),
+    ...historical.map((e) => {
+      const override = s.archiveValueOverrides && Object.hasOwn(s.archiveValueOverrides, e.guid) ? s.archiveValueOverrides[e.guid] : undefined;
+      return { xml: renderArchivedEpisode(e, escapeXml, override ? archiveValueXml(override, '      ') : undefined), publishedAt: Date.parse(e.pubDate), guid: e.guid };
+    }),
   ].sort((a, b) => b.publishedAt - a.publishedAt || (a.guid < b.guid ? 1 : a.guid > b.guid ? -1 : 0));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
