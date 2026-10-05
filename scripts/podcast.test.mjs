@@ -44,6 +44,7 @@ const HOSTILE_TEASER = `Цена > $100 000 & <b>«рост»</b> "кавычк�
 /** A valid v1 sidecar for `id` matching the Markdown bytes `md(id)`. */
 function record(id, over = {}) {
   const hash = over.sha256 ?? id.slice(-1).repeat(64);
+  const v = over.mediaVersion ?? 1;
   return {
     version: 1,
     episodeId: id,
@@ -51,7 +52,8 @@ function record(id, over = {}) {
     publishedAt: `${id}T05:00:00Z`,
     coveredDate: '2026-09-01',
     digestSha256: sha256(md(id)),
-    url: `${MEDIA}/podcasts/${id}/${hash}.mp3`,
+    mediaVersion: v,
+    url: `${MEDIA}/podcasts/${id}${v === 1 ? '' : `-v${v}`}.mp3`,
     mimeType: 'audio/mpeg',
     byteLength: 1000,
     durationSeconds: 60,
@@ -94,7 +96,8 @@ function scenario() {
     digests,
     sidecars: {
       '2026-10-04.json': record('2026-10-04', { sha256: '4'.repeat(64), byteLength: 4855585, durationSeconds: 303.4 }),
-      '2026-10-03.json': record('2026-10-03', {
+      '2026-10-03.json': record('2026-10-03', { // a later distinct take of that day: the -v2 file
+        mediaVersion: 2,
         sha256: '3'.repeat(64),
         publishedAt: '2026-10-03T05:00:12.5Z',
         byteLength: 12000000,
@@ -162,7 +165,8 @@ test('GUIDs and enclosure URLs are stable and unique; timestamps and sizes come 
   assert.deepEqual(guids, ['gm-audio:2026-10-04', 'gm-audio:2026-10-03']);
   const urls = [...first.matchAll(/<enclosure url="([^"]+)" length="(\d+)" type="audio\/mpeg"\/>/g)];
   assert.equal(new Set(urls.map((m) => m[1])).size, 2);
-  assert.ok(urls.every((m) => m[1].startsWith(`${MEDIA}/podcasts/`)));
+  // Human-readable, date-named enclosures; the version suffix never changes the episode GUID.
+  assert.deepEqual(urls.map((m) => m[1]), [`${MEDIA}/podcasts/2026-10-04.mp3`, `${MEDIA}/podcasts/2026-10-03-v2.mp3`]);
   assert.deepEqual(urls.map((m) => m[2]), ['4855585', '12000000']);
   assert.match(first, /<pubDate>Sat, 03 Oct 2026 05:00:12 GMT<\/pubDate>/);
 });
