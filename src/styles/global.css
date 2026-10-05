@@ -1174,7 +1174,6 @@ hr {
 :root[data-theme="light"] .theme-btn .icon-moon { display: block; }
 
 /* Podcast listening page and shared app links. */
-.listen-intro { padding-top: 44px; }
 .listen-date { color: var(--accent); font-size: var(--fs-sm); }
 .listen-support { margin-top: 32px; font-size: var(--fs-sm); }
 .podcast-apps ul, .listen-archive { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
@@ -1193,6 +1192,7 @@ hr {
 .podcast-apps--compact ul { display: flex; flex-wrap: wrap; gap: 0 20px; border: 0; }
 .podcast-apps--compact li { border: 0; }
 .podcast-apps--compact a { font-size: var(--fs-sm); }
+.podcast-feed .section-header h2::before { content: none; }
 .podcast-feed-url { overflow-wrap: anywhere; min-width: 0; user-select: all; }
 .podcast-copy-status { min-height: 1.5em; color: var(--muted); font-size: var(--fs-sm); }
 .podcast-subscribe { margin: -8px 0 20px; font-size: var(--fs-sm); }

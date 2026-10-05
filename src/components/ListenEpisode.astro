@@ -20,7 +20,7 @@ const date = formatRuDate(post.data.pubDate);
   <span class="episode-share-status" role="status" aria-live="polite" data-episode-status></span>
   <AudioPlayer episode={audio} dateLabel={date} />
   <PodcastApps apps={apps} tree idPrefix={anchor} />
-  <a class="cta-btn episode-text-button" href={`/digests/${post.id}/`}>Текст и источники <span class="arrow">→</span></a>
+  <a class="cta-btn episode-text-button" href={`/digests/${post.id}/`}>текстовая версия <span class="arrow">→</span></a>
 </article>
 <script>
   document.querySelectorAll<HTMLAnchorElement>('[data-episode-link]').forEach(link => {
