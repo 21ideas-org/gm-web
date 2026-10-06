@@ -13,7 +13,13 @@ export function initializeAudioPlayer(root) {
   const seek = /** @type {HTMLInputElement | null} */ (root.querySelector('[data-audio-seek]'));
   const time = root.querySelector('[data-audio-time]');
   const status = /** @type {HTMLElement | null} */ (root.querySelector('[data-audio-status]'));
-  if (!audio || !panel || !toggle || !seek || !time || !status) return;
+  const backward = /** @type {HTMLButtonElement | null} */ (root.querySelector('[data-audio-backward]'));
+  const forward = /** @type {HTMLButtonElement | null} */ (root.querySelector('[data-audio-forward]'));
+  const speed = /** @type {HTMLButtonElement | null} */ (root.querySelector('[data-audio-speed]'));
+  const rateLabel = /** @type {HTMLElement | null} */ (root.querySelector('[data-audio-rate-label]'));
+  if (!audio || !panel || !toggle || !seek || !time || !status || !backward || !forward || !speed || !rateLabel) return;
+  const rateIcons = root.querySelectorAll('[data-audio-rate]');
+  const rates = [1, 1.25, 1.5];
   const fallbackDuration = Number(root.dataset.audioDuration);
   let requested = false;
   let attempt = 0;
@@ -33,11 +39,18 @@ export function initializeAudioPlayer(root) {
     root.dataset.playing = String(playing);
     toggle.setAttribute('aria-label', playing || requested ? 'Приостановить' : 'Воспроизвести');
     seek.disabled = failed || !total;
+    backward.disabled = forward.disabled = seek.disabled;
+    speed.disabled = failed;
     seek.max = String(total || fallbackDuration || 1);
     seek.value = String(Math.min(current, total || fallbackDuration || 0));
     seek.setAttribute('aria-valuetext', `${clock(current)} из ${clock(Math.ceil(total || fallbackDuration))}`);
     seek.style.setProperty('--audio-progress', `${total ? Math.min(100, Math.max(0, current / total * 100)) : 0}%`);
     time.textContent = `${clock(current)} / ${clock(Math.ceil(total || fallbackDuration))}`;
+    const rate = audio.playbackRate;
+    speed.setAttribute('aria-label', `Скорость ${rate}×. Изменить скорость воспроизведения`);
+    rateIcons.forEach(icon => { icon.toggleAttribute('hidden', Number(icon.getAttribute('data-audio-rate')) !== rate); });
+    rateLabel.hidden = rates.includes(rate);
+    rateLabel.textContent = `${rate}×`;
   };
 
   toggle.addEventListener('click', async () => {
@@ -77,6 +90,21 @@ export function initializeAudioPlayer(root) {
     audio.currentTime = Math.max(0, Math.min(total, position));
     sync();
   });
+  const skip = (seconds) => {
+    const total = duration();
+    if (failed || !total) return;
+    const current = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+    audio.currentTime = Math.max(0, Math.min(total, current + seconds));
+    sync();
+  };
+  backward.addEventListener('click', () => skip(-10));
+  forward.addEventListener('click', () => skip(10));
+  speed.addEventListener('click', () => {
+    if (failed) return;
+    audio.playbackRate = rates[(rates.indexOf(audio.playbackRate) + 1) % rates.length];
+    sync();
+    announce(`Скорость воспроизведения ${audio.playbackRate}×`);
+  });
   audio.addEventListener('play', () => {
     // A cancelled pending play() may still resolve: preserve the listener's pause intent.
     if (failed || cancelledPending) audio.pause();
@@ -97,7 +125,7 @@ export function initializeAudioPlayer(root) {
     sync();
     seek.disabled = true;
   });
-  for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'seeked', 'emptied']) {
+  for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'seeked', 'emptied', 'ratechange']) {
     audio.addEventListener(event, sync);
   }
   sync();
