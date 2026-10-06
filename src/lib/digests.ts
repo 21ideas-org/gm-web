@@ -1,9 +1,10 @@
 import { getCollection } from 'astro:content';
-import { publishedEditions } from './editions.mjs';
+import { eligibleEnglishEdition, publishedEditions } from './editions.mjs';
 import { formatEditionDayMonth } from './date';
 import type { Locale } from './locale';
 export async function publishedDigests(locale: Locale) {
-  return publishedEditions(await getCollection(locale === 'en' ? 'digests-en' : 'digests'));
+  const posts = publishedEditions(await getCollection(locale === 'en' ? 'digests-en' : 'digests'));
+  return locale === 'en' ? posts.filter(post => eligibleEnglishEdition(post)) : posts;
 }
 
 export async function editionPaths(locale: Locale) {

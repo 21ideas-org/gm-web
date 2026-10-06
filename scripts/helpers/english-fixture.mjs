@@ -55,7 +55,12 @@ export function fixtureSite() {
 }
 export function populateEnglish(root) {
   const dir = join(root, 'src/content/digests-en');
-  for (const id of ['2026-10-04', '2026-10-01']) writeFileSync(join(dir, `${id}.md`), editionMarkdown(id, 'en'));
+  for (const id of ['2026-10-04', '2026-10-01']) {
+    const extra = id === '2026-10-04' ? '\n\n#### Synthetic protocol second\n\nSecond story.\n\n#### Synthetic protocol third\n\nThird story.\n\n#### Synthetic protocol fourth\n\nFourth story.' : '';
+    writeFileSync(join(dir, `${id}.md`), editionMarkdown(id, 'en').replace('## Price & Market', `${extra}\n\n## Price & Market`) + '\n## Unknown English heading\n\n#### Unmapped story\n\nKeep this out of hubs.\n');
+  }
+  writeFileSync(join(dir, '2099-01-01.md'), editionMarkdown('2099-01-01', 'en'));
+  writeFileSync(join(dir, '2099-01-02.md'), editionMarkdown('2099-01-02', 'en', { draft: true }));
   writeFileSync(join(dir, '2026-10-03.md'), editionMarkdown('2026-10-03', 'en', { draft: true }));
   for (const id of ['unknown', '2026-02-30', '2026-10-04-en', '2026-10-06']) {
     writeFileSync(join(dir, `${id}.md`), editionMarkdown(id, 'en', { pubDate: '2026-10-05' }));
@@ -64,6 +69,7 @@ export function populateEnglish(root) {
   writeFileSync(join(dir, 'nested/2026-10-02.md'), editionMarkdown('2026-10-02', 'en'));
 }
 export async function buildFixture(root, historyUrl, flag, timezone = 'America/Los_Angeles') {
+  writeFileSync(join(root, '.fixture-clock.mjs'), "Date.now = () => Date.parse('2026-10-04T12:00:00Z');\n");
   const env = { ...process.env, HISTORY_API_URL: historyUrl, TZ: timezone };
   delete env.EN_EDITION_PUBLIC;
   if (flag !== undefined) env.EN_EDITION_PUBLIC = flag;
@@ -71,11 +77,16 @@ export async function buildFixture(root, historyUrl, flag, timezone = 'America/L
   rmSync(join(root, '.astro'), { recursive: true, force: true });
   rmSync(join(root, 'dist'), { recursive: true, force: true });
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [join(repository, 'node_modules/astro/bin/astro.mjs'), 'build'], { cwd: root, env });
+    const child = spawn(process.execPath, ['--import', join(root, '.fixture-clock.mjs'), join(repository, 'node_modules/astro/bin/astro.mjs'), 'build'], { cwd: root, env });
     let output = '';
     child.stdout.on('data', data => output += data);
     child.stderr.on('data', data => output += data);
     child.on('error', reject);
     child.on('close', code => code === 0 ? resolve(output) : reject(new Error(`Fixture build failed (${code}):\n${output}`)));
   });
+}
+
+export function qualifyRussianHub(root) {
+  const file = join(root, 'src/content/digests/2026-10-02.md');
+  writeFileSync(file, readFileSync(file, 'utf8') + '\n#### Дополнительная новость\n\nСинтетический текст.\n\n#### Ещё одна новость\n\nСинтетический текст.\n');
 }

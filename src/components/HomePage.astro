@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { publishedDigests } from '../lib/digests';
-import { labels, localePath, type Locale } from '../lib/locale';
+import { EN_EDITION_PUBLIC, labels, localePath, type Locale } from '../lib/locale';
 
 import Cursor from '../components/Cursor.astro';
 import PostCard from '../components/PostCard.astro';
@@ -42,6 +42,8 @@ const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.
   />
 
   )}
+
+  {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
 
   <section class="section" aria-labelledby="recent">
     <div class="section-header">

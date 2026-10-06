@@ -1,5 +1,5 @@
 ---
-import { labels, localePath, type Locale } from '../lib/locale';
+import { EN_EDITION_PUBLIC, labels, localePath, type Locale } from '../lib/locale';
 interface Props { locale?: Locale; }
 const { locale = 'ru' } = Astro.props;
 ---
@@ -15,5 +15,6 @@ const { locale = 'ru' } = Astro.props;
       <span aria-hidden="true">•</span>
       <a href="/rss.xml">rss</a>
     </>}
+    {locale === 'en' && EN_EDITION_PUBLIC && <><span aria-hidden="true">•</span><a href="/en/rss.xml">rss</a></>}
   </div>
 </footer>

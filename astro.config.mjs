@@ -7,6 +7,7 @@ import { rehypeCodeCopy } from './src/plugins/rehype-code-copy.mjs';
 import { rehypeBuyBitcoin } from './src/plugins/rehype-buy-bitcoin.mjs';
 import { rehypeHeadingAnchor } from './src/plugins/rehype-heading-anchor.mjs';
 import { TAGS, anchorFor } from './src/lib/topics';
+import { editionPublic } from './src/lib/editions.mjs';
 import { TOPICS_EN } from './src/lib/topics-en';
 import { gmDark, gmLight } from './src/themes/shiki-gm.mjs';
 
@@ -24,8 +25,8 @@ export default defineConfig({
 	base: '/',
 	integrations: [
 		sitemap({
-			// EN discovery is deferred; tag hubs use their own sitemap (no thin/noindex hubs).
-			filter: (page) => !page.includes('/tags') && !new URL(page).pathname.startsWith('/en/'),
+			// Tag hubs use their own sitemap; private English routes stay unadvertised.
+			filter: (page) => !page.includes('/tags') && (editionPublic(process.env.EN_EDITION_PUBLIC) || !new URL(page).pathname.startsWith('/en/')) && !new URL(page).pathname.endsWith('/404/'),
 			serialize(item) {
 				const m = item.url.match(/\/digests\/(\d{4}-\d{2}-\d{2})\/?$/);
 				if (m) {
@@ -37,8 +38,8 @@ export default defineConfig({
 					// home + listings: change as new digests land
 					item.lastmod = BUILD_ISO;
 					item.changefreq =
-						item.url === `${SITE}/` ? ChangeFreqEnum.DAILY : ChangeFreqEnum.WEEKLY;
-					item.priority = item.url === `${SITE}/` ? 1.0 : 0.6;
+						[`${SITE}/`, `${SITE}/en/`].includes(item.url) ? ChangeFreqEnum.DAILY : ChangeFreqEnum.WEEKLY;
+					item.priority = [`${SITE}/`, `${SITE}/en/`].includes(item.url) ? 1.0 : 0.6;
 				}
 				return item;
 			},

@@ -2,12 +2,20 @@ name: Build
 
 on:
   workflow_call:
+    outputs:
+      indexnow_urls:
+        description: Changed published digest URLs from the built artifact
+        value: ${{ jobs.build.outputs.indexnow_urls }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      indexnow_urls: ${{ steps.indexnow.outputs.urls }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 2
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
@@ -23,6 +31,17 @@ jobs:
         env:
           EN_EDITION_PUBLIC: ${{ vars.EN_EDITION_PUBLIC }} # optional, non-secret; only exact true enables EN
         run: npm run build
+
+      - name: Prepare changed publication URLs
+        id: indexnow
+        env:
+          EN_EDITION_PUBLIC: ${{ vars.EN_EDITION_PUBLIC }}
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          BEFORE="$EVENT_BEFORE"
+          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then BEFORE="HEAD~1"; fi
+          URLS=$(git diff --name-only "$BEFORE" HEAD -- src/content/digests/ src/content/digests-en/ | node scripts/indexnow-urls.mjs)
+          { echo "urls<<GM_INDEXNOW_URLS"; echo "$URLS"; echo "GM_INDEXNOW_URLS"; } >> "$GITHUB_OUTPUT"
 
       - name: Check internal links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0

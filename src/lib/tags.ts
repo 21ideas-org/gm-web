@@ -1,4 +1,6 @@
-import { eligibleEdition } from '../lib/editions.mjs';
+import { BY_TOPIC_EN } from './topics-en';
+import type { Locale } from './locale';
+import { eligibleEnglishEdition, eligibleEdition } from '../lib/editions.mjs';
 import { getCollection, render } from 'astro:content';
 import { BY_TOPIC, IGNORED_HEADINGS, anchorFor, type TagDef } from './topics';
 
@@ -11,7 +13,7 @@ export type { TagDef } from './topics';
 
 export interface NewsRef {
 	slug: string;       // tag slug
-	ru_title: string;   // the H4 headline text
+	title: string;      // the H4 headline text
 	anchor: string;     // in-page deep-link target — `slug-n` (mirrors the rendered <h4> id)
 	digestId: string;   // e.g. '2026-06-10'
 	date: Date;
@@ -27,14 +29,15 @@ export interface NewsRef {
 // tags/index.astro, tags-sitemap.xml.ts — 3+ calls otherwise). In dev a digest edit could serve a
 // stale index until the module reloads — acceptable (digests change via the bot's pushes, not
 // local edits).
-let _index: Promise<Map<string, NewsRef[]>> | undefined;
+const indexes = new Map<Locale, Promise<Map<string, NewsRef[]>>>();
 
-export function buildTagIndex(): Promise<Map<string, NewsRef[]>> {
-	return (_index ??= computeTagIndex());
+export function buildTagIndex(locale: Locale = 'ru'): Promise<Map<string, NewsRef[]>> {
+	if (!indexes.has(locale)) indexes.set(locale, computeTagIndex(locale));
+	return indexes.get(locale)!;
 }
 
-async function computeTagIndex(): Promise<Map<string, NewsRef[]>> {
-	const digests = (await getCollection('digests', eligibleEdition))
+async function computeTagIndex(locale: Locale): Promise<Map<string, NewsRef[]>> {
+	const digests = (await getCollection(locale === 'en' ? 'digests-en' : 'digests', post => locale === 'en' ? eligibleEnglishEdition(post) : eligibleEdition(post)))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 	const index = new Map<string, NewsRef[]>();
@@ -45,9 +48,9 @@ async function computeTagIndex(): Promise<Map<string, NewsRef[]>> {
 		let current: TagDef | undefined;
 		for (const h of headings) {
 			if (h.depth === 2) {
-				current = BY_TOPIC.get(h.text);
+				current = (locale === 'en' ? BY_TOPIC_EN : BY_TOPIC).get(h.text);
 				if (current && !digestSlugs.includes(current.slug)) digestSlugs.push(current.slug);
-				if (!current && !IGNORED_HEADINGS.has(h.text)) {
+				if (!current && !(locale === 'ru' && IGNORED_HEADINGS.has(h.text))) {
 					console.warn(`[tags] unmapped H2 ${JSON.stringify(h.text)} in ${entry.id} — items untagged`);
 				}
 			} else if (h.depth === 4 && current) {
@@ -55,7 +58,7 @@ async function computeTagIndex(): Promise<Map<string, NewsRef[]>> {
 				counts.set(current.slug, n);
 				const list = index.get(current.slug) ?? [];
 				if (!index.has(current.slug)) index.set(current.slug, list);
-				list.push({ slug: current.slug, ru_title: h.text, anchor: anchorFor(current.slug, n), digestId: entry.id, date: entry.data.pubDate });
+				list.push({ slug: current.slug, title: h.text, anchor: anchorFor(current.slug, n), digestId: entry.id, date: entry.data.pubDate });
 			}
 		}
 		// Drift detector (the §2 claim): frontmatter tags (bot-written, Phase A) and heading-derived

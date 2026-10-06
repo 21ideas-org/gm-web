@@ -4,7 +4,7 @@ import { formatDate, formatEditionDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
 import { tagBySlug } from '../lib/topics';
 import { TOPICS_EN } from '../lib/topics-en';
-import { labels, localePath, type Locale } from '../lib/locale';
+import { EN_EDITION_PUBLIC, labels, localePath, type Locale } from '../lib/locale';
 import Subscribe from '../components/Subscribe.astro';
 import Support from '../components/Support.astro';
 import History from '../components/History.astro';
@@ -38,15 +38,15 @@ const content = audio ? await Astro.slots.render('default') : '';
 const statsStart = content.search(/<h2\b[^>]*\bid="статистика-сети"/u);
 const introduction = statsStart >= 0 ? content.slice(0, statsStart) : '';
 const body = statsStart >= 0 ? content.slice(statsStart) : content;
-const ogImage = locale === 'ru' ? new URL(`/og/${id}.png`, Astro.site).href : undefined;
-const schema = locale === 'ru' ? [
-  newsArticleNode({ title, description, slug: id, pubDate, image: ogImage! }),
+const ogImage = new URL(`/og/${locale === 'en' ? 'en/' : ''}${id}.png`, Astro.site).href;
+const schema = [
+  newsArticleNode({ title, description, slug: id, pubDate, image: ogImage, locale }),
   breadcrumbNode([
-    { name: 'Главная', path: '' },
-    { name: 'Дайджесты', path: 'digests/' },
-    { name: dateLabel, path: `digests/${id}/` },
+    { name: locale === 'en' ? 'Home' : 'Главная', path: locale === 'en' ? 'en/' : '' },
+    { name: locale === 'en' ? 'Digests' : 'Дайджесты', path: locale === 'en' ? 'en/digests/' : 'digests/' },
+    { name: dateLabel, path: `${locale === 'en' ? 'en/' : ''}digests/${id}/` },
   ]),
-] : undefined;
+];
 ---
 <Base
   locale={locale}
@@ -80,7 +80,7 @@ const schema = locale === 'ru' ? [
     {chips.length > 0 && (
       <Chips class:list={['tag-chips', { 'tag-chips--static': locale === 'en' }]} role={locale === 'en' ? 'group' : undefined} aria-label={t.topics} data-scroller={locale === 'ru' ? true : undefined}>
         {chips.map((tag) => locale === 'en'
-          ? <span>#{TOPICS_EN[tag!.slug]}</span>
+          ? <a href={`/en/tags/${tag!.slug}/`}>#{TOPICS_EN[tag!.slug]}</a>
           : <a href={`/tags/${tag!.slug}`}>#{tag!.label}</a>)}
       </Chips>
     )}
@@ -107,7 +107,7 @@ const schema = locale === 'ru' ? [
 
   <Support locale={locale} text={t.postSupport} />
 
-  {locale === 'ru' && <Subscribe text="Свежий дайджест каждое утро. Не пропусти следующий выпуск." />}
+  {(locale === 'ru' || EN_EDITION_PUBLIC) && <Subscribe locale={locale} text={locale === 'en' ? "Get the next English digest in your feed reader." : "Свежий дайджест каждое утро. Не пропусти следующий выпуск."} />}
 
   {(prevPost || nextPost) && (
     <nav class="post-nav" aria-label={t.adjacent}>

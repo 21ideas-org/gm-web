@@ -1,12 +1,13 @@
 ---
-import Base from '../../layouts/Base.astro';
-import PostCard from '../../components/PostCard.astro';
-import { TAGS, tagBySlug, buildTagIndex, HUB_MIN_ITEMS, type NewsRef } from '../../lib/tags';
-import { breadcrumbNode } from '../../lib/schema';
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { buildTagIndex, HUB_MIN_ITEMS, type NewsRef } from '../../../lib/tags';
+import { TAGS_EN } from '../../../lib/topics-en';
+import { breadcrumbNode } from '../../../lib/schema';
 
 export async function getStaticPaths() {
-  const index = await buildTagIndex();
-  return TAGS.map((t) => ({
+  const index = await buildTagIndex('en');
+  return TAGS_EN.map((t) => ({
     params: { tag: t.slug },
     props: { items: (index.get(t.slug) ?? []) as NewsRef[] },
   }));
@@ -14,32 +15,33 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const { items } = Astro.props as { items: NewsRef[] };
-const def = tagBySlug(tag!)!;
+const def = TAGS_EN.find(t => t.slug === tag)!;
 const indexable = items.length >= HUB_MIN_ITEMS;
 // Breadcrumb structured data only on indexable hubs (mirrors the noindex/sitemap gate).
 const schema = indexable
   ? [
       breadcrumbNode([
-        { name: 'Главная', path: '' },
-        { name: 'Топики', path: 'tags/' },
-        { name: def.hubTitle, path: `tags/${def.slug}/` },
+        { name: 'Home', path: 'en/' },
+        { name: 'Topics', path: 'en/tags/' },
+        { name: def.hubTitle, path: `en/tags/${def.slug}/` },
       ]),
     ]
   : undefined;
 ---
 <Base
+  locale="en"
   title={`${def.hubTitle} — gm_₿`}
   description={def.hubDesc}
-  path={`tags/${def.slug}`}
+  path={`en/tags/${def.slug}`}
   pathMeta={`grep -rl '#${def.slug}' digests/`}
   activeNav="tags"
   noindex={!indexable}
   schema={schema}
 >
-  <nav class="breadcrumbs" aria-label="Хлебные крошки">
+  <nav class="breadcrumbs" aria-label="Breadcrumbs">
     <ol>
-      <li><a href="/">главная</a></li>
-      <li><a href="/tags">топики</a></li>
+      <li><a href="/en/">home</a></li>
+      <li><a href="/en/tags/">topics</a></li>
       <li aria-current="page">{def.label}</li>
     </ol>
   </nav>
@@ -49,30 +51,30 @@ const schema = indexable
     <p class="hub-desc">{def.hubDesc}</p>
 
     {items.length === 0 ? (
-      <p class="hub-empty">Пока нет новостей по этой теме.</p>
+      <p class="hub-empty">No English stories in this topic yet.</p>
     ) : (
       <ul class="post-list">
         {items.map((it) => (
           <li>
-            <PostCard href={`/digests/${it.digestId}/#${it.anchor}`} date={it.date} title={it.title} />
+            <PostCard locale="en" href={`/en/digests/${it.digestId}/#${it.anchor}`} date={it.date} title={it.title} />
           </li>
         ))}
       </ul>
     )}
 
     {(() => {
-      const others = TAGS.filter((t) => t.slug !== def.slug);
+      const others = TAGS_EN.filter((t) => t.slug !== def.slug);
       return (
         <article class="project-card other-tags">
           <div class="head">
-            <span class="name">другие темы</span>
+            <span class="name">other topics</span>
             <span class="tag-bracket">[{others.length}]</span>
           </div>
-          <nav class="links" aria-label="Другие темы">
+          <nav class="links" aria-label="Other topics">
             {others.map((t, i) => (
               <div>
                 <span class="branch">{i === others.length - 1 ? '└──' : '├──'}</span>{' '}
-                <a href={`/tags/${t.slug}`}>#{t.label}</a>
+                <a href={`/en/tags/${t.slug}/`}>#{t.label}</a>
               </div>
             ))}
           </nav>

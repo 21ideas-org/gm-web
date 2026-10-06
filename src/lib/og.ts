@@ -1,3 +1,4 @@
+import type { Locale } from './locale';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import satori from 'satori';
@@ -48,7 +49,7 @@ function el(type: string, props: Record<string, unknown> & { children?: unknown 
 	return { type, props };
 }
 
-function template(title: string, description: string, stamp: string): Node {
+function template(title: string, description: string, stamp: string, locale: Locale): Node {
 	const titleSize = titleFontSize(title);
 
 	// Scanlines layer (replaces ::before)
@@ -165,7 +166,7 @@ function template(title: string, description: string, stamp: string): Node {
 			}),
 			el('div', {
 				style: { display: 'flex', color: COLORS.muted },
-				children: 'github · telegram · rss',
+				children: locale === 'en' ? 'github · rss' : 'github · telegram · rss',
 			}),
 		],
 	});
@@ -203,9 +204,10 @@ export async function renderOgPng(
 	title: string,
 	description: string,
 	stamp = 'og-image · 1200×630',
+	locale: Locale = 'ru',
 ): Promise<Buffer> {
 	const { regular, bold } = await loadFonts();
-	const svg = await satori(template(title, description, stamp) as unknown as never, {
+	const svg = await satori(template(title, description, stamp, locale) as unknown as never, {
 		width: 1200,
 		height: 630,
 		fonts: [

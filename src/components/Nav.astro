@@ -13,7 +13,7 @@ const t = labels[locale];
   <a href={localePath(locale)} aria-current={active === 'home' ? 'page' : undefined}>{t.home}</a>
   <a href={localePath(locale, 'digests/')} aria-current={active === 'digests' ? 'page' : undefined}>{t.digests}</a>
   {ready && <a href="/listen/" aria-current={active === 'listen' ? 'page' : undefined}>слушать</a>}
-  {locale === 'ru' && (<a href="/tags" aria-current={active === 'tags' ? 'page' : undefined}>топики</a>)}
+  <a href={locale === 'en' ? '/en/tags/' : '/tags'} aria-current={active === 'tags' ? 'page' : undefined}>{locale === 'en' ? 'topics' : 'топики'}</a>
   <a href={localePath(locale, 'support/')} aria-current={active === 'support' ? 'page' : undefined}>{t.support}</a>
   <a href={localePath(locale, 'about/')} aria-current={active === 'about' ? 'page' : undefined}>{t.about}</a>
   {locale === 'ru' && (<a href="/projects" aria-current={active === 'projects' ? 'page' : undefined}>проекты</a>)}

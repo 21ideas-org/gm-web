@@ -1,18 +1,20 @@
 ---
+import { localePath, type Locale } from '../lib/locale';
 import { listeningState } from '../lib/listen-state';
 // Subscribe CTA — Telegram + RSS, terminal-idiom ghost buttons.
 // Home renders it with a `$ подписаться` header; digests pass no `heading`
 // (the `subscribe--bare` variant adds a top separator instead).
 interface Props {
+  locale?: Locale;
   heading?: string;
   text: string;
   audioAction?: boolean;
 }
-const { heading, text, audioAction = false } = Astro.props;
-const showAudio = audioAction && (await listeningState()).ready;
+const { heading, text, audioAction = false, locale = 'ru' } = Astro.props;
+const showAudio = locale === 'ru' && audioAction && (await listeningState()).ready;
 const TELEGRAM = 'https://t.me/bitcoin21ideas';
 ---
-<section class:list={["subscribe", { "subscribe--bare": !heading }]} aria-label="Подписка на дайджест">
+<section class:list={["subscribe", { "subscribe--bare": !heading }]} aria-label={locale === 'en' ? 'Subscribe to the English digest' : 'Подписка на дайджест'}>
   {heading && (
     <div class="section-header">
       <h2>{heading}</h2>
@@ -20,8 +22,8 @@ const TELEGRAM = 'https://t.me/bitcoin21ideas';
   )}
   <p class="subscribe-lead"><span class="arrow">&gt;</span> {text}</p>
   <div class="subscribe-actions">
-    <a class="cta-btn" href={TELEGRAM} rel="noopener">telegram <span class="arrow">→</span></a>
-    <a class="cta-btn" href="/rss.xml">rss <span class="arrow">→</span></a>
+    {locale === 'ru' && <a class="cta-btn" href={TELEGRAM} rel="noopener">telegram <span class="arrow">→</span></a>}
+    <a class="cta-btn" href={localePath(locale, 'rss.xml')}>rss <span class="arrow">→</span></a>
     {showAudio && <a class="cta-btn" href="/listen/">аудио <span class="arrow">→</span></a>}
   </div>
 </section>
