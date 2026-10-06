@@ -1,0 +1,21 @@
+---
+import { type CollectionEntry, render } from 'astro:content';
+import Post from '../layouts/Post.astro';
+import { tagsFromHeadings } from '../lib/topics';
+import { englishTagsFromHeadings } from '../lib/topics-en';
+import { audioForDigest } from '../lib/audio.mjs';
+import type { Locale } from '../lib/locale';
+interface Props {
+  post: CollectionEntry<'digests' | 'digests-en'>;
+  locale: Locale;
+  prevPost?: { id: string; label: string };
+  nextPost?: { id: string; label: string };
+}
+const { post, locale, prevPost, nextPost } = Astro.props;
+const { Content, headings } = await render(post);
+---
+<Post locale={locale} id={post.id} title={post.data.title} description={post.data.description}
+  pubDate={post.data.pubDate} tags={locale === 'en' ? englishTagsFromHeadings(headings) : tagsFromHeadings(headings)}
+  audio={locale === 'ru' ? audioForDigest(post.id) : undefined} prevPost={prevPost} nextPost={nextPost}>
+  <Content />
+</Post>

@@ -3,8 +3,10 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
 import PathStrip from '../components/PathStrip.astro';
+import { EN_EDITION_PUBLIC, type Locale } from '../lib/locale';
 
 interface Props {
+  locale?: Locale;
   title: string;
   description: string;
   path: string;
@@ -31,10 +33,11 @@ const {
   section,
   schema,
   noindex,
+  locale = 'ru',
 } = Astro.props;
 ---
 <!doctype html>
-<html lang="ru" data-theme="light">
+<html lang={locale} data-theme="light">
   <head>
     <script is:inline>
       (() => {
@@ -43,6 +46,7 @@ const {
         document.documentElement.dataset.theme = saved ?? system;
       })();
     </script>
+    <slot name="head" />
     <BaseHead
       title={title}
       description={description}
@@ -52,16 +56,17 @@ const {
       modifiedTime={modifiedTime}
       section={section}
       schema={schema}
-      noindex={noindex}
+      noindex={noindex || (locale === 'en' && !EN_EDITION_PUBLIC)}
+      locale={locale}
     />
     <script defer src="https://cloud.umami.is/script.js" data-website-id="f78f89fd-4254-4f5a-a727-de07928747ed" is:inline></script>
   </head>
   <body>
     <div class="shell">
-      <PathStrip path={path} meta={pathMeta} />
-      <Nav active={activeNav} />
+      <PathStrip path={path} meta={pathMeta} locale={locale} />
+      <Nav active={activeNav} locale={locale} />
       <slot />
-      <Footer />
+      <Footer locale={locale} />
     </div>
     <script>
       // Horizontal scrollers (nav, tag chips): hint overflow with an edge fade

@@ -1,12 +1,19 @@
+---
+import { labels, localePath, type Locale } from '../lib/locale';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+---
 <footer class="footer">
   <div class="left">gm_₿ <span aria-hidden="true">•</span> <a href="https://21ideas.org" rel="noopener">by 21ideas</a></div>
   <div class="right">
-    <a href="/support">поддержать</a>
+    <a href={localePath(locale, 'support/')}>{labels[locale].support}</a>
     <span aria-hidden="true">•</span>
     <a href="https://github.com/21ideas-org/gm-web" rel="noopener">github</a>
-    <span aria-hidden="true">•</span>
-    <a href="https://t.me/bitcoin21ideas" rel="noopener">telegram</a>
-    <span aria-hidden="true">•</span>
-    <a href="/rss.xml">rss</a>
+    {locale === 'ru' && <>
+      <span aria-hidden="true">•</span>
+      <a href="https://t.me/bitcoin21ideas" rel="noopener">telegram</a>
+      <span aria-hidden="true">•</span>
+      <a href="/rss.xml">rss</a>
+    </>}
   </div>
 </footer>

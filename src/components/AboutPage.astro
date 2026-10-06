@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import type { Locale } from '../lib/locale';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+import { faqPageNode } from '../lib/schema';
+
+// Single source for the visible FAQ and the FAQPage JSON-LD (Google requires the two to match).
+// Strictly informational — no buy/invest language (legal-safety + Google News/Yandex feed rules).
+const faqs = [
+  {
+    q: 'Что такое «Доброе утро, биткоинер»?',
+    a: 'Это ежедневный новостной дайджест на русском языке, посвящённый исключительно Биткоину. Каждое утро выходит краткая сводка главных событий сети Биткоин за последние сутки со ссылками на первоисточники: цена и рынок, майнинг, Lightning и другие решения второго слоя, разработка, регулирование, институционалы, безопасность. Каждый пункт сопровождается ссылкой на первоисточник, а в начале выпуска — блок статистики сети. Проект некоммерческий и входит в образовательную экосистему 21ideas.',
+  },
+  {
+    q: 'Дайджест освещает криптовалюты?',
+    a: '«Доброе утро, биткоинер» — это биткоин-онли дайджест. Дайджест не освещает альткоины, ICO и трейдинг-сигналы — лишь значимые новости, влияющие на сеть Биткоин: разработку протокола, майнинг, Lightning и другие решения второго слоя, регулирование и институциональное принятие. Щиткоины освещаются лишь с целью предостережения или в особо курьёзных случаях.',
+  },
+  {
+    q: 'Как часто выходят выпуски и где их читать?',
+    a: 'Выпуски выходят ежедневно, по утрам. Читать можно на <a href="https://gm.21ideas.org/">сайте</a>, получать в Telegram-канале <a href="https://t.me/bitcoin21ideas" rel="noopener">21ideas</a> или подписаться на <a href="https://gm.21ideas.org/rss.xml">RSS-ленту</a> с полным текстом выпусков.',
+  },
+  {
+    q: 'Это бесплатно?',
+    a: 'Да, доступ к дайджесту «Доброе утро, биткоинер» открыт для каждого. Проект некоммерческий, без платных подписок; материалы носят исключительно информационный характер и не являются инвестиционной рекомендацией. Сайт <a href="https://github.com/21ideas-org/gm-web" rel="noopener">открыт</a> под лицензией MIT.',
+  },
+];
+---
+<Base
+  locale={locale}
+  title={locale === 'en' ? 'about gm_₿' : 'о gm_₿'}
+  description={locale === 'en' ? 'About GM, bitcoiner, the daily Bitcoin-only digest with links to original sources.' : '«Доброе утро, биткоинер» — ежедневный биткоин-онли новостной дайджест на русском: что это, как устроены выпуски и как за ними следить.'}
+  path={locale === 'en' ? 'en/about' : 'about'}
+  pathMeta="cat about.md"
+  activeNav="about"
+  schema={locale === 'ru' ? faqPageNode(faqs) : undefined}
+>
+  {locale === 'ru' ? <>
+  <section class="about-section">
+    <h2>что это</h2>
+    <p><strong>«Доброе утро, биткоинер»</strong> (gm_₿) — ежедневный биткоин-онли новостной дайджест на русском языке. Каждое утро — короткая сводка главных событий сети Биткоин за минувшие сутки. Только биткоин, только сигнал — никакого шума и никаких щиткоинов. Некоммерческий проект входит в экосистему 21ideas.</p>
+
+    <article class="project-card" style="margin-top:8px">
+      <div class="head">
+        <span class="name">кратко</span>
+      </div>
+      <div class="links">
+        <div><span class="branch">├──</span> <span class="k">язык</span>&nbsp; русский</div>
+        <div><span class="branch">├──</span> <span class="k">тематика</span>&nbsp; только биткоин, никаких щиткоинов</div>
+        <div><span class="branch">├──</span> <span class="k">периодичность</span>&nbsp; каждое утро</div>
+        <div><span class="branch">├──</span> <span class="k">формат</span>&nbsp; статистика сети, сводка новостей + исторические события</div>
+        <div><span class="branch">├──</span> <span class="k">с</span>&nbsp; июня 2026 года</div>
+        <div><span class="branch">└──</span> <span class="k">лицензия</span>&nbsp; MIT</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="about-section">
+    <h2>как это работает</h2>
+    <p>Выпуски собираются автоматически: бот отбирает значимые новости из утверждённых источников, прикладывает исторические события дня из базы данных Биткоин-календаря, формирует дайджест и публикует его сюда, а затем анонсирует свежий выпуск в Telegram. Дайджесты и <a href="https://github.com/21ideas-org/gm-web/tree/main/ops-reports" rel="noopener">отчёты</a> ежедневных публикаций оцениваются и используются для корректировки автоматизации и улучшения будущих выпусков. Материалы носят исключительно информационный характер и не являются инвестиционной рекомендацией.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>как следить</h2>
+    <article class="project-card" style="margin-top:8px">
+      <div class="head">
+        <span class="name">подписаться</span>
+        <span class="tag-bracket live">[LIVE]</span>
+      </div>
+      <div class="links">
+        <div><span class="branch">├──</span> <span class="k">telegram</span>&nbsp; <a href="https://t.me/bitcoin21ideas" rel="noopener">t.me/bitcoin21ideas</a></div>
+        <div><span class="branch">└──</span> <span class="k">rss</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/rss.xml">/rss.xml</a></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="about-section">
+    <h2>поддержать</h2>
+    <p>Проект «Доброе утро, биткоинер» некоммерческий, и его работа напрямую зависит от вашей поддержки. Реквизиты для донатов и отчёты о финансировании проекта – на странице <a href="/support">поддержать</a>.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>часть экосистемы 21ideas</h2>
+    <p>«Доброе утро, биткоинер» — часть образовательного биткоин-онли проекта <a href="https://21ideas.org" rel="noopener">21ideas</a>. Другие проекты экосистемы можно посмотреть на странице <a href="/projects">проекты</a>.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>частые вопросы</h2>
+    {faqs.map((f) => (
+      <details class="faq-item">
+        <summary class="faq-q">{f.q}</summary>
+        <p class="faq-a" set:html={f.a}></p>
+      </details>
+    ))}
+  </section>
+  </> : <>
+    <section class="about-section">
+      <h1 class="fin-h1">About GM, bitcoiner</h1>
+      <p><strong>GM, bitcoiner</strong> (gm_₿) is a daily Bitcoin-only news digest. Each edition brings a concise summary of recent developments with links to original sources: mining, Lightning, technology, regulation, institutions, security and the Bitcoin community.</p>
+      <p>The English edition is part of the non-commercial 21ideas project. Read the available editions in the <a href="/en/digests/">English archive</a>.</p>
+    </section>
+    <section class="about-section">
+      <h2>How it works</h2>
+      <p>An automated editorial pipeline selects significant stories from approved sources and prepares a digest in English and Russian. Original source links accompany the stories so you can explore the details.</p>
+      <p>Materials are provided for information and are not investment advice. Access is free, without a paid subscription. The <a href="https://github.com/21ideas-org/gm-web" rel="noopener">website source</a> is available under the MIT licence.</p>
+    </section>
+    <section class="about-section">
+      <h2>Support the project</h2>
+      <p>Reader donations help cover the project's servers and editorial tools. Donation addresses and the shared financial report are on the <a href="/en/support/">support page</a>.</p>
+    </section>
+    <section class="about-section">
+      <h2>Frequently asked questions</h2>
+      <details class="faq-item"><summary class="faq-q">Does the digest cover other cryptocurrencies?</summary><p class="faq-a">The focus is Bitcoin: its protocol, mining, Lightning, regulation and adoption. Other cryptocurrencies may appear as context for a warning or an unusual story.</p></details>
+      <details class="faq-item"><summary class="faq-q">Where can I read the English edition?</summary><p class="faq-a">Visit the <a href="/en/">English home page</a> for the latest editions or browse the <a href="/en/digests/">archive</a>. When a matching Russian edition is available, the language link takes you to that day's edition; otherwise it opens the Russian archive.</p></details>
+    </section>
+  </>}
+</Base>

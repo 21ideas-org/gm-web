@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 import { getCollection } from 'astro:content';
 
 // Google News sitemap: ONLY digests from the last 48h (Google's hard rule —
@@ -11,7 +12,7 @@ const esc = (s: string) =>
 
 export async function GET() {
 	const cutoff = Date.now() - 48 * 3600 * 1000;
-	const posts = (await getCollection('digests', (p) => !p.data.draft))
+	const posts = (await getCollection('digests', eligibleEdition))
 		.filter((p) => p.data.pubDate.valueOf() >= cutoff)
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 

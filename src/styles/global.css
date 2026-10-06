@@ -715,10 +715,11 @@ hr {
   font-size: var(--fs-sm);
   padding: 2px 0;
 }
-.tag-chips a {
+.tag-chips a, .tag-chips span {
   color: var(--accent);
   border-bottom: 1px solid transparent;
 }
+.tag-chips--static { flex-wrap: wrap; }
 .tag-chips a:hover { border-bottom-color: var(--accent); }
 
 /* ─── Breadcrumbs (digest pages) ─── */
@@ -1259,4 +1260,20 @@ hr {
 @media (max-width: 400px) {
   .listen-episode { padding: 14px; }
   .episode-heading { font-size: 18px; }
+}
+
+/* Language switching shares the header's ordinary keyboard-focus styles. */
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  border-bottom: none;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.language-switch:hover { color: var(--text); }
+@media (max-width: 600px) {
+  .path-strip { flex-wrap: wrap; gap: 8px; }
+  .path-right { margin-left: auto; }
+  html[lang="en"] .path-strip .meta { display: none; }
 }

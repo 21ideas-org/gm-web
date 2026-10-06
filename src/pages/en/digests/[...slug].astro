@@ -1,0 +1,6 @@
+---
+import EditionPage from '../../../components/EditionPage.astro';
+import { editionPaths } from '../../../lib/digests';
+export async function getStaticPaths() { return editionPaths('en'); }
+---
+<EditionPage {...Astro.props} />

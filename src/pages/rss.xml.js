@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
 import MarkdownIt from 'markdown-it';
@@ -18,7 +19,7 @@ const clean = (html) =>
 	});
 
 export async function GET(context) {
-	const posts = (await getCollection('digests', p => !p.data.draft))
+	const posts = (await getCollection('digests', eligibleEdition))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 	return rss({
 		title: SITE_NAME,

@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 import { getCollection } from 'astro:content';
 import { SITE_NAME } from '../consts';
 import { formatRuDate } from '../lib/date';
@@ -13,7 +14,7 @@ const SITE = 'https://gm.21ideas.org';
 const RECENT = 30; // latest digests to list inline; the full archive is linked below
 
 export async function GET() {
-	const digests = (await getCollection('digests', (p) => !p.data.draft)).sort(
+	const digests = (await getCollection('digests', eligibleEdition)).sort(
 		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 	);
 	const recent = digests.slice(0, RECENT);

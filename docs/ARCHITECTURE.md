@@ -315,3 +315,61 @@ requires explicitly verified payments. YouTube is deferred. `PodcastApps.astro` 
 between the landing page and digest pages.
 `PodcastFeed.astro` provides text/audio RSS copy actions styled like the homepage subscription
 buttons; failed copying reveals a selectable URL, and success/failure is announced accessibly.
+
+## English reading edition
+
+The English text surface shares the existing shell, pages and post layout through explicit
+`locale: 'ru' | 'en'` inputs. The default remains Russian. Routes are `/en/`, `/en/digests/`,
+`/en/digests/{YYYY-MM-DD}/`, `/en/about/` and `/en/support/`, plus the supporting `/en/404/` error page. Untranslated projects, promotions,
+Russian audio/podcast subscriptions and Calendar history are omitted from English pages.
+The support page uses the same donation addresses and finance model/ledger as Russian; it does
+not create a second payment configuration or split project costs by edition.
+
+- **Collection** — `src/content/digests-en/`, separate from `src/content/digests/`, with the same
+  `title`, `description`, `pubDate`, `draft` (default false) and `tags` (default []) schema. It can
+  be empty. Approved publication files must be named `YYYY-MM-DD.md` at the collection root.
+  `english-drafts/` is unpublished source material and is never consumed or promoted by this site.
+- **Eligibility** — the shared `eligibleEdition()` predicate in `src/lib/editions.mjs` requires
+  `draft === false`, a date-only ID representing a real calendar date, and a valid `pubDate` whose
+  UTC calendar date matches the ID. Nested IDs, suffixes, unknown identities and mismatched dates
+  are excluded from listings, routes and pairing. RU readers/feeds use the same predicate;
+  existing correctly named published Russian editions retain their URLs and behavior. A malformed
+  required frontmatter field still follows Astro's existing schema-validation behavior.
+- **Topics** — `src/lib/topics-en.ts` maps the ten existing slugs to the English display names
+  from `gm-bitcoiner/lib/topics.js` (`TOPIC_EN`). Chips are derived from the English H2 headings,
+  as in Russian, and render as wrapping informational text. They do not link to Russian hubs or
+  nonexistent English hubs. The heading plugin recognizes both topic languages and retains the
+  same `<slug>` / `<slug>-<n>` anchor contract and plugin order. Unknown frontmatter tags remain
+  tolerated rather than enum-constrained.
+- **Dates and switching** — all dates use UTC calendar fields, including English month names.
+  The language link on an edition points to the other collection's actually eligible edition of
+  the same date. Without one it says `Russian archive` / `English archive` and opens that archive.
+  Home, archive, about and support pair by route; untranslated Russian routes switch to English
+  home. There are no inferred counterpart URLs.
+- **Private preview flag** — `EN_EDITION_PUBLIC` is an optional, non-secret build flag. Only the
+  exact string `true` enables it; missing, empty, false or malformed values default to false.
+  Example local public fixture build: `EN_EDITION_PUBLIC=true npm run build`. The existing reusable
+  build workflow passes `${{ vars.EN_EDITION_PUBLIC }}` from an optional repository variable.
+  This implementation does not set that variable. With the default false, English pages are built
+  and usable by direct URL but render `noindex, follow`, and Russian chrome does not advertise
+  them. This is an indexing/promotion gate, not access control. English pages always offer the
+  Russian language link.
+- **Discovery boundary** — English RSS, topic hubs, OG cards, language discovery metadata and
+  sitemap inclusion belong to the next discovery task. English pages do not advertise Russian
+  RSS/podcast feeds or use Russian OG cards/structured data; they have English HTML language,
+  basic titles/descriptions and canonical URLs. English URLs stay out of existing Russian feeds,
+  sitemaps and `llms.txt`, including a public-flag fixture build.
+
+Offline regression tests (`scripts/english-reading.test.mjs`, `scripts/english-build.test.mjs`)
+cover guards, paired/missing switching, UTC dates, English chrome/labels and shared donation data.
+Full-page builds use a small temporary synthetic EN/RU collection and localhost Calendar fixture;
+no public English copies, live editorial/TTS calls or production API requests are involved.
+`GM_EN_KEEP_FIXTURE=true node --test scripts/english-build.test.mjs` retains the synthetic build
+and prints its path for local visual/keyboard inspection; ordinary `npm test` cleans it up.
+
+GitHub Pages serves one shared static `404.html` for missing URLs. Its early client script
+redirects missing `/en` and `/en/*` paths to the built `/en/404/` page, with a loop guard for that
+fallback. The original missing request receives the hosting 404 status; the English fallback is a
+200 response with `noindex, follow` even when the edition is public. This is client localization,
+not a localized server 404. With JavaScript disabled, the shared Russian 404 remains. Only the
+missing pathname is forwarded (no original query string), and it is displayed with `textContent`.

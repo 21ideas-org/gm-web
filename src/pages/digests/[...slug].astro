@@ -1,44 +1,6 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
-import Post from '../../layouts/Post.astro';
-import { formatRuDayMonth } from '../../lib/date';
-import { tagsFromHeadings } from '../../lib/tags';
-import { audioForDigest } from '../../lib/audio.mjs';
-
-export async function getStaticPaths() {
-  const posts = (await getCollection('digests', p => !p.data.draft))
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-  const navLabel = (p: CollectionEntry<'digests'>) => ({ id: p.id, label: formatRuDayMonth(p.data.pubDate) });
-
-  return posts.map((post, i) => ({
-    params: { slug: post.id },
-    props: {
-      post,
-      prevPost: posts[i + 1] ? navLabel(posts[i + 1]) : undefined,
-      nextPost: posts[i - 1] ? navLabel(posts[i - 1]) : undefined,
-    },
-  }));
-}
-
-interface Props {
-  post: CollectionEntry<'digests'>;
-  prevPost?: { id: string; label: string };
-  nextPost?: { id: string; label: string };
-}
-
-const { post, prevPost, nextPost } = Astro.props;
-const { Content, headings } = await render(post);
+import EditionPage from '../../components/EditionPage.astro';
+import { editionPaths } from '../../lib/digests';
+export async function getStaticPaths() { return editionPaths('ru'); }
 ---
-<Post
-  id={post.id}
-  title={post.data.title}
-  description={post.data.description}
-  pubDate={post.data.pubDate}
-  tags={tagsFromHeadings(headings)}
-  audio={audioForDigest(post.id)}
-  prevPost={prevPost}
-  nextPost={nextPost}
->
-  <Content />
-</Post>
+<EditionPage {...Astro.props} />

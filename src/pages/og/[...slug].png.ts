@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../../lib/editions.mjs';
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import { renderOgPng } from '../../lib/og';
@@ -6,7 +7,7 @@ import { formatRuDate, formatDotDate } from '../../lib/date';
 const DAY_MS = 86_400_000;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const posts = await getCollection('digests', p => !p.data.draft);
+	const posts = await getCollection('digests', eligibleEdition);
 	return posts.map(post => {
 		const covered = new Date(post.data.pubDate.getTime() - DAY_MS);
 		return {
