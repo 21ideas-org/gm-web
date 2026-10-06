@@ -1,4 +1,10 @@
-<button class="theme-btn" id="theme-toggle" type="button" aria-label="Переключить тему">
+---
+import { labels, type Locale } from '../lib/locale';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+const t = labels[locale];
+---
+<button class="theme-btn" id="theme-toggle" type="button" aria-label={t.theme} data-dark-label={t.dark} data-light-label={t.light}>
   <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
     <circle cx="12" cy="12" r="4" />
     <path d="M12 2v2" />
@@ -18,7 +24,7 @@
   const btn = document.getElementById('theme-toggle') as HTMLButtonElement;
   const update = () => {
     const t = document.documentElement.dataset.theme ?? 'light';
-    btn.setAttribute('aria-label', t === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему');
+    btn.setAttribute('aria-label', t === 'light' ? btn.dataset.darkLabel! : btn.dataset.lightLabel!);
   };
   update();
   btn?.addEventListener('click', () => {

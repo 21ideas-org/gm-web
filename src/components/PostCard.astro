@@ -1,19 +1,21 @@
 ---
-import { formatDate } from '../lib/date';
+import { formatDate, formatEditionDate } from '../lib/date';
+import type { Locale } from '../lib/locale';
 interface Props {
+  locale?: Locale;
   href: string;
   date: Date;
   description?: string;
   title?: string;
   meta?: string;
 }
-const { href, date, description, title, meta } = Astro.props;
-const dateStr = formatDate(date);
+const { href, date, description, title, meta, locale = 'ru' } = Astro.props;
+const dateStr = locale === 'en' ? formatEditionDate(date, locale) : formatDate(date);
 // Display-only: strip the bot's repeated boilerplate tail
 // ("… и другие биткоин-новости <date>") and cap with an ellipsis, so each card
 // shows just the day's lead headlines. If the bot ever rephrases the tail the
 // regex no-ops and the full description renders (graceful fallback).
-const teaser = description?.replace(/\s*и другие биткоин-новости.*$/u, '…');
+const teaser = locale === 'ru' ? description?.replace(/\s*и другие биткоин-новости.*$/u, '…') : description;
 ---
 <a class="post-row" href={href}>
   <span class="date">{dateStr}</span>

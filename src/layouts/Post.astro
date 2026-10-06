@@ -1,8 +1,10 @@
 ---
 import Base from './Base.astro';
-import { formatDate, formatRuDate } from '../lib/date';
+import { formatDate, formatEditionDate } from '../lib/date';
 import { newsArticleNode, breadcrumbNode } from '../lib/schema';
-import { tagBySlug } from '../lib/tags';
+import { tagBySlug } from '../lib/topics';
+import { TOPICS_EN } from '../lib/topics-en';
+import { labels, localePath, type Locale } from '../lib/locale';
 import Subscribe from '../components/Subscribe.astro';
 import Support from '../components/Support.astro';
 import History from '../components/History.astro';
@@ -11,6 +13,7 @@ import { listeningState } from '../lib/listen-state';
 import type { AudioEpisode } from '../lib/audio.mjs';
 
 interface Props {
+  locale?: Locale;
   id: string;
   title: string;
   description: string;
@@ -20,11 +23,14 @@ interface Props {
   prevPost?: { id: string; label: string };
   nextPost?: { id: string; label: string };
 }
-const { id, title, description, pubDate, tags = [], audio, prevPost, nextPost } = Astro.props;
+const { id, title, description, pubDate, tags = [], audio: suppliedAudio, prevPost, nextPost, locale = 'ru' } = Astro.props;
+const t = labels[locale];
+const audio = locale === 'ru' ? suppliedAudio : undefined;
 const podcast = audio ? await listeningState() : undefined;
+const Chips = locale === 'en' ? 'div' : 'nav';
 const chips = tags.map((s) => tagBySlug(s)).filter(Boolean);
-const dateStr = formatDate(pubDate);
-const dateLabel = formatRuDate(pubDate);
+const dateStr = locale === 'en' ? formatEditionDate(pubDate, locale) : formatDate(pubDate);
+const dateLabel = formatEditionDate(pubDate, locale);
 const pubIso = pubDate.toISOString();
 // Render only audio days here; split at the existing statistics heading so the complete
 // Markdown introduction stays above the player without changing the published digest bytes.
@@ -32,33 +38,34 @@ const content = audio ? await Astro.slots.render('default') : '';
 const statsStart = content.search(/<h2\b[^>]*\bid="статистика-сети"/u);
 const introduction = statsStart >= 0 ? content.slice(0, statsStart) : '';
 const body = statsStart >= 0 ? content.slice(statsStart) : content;
-const ogImage = new URL(`/og/${id}.png`, Astro.site).href;
-const schema = [
-  newsArticleNode({ title, description, slug: id, pubDate, image: ogImage }),
+const ogImage = locale === 'ru' ? new URL(`/og/${id}.png`, Astro.site).href : undefined;
+const schema = locale === 'ru' ? [
+  newsArticleNode({ title, description, slug: id, pubDate, image: ogImage! }),
   breadcrumbNode([
     { name: 'Главная', path: '' },
     { name: 'Дайджесты', path: 'digests/' },
     { name: dateLabel, path: `digests/${id}/` },
   ]),
-];
+] : undefined;
 ---
 <Base
+  locale={locale}
   title={`${title} — gm_₿`}
   description={description}
-  path={`digests/${id}`}
+  path={`${locale === 'en' ? 'en/' : ''}digests/${id}`}
   pathMeta="cat post.md"
   activeNav="digests"
   image={ogImage}
   ogType="article"
   publishedTime={pubIso}
   modifiedTime={pubIso}
-  section="Биткоин"
+  section={locale === 'en' ? 'Bitcoin' : 'Биткоин'}
   schema={schema}
 >
-  <nav class="breadcrumbs" aria-label="Хлебные крошки">
+  <nav class="breadcrumbs" aria-label={t.breadcrumbs}>
     <ol>
-      <li><a href="/">главная</a></li>
-      <li><a href="/digests">дайджесты</a></li>
+      <li><a href={localePath(locale)}>{t.home}</a></li>
+      <li><a href={localePath(locale, 'digests/')}>{t.digests}</a></li>
       <li aria-current="page">{dateLabel}</li>
     </ol>
   </nav>
@@ -71,9 +78,11 @@ const schema = [
       <span class="date">{dateStr}</span>
     </div>
     {chips.length > 0 && (
-      <nav class="tag-chips" aria-label="Темы выпуска" data-scroller>
-        {chips.map((t) => <a href={`/tags/${t!.slug}`}>#{t!.label}</a>)}
-      </nav>
+      <Chips class:list={['tag-chips', { 'tag-chips--static': locale === 'en' }]} role={locale === 'en' ? 'group' : undefined} aria-label={t.topics} data-scroller={locale === 'ru' ? true : undefined}>
+        {chips.map((tag) => locale === 'en'
+          ? <span>#{TOPICS_EN[tag!.slug]}</span>
+          : <a href={`/tags/${tag!.slug}`}>#{tag!.label}</a>)}
+      </Chips>
     )}
   </header>
 
@@ -94,23 +103,23 @@ const schema = [
     </article>
   )}
 
-  <History pubDate={pubDate} />
+  {locale === 'ru' && <History pubDate={pubDate} />}
 
-  <Support text="На сегодня всё. Дайджест оказался полезным? Поддержи проект!" />
+  <Support locale={locale} text={t.postSupport} />
 
-  <Subscribe text="Свежий дайджест каждое утро. Не пропусти следующий выпуск." />
+  {locale === 'ru' && <Subscribe text="Свежий дайджест каждое утро. Не пропусти следующий выпуск." />}
 
   {(prevPost || nextPost) && (
-    <nav class="post-nav" aria-label="Adjacent posts">
+    <nav class="post-nav" aria-label={t.adjacent}>
       {prevPost ? (
-        <a href={`/digests/${prevPost.id}`} class="prev">
-          <span class="label">← пред</span>
+        <a href={localePath(locale, `digests/${prevPost.id}/`)} class="prev">
+          <span class="label">{t.prev}</span>
           <span class="title">{prevPost.label}</span>
         </a>
       ) : <div />}
       {nextPost ? (
-        <a href={`/digests/${nextPost.id}`} class="next">
-          <span class="label">след →</span>
+        <a href={localePath(locale, `digests/${nextPost.id}/`)} class="next">
+          <span class="label">{t.next}</span>
           <span class="title">{nextPost.label}</span>
         </a>
       ) : <div />}

@@ -1,0 +1,43 @@
+---
+import { publishedDigests } from '../lib/digests';
+import { labels, localePath, type Locale } from '../lib/locale';
+
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { plural } from '../lib/plural';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+const t = labels[locale];
+
+const posts = await publishedDigests(locale);
+
+const pathMeta = `${posts.length} ${locale === 'en' ? (posts.length === 1 ? 'edition' : 'editions') : plural(posts.length, ['дайджест', 'дайджеста', 'дайджестов'])}`;
+---
+<Base
+  locale={locale}
+  title={`${t.digests} — gm_₿`}
+  description={t.archiveDescription}
+  path={locale === 'en' ? 'en/digests' : 'digests'}
+  pathMeta={pathMeta}
+  activeNav="digests"
+>
+  <section class="section">
+    <div class="section-header">
+      <h2>{t.digests}</h2>
+    </div>
+
+    {posts.length === 0 && <p class="subscribe-lead">{t.empty}</p>}
+    <ul class="post-list">
+      {posts.map(post => (
+        <li>
+          <PostCard
+            locale={locale}
+            href={localePath(locale, `digests/${post.id}/`)}
+            date={post.data.pubDate}
+            description={post.data.description}
+          />
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import { localePath, type Locale } from '../lib/locale';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+const en = locale === 'en';
+---
+<Base
+  locale={locale}
+  noindex={en}
+  title={en ? '404 — page not found' : '404 — страница не найдена'}
+  description={en ? 'The page you requested could not be found.' : 'То, что вы искали, здесь не найдено.'}
+  path={en ? 'en/404' : '404'}
+  pathMeta="exit 127"
+>
+  <Fragment slot="head">
+    {!en && <script is:inline>
+      // GitHub Pages has one static 404 document. EN errors use a built, noindex fallback page.
+      // Forward only the pathname, never a request's query string; keep the fallback loop-safe.
+      if ((location.pathname === '/en' || location.pathname.startsWith('/en/')) &&
+          !/^\/en\/404\/?$/.test(location.pathname)) {
+        location.replace('/en/404/?path=' + encodeURIComponent(location.pathname));
+      }
+    </script>}
+  </Fragment>
+  <section class="notfound">
+    <div class="prompt-line"><span class="prompt">$</span> cat <span style="color:var(--accent)">/var/www<span class="req-path" style="color:var(--dim)">$REQUEST_PATH</span></span></div>
+    <div class="err">cat: /var/www<span class="req-path">$REQUEST_PATH</span>: No such file or directory</div>
+    <div class="prompt-line"><span class="prompt">$</span> echo $?</div>
+    <div style="color:var(--text)">404</div>
+    <div class="hint" style="margin-top:24px">{en ? 'The page you requested could not be found. It may have moved or never existed.' : 'того, что вы искали, здесь нет. возможно, страница переехала или никогда не существовала. так или иначе, путь ничего не вернул.'}</div>
+    <div class="hint">{en ? 'Try one of these links:' : 'попробуйте одну из этих ссылок:'}</div>
+    <div class="tree" style="margin-top:8px">
+      <div class="row"><span class="branch">├──</span> <a href={localePath(locale)}>{localePath(locale)}</a></div>
+      <div class="row"><span class="branch">├──</span> <a href={localePath(locale, 'digests/')}>{localePath(locale, 'digests')}</a></div>
+      {!en && <div class="row"><span class="branch">├──</span> <a href="/projects">/projects</a></div>}
+      <div class="row"><span class="branch">└──</span> <a href={localePath(locale, 'about/')}>{localePath(locale, 'about')}</a></div>
+    </div>
+  </section>
+  <script is:inline data-error-locale={locale}>
+    (function () {
+      var p = location.pathname || '/';
+      if (document.documentElement.lang === 'en') {
+        p = new URLSearchParams(location.search).get('path') || p;
+      }
+      document.querySelectorAll('.req-path').forEach(function (el) { el.textContent = p; });
+    })();
+  </script>
+</Base>

@@ -5,16 +5,18 @@
 // `.prose pre, pre.code-block` (global.css) WITHOUT being inside `.prose`. The copy handler is a
 // delegated `.code-copy` listener; on a `Base`-layout page (e.g. /support) the page must include
 // that listener itself (Post.astro's lives only there). See §5.2 of plans/donations.hardened.md.
+import type { Locale } from '../lib/locale';
 interface Props {
+  locale?: Locale;
   label: string; // rail name shown in the toolbar, e.g. "⚡ lightning"
   value: string; // the address / offer string
 }
-const { label, value } = Astro.props;
+const { label, value, locale = 'ru' } = Astro.props;
 ---
 <div class="code-wrap">
   <div class="code-toolbar">
     <span class="code-lang">{label}</span>
-    <button type="button" class="code-copy" aria-label="Скопировать">copy</button>
+    <button type="button" class="code-copy" aria-label={locale === 'en' ? `Copy ${label}` : 'Скопировать'}>copy</button>
   </div>
   <pre class="code-block"><code>{value}</code></pre>
 </div>

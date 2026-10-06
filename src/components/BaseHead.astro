@@ -5,7 +5,9 @@ import { organizationNode, websiteNode, graph } from '../lib/schema';
 import { PODCAST_SHOW } from '../lib/podcast-config.mjs';
 import { podcastShowStatus } from '../lib/podcast.mjs';
 
+import type { Locale } from '../lib/locale';
 interface Props {
+	locale?: Locale;
 	title: string;
 	description: string;
 	image?: string;
@@ -27,15 +29,16 @@ const {
 	section,
 	schema,
 	noindex = false,
+	locale = 'ru',
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImage = image ?? new URL('/og/default.png', Astro.site).href;
+const ogImage = image ?? (locale === 'ru' ? new URL('/og/default.png', Astro.site).href : undefined);
 
 // Site-wide nodes on every page, plus any page-specific nodes (digests pass NewsArticle + Breadcrumb).
 const extraNodes = Array.isArray(schema) ? schema : schema ? [schema] : [];
-const jsonLd = graph([websiteNode(), organizationNode(), ...extraNodes]);
+const jsonLd = locale === 'ru' ? graph([websiteNode(), organizationNode(), ...extraNodes]) : undefined;
 // /podcast.xml exists (and is advertised) only once the rollout completes the show identity.
-const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
+const podcastReady = locale === 'ru' && podcastShowStatus(PODCAST_SHOW).complete;
 ---
 
 <!-- Global Metadata -->
@@ -46,13 +49,13 @@ const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="sitemap" href="/sitemap-index.xml" />
-<link
+{locale === 'ru' && <link rel="sitemap" href="/sitemap-index.xml" />}
+{locale === 'ru' && <link
 	rel="alternate"
 	type="application/rss+xml"
 	title={SITE_NAME}
 	href={new URL('rss.xml', Astro.site)}
-/>
+/>}
 {podcastReady && (
 	<link
 		rel="alternate"
@@ -73,7 +76,7 @@ const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Structured data (schema.org JSON-LD) -->
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -85,12 +88,12 @@ const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={ogType} />
-<meta property="og:locale" content="ru_RU" />
-<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:locale" content={locale === 'en' ? 'en_US' : 'ru_RU'} />
+<meta property="og:site_name" content={locale === 'en' ? 'GM, bitcoiner' : SITE_NAME} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={ogImage} />
+{ogImage && <meta property="og:image" content={ogImage} />}
 {publishedTime && <meta property="article:published_time" content={publishedTime} />}
 {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 {section && <meta property="article:section" content={section} />}
@@ -100,4 +103,4 @@ const podcastReady = podcastShowStatus(PODCAST_SHOW).complete;
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={ogImage} />
+{ogImage && <meta property="twitter:image" content={ogImage} />}

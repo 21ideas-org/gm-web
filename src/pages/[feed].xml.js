@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 // /podcast.xml — the podcast RSS feed (audio episodes only; /rss.xml stays the full-text feed).
 // A dynamic route so that, while the show identity in src/lib/podcast-config.mjs is incomplete,
 // getStaticPaths() returns no path and the build emits no file at all (and BaseHead advertises nothing).
@@ -12,7 +13,7 @@ import { podcastFeedPaths, renderPodcastFeed } from '../lib/podcast.mjs';
 export const getStaticPaths = () => podcastFeedPaths(PODCAST_SHOW);
 
 export async function GET() {
-	const digests = (await getCollection('digests', (p) => !p.data.draft)).map((p) => ({
+	const digests = (await getCollection('digests', eligibleEdition)).map((p) => ({
 		id: p.id,
 		title: p.data.title,
 		description: p.data.description, // the capitalized teaser of the Telegram card / OG cover

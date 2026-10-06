@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 import { getCollection, render } from 'astro:content';
 import { BY_TOPIC, IGNORED_HEADINGS, anchorFor, type TagDef } from './topics';
 
@@ -33,7 +34,7 @@ export function buildTagIndex(): Promise<Map<string, NewsRef[]>> {
 }
 
 async function computeTagIndex(): Promise<Map<string, NewsRef[]>> {
-	const digests = (await getCollection('digests', (p) => !p.data.draft))
+	const digests = (await getCollection('digests', eligibleEdition))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 	const index = new Map<string, NewsRef[]>();

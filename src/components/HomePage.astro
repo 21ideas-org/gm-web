@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { publishedDigests } from '../lib/digests';
+import { labels, localePath, type Locale } from '../lib/locale';
+
+import Cursor from '../components/Cursor.astro';
+import PostCard from '../components/PostCard.astro';
+import Subscribe from '../components/Subscribe.astro';
+import Support from '../components/Support.astro';
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+const t = labels[locale];
+const buildDate = new Date().toISOString().slice(0, 10);
+
+const posts = (await publishedDigests(locale)).slice(0, 3);
+
+const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.featured) : [])
+  .sort((a, b) => (a.data.featuredOrder ?? a.data.order) - (b.data.featuredOrder ?? b.data.order));
+---
+<Base
+  locale={locale}
+  title={locale === 'en' ? 'GM, bitcoiner — daily Bitcoin digest in English' : 'Доброе утро, биткоинер — ежедневный биткоин-дайджест на русском'}
+  description={locale === 'en' ? 'A daily Bitcoin-only news digest with links to original sources. Mining, Lightning, technology, regulation and adoption.' : 'Доброе утро, биткоинер. Каждый день — короткая сводка главных биткоин-новостей на русском: сеть, майнинг, Lightning, регулирование, институционалы. Только биткоин, только сигнал — без шума и щиткоинов.'}
+  path={locale === 'en' ? 'en/site' : 'site'}
+  pathMeta={`${locale === 'en' ? 'last build' : 'последняя сборка'}: ${buildDate}`}
+  activeNav="home"
+>
+  <section class="hero" aria-label={locale === 'en' ? 'About the digest' : 'Identity'}>
+    <div class="hero-stack">
+      <span class="line"><span class="prompt">$</span> cat /etc/motd</span>
+      <span class="line"><span class="arrow">&gt;</span> {locale === 'en' ? 'GM, bitcoiner — a daily Bitcoin-only digest' : 'Доброе утро, биткоинер — ежедневный биткоин-онли дайджест'}</span>
+      <span class="line"><span class="prompt">$</span> ls <a href={localePath(locale, 'digests/')} class="about-link">{localePath(locale, 'digests')}</a><Cursor /></span>
+    </div>
+  </section>
+
+  {locale === 'ru' && (
+  <Subscribe
+    heading="подписаться"
+    audioAction
+    text="Хочешь получать ежедневную сводку биткоин-новостей?"
+  />
+
+  )}
+
+  <section class="section" aria-labelledby="recent">
+    <div class="section-header">
+      <h2 id="recent">{t.recent}</h2>
+      <a class="more" href={localePath(locale, 'digests/')}>{t.all} &nbsp;→</a>
+    </div>
+    {posts.length === 0 && <p class="subscribe-lead">{t.empty}</p>}
+    <ul class="post-list">
+      {posts.map(post => (
+        <li>
+          <PostCard
+            locale={locale}
+            href={localePath(locale, `digests/${post.id}/`)}
+            date={post.data.pubDate}
+            description={post.data.description}
+          />
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {locale === 'ru' && (
+  <section class="section" aria-labelledby="featured">
+    <div class="section-header">
+      <h2 id="featured">проекты</h2>
+      <a class="more" href="/projects">все проекты &nbsp;→</a>
+    </div>
+    <div class="featured-list">
+      {featured.map(p => (
+        <a class="featured-card" href={p.data.url ?? p.data.repo ?? '/projects'} rel="noopener">
+          <span class={`status tag-bracket ${p.data.status.toLowerCase()}`}>[{p.data.status}]</span>
+          <span>
+            <span class="name">{p.data.name}</span>
+            <p class="desc">{p.data.description}</p>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  )}
+
+  <Support locale={locale} text={locale === 'en' ? 'GM, bitcoiner is a non-commercial project. Help keep the daily digest running.' : 'Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!'} />
+
+  {locale === 'ru' && (
+  <section class="section" aria-labelledby="buy-bitcoin-heading">
+    <div class="section-header">
+      <h2 id="buy-bitcoin-heading">купить биткоин</h2>
+    </div>
+    <p class="subscribe-lead">Для обмена фиата на биткоин я пользуюсь услугами Hermes Exchange. Нужно обменять биткоин или другую криптовалюту на доллар, евро, рубль или другую валюту? Подробности по клику ниже.</p>
+    <div class="subscribe-actions">
+      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин <span class="arrow">→</span></a>
+    </div>
+  </section>
+  )}
+</Base>

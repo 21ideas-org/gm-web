@@ -7,15 +7,16 @@ import { rehypeCodeCopy } from './src/plugins/rehype-code-copy.mjs';
 import { rehypeBuyBitcoin } from './src/plugins/rehype-buy-bitcoin.mjs';
 import { rehypeHeadingAnchor } from './src/plugins/rehype-heading-anchor.mjs';
 import { TAGS, anchorFor } from './src/lib/topics';
+import { TOPICS_EN } from './src/lib/topics-en';
 import { gmDark, gmLight } from './src/themes/shiki-gm.mjs';
 
 const SITE = 'https://gm.21ideas.org';
 const BUILD_ISO = new Date().toISOString();
 
-// Exact Russian H2 text → slug, fed to the heading-anchor plugin (kept out of the plugin so it
+// Exact RU/EN H2 display text → stable slug, fed to the heading-anchor plugin (kept out of the plugin so it
 // stays free of the topic registry). topics.ts is pure (no astro:content), so importing it here
 // doesn't drag the content layer into config evaluation.
-const TOPIC_SLUGS = Object.fromEntries(TAGS.map((t) => [t.topic, t.slug]));
+const TOPIC_SLUGS = Object.fromEntries([...TAGS.map((t) => [t.topic, t.slug]), ...Object.entries(TOPICS_EN).map(([slug, label]) => [label, slug])]);
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,7 +24,8 @@ export default defineConfig({
 	base: '/',
 	integrations: [
 		sitemap({
-			filter: (page) => !page.includes('/tags'), // main sitemap stays tag-free; hubs ride tags-sitemap.xml (never lists a noindex thin hub)
+			// EN discovery is deferred; tag hubs use their own sitemap (no thin/noindex hubs).
+			filter: (page) => !page.includes('/tags') && !new URL(page).pathname.startsWith('/en/'),
 			serialize(item) {
 				const m = item.url.match(/\/digests\/(\d{4}-\d{2}-\d{2})\/?$/);
 				if (m) {

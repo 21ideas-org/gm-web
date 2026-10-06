@@ -20,6 +20,8 @@ jobs:
         run: npm run check
 
       - name: Build Astro site
+        env:
+          EN_EDITION_PUBLIC: ${{ vars.EN_EDITION_PUBLIC }} # optional, non-secret; only exact true enables EN
         run: npm run build
 
       - name: Check internal links

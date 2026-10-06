@@ -2,15 +2,21 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+const digestSchema = z.object({
+	title: z.string(), // "Доброе утро, биткоинер — 5 июня 2026"
+	description: z.string(), // teaser → Discord/Telegram
+	pubDate: z.coerce.date(),
+	draft: z.boolean().default(false),
+	tags: z.array(z.string()).default([]), // stable topic slugs; unknown future slugs must not fail the build
+});
+
 const digests = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/digests' }),
-	schema: z.object({
-		title: z.string(), // "Доброе утро, биткоинер — 5 июня 2026"
-		description: z.string(), // teaser → Discord/Telegram
-		pubDate: z.coerce.date(),
-		draft: z.boolean().default(false),
-		tags: z.array(z.string()).default([]), // present but unsurfaced in v1
-	}),
+	schema: digestSchema,
+});
+const digestsEn = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/digests-en' }),
+	schema: digestSchema,
 });
 
 const projects = defineCollection({
@@ -29,4 +35,4 @@ const projects = defineCollection({
 	}),
 });
 
-export const collections = { digests, projects };
+export const collections = { digests, 'digests-en': digestsEn, projects };

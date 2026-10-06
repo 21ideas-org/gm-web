@@ -1,7 +1,9 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
-interface Props { path: string; meta?: string; }
-const { path, meta } = Astro.props;
+import LanguageSwitch from './LanguageSwitch.astro';
+import type { Locale } from '../lib/locale';
+interface Props { path: string; meta?: string; locale?: Locale; }
+const { path, meta, locale = 'ru' } = Astro.props;
 const parts = path.split('/');
 ---
 <header class="path-strip">
@@ -15,6 +17,7 @@ const parts = path.split('/');
   } ]</span>
   <span class="path-right">
     {meta && <span class="meta">{meta}</span>}
-    <ThemeToggle />
+    <LanguageSwitch locale={locale} />
+    <ThemeToggle locale={locale} />
   </span>
 </header>

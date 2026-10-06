@@ -1,3 +1,4 @@
+import { eligibleEdition } from '../lib/editions.mjs';
 import { getCollection } from 'astro:content';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
@@ -24,7 +25,7 @@ const clean = (html: string) =>
 	});
 
 export async function GET() {
-	const posts = (await getCollection('digests', (p) => !p.data.draft))
+	const posts = (await getCollection('digests', eligibleEdition))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 		.slice(0, 50);
 

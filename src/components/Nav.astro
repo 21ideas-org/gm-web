@@ -1,18 +1,21 @@
 ---
 import { listeningState } from '../lib/listen-state';
+import { labels, localePath, type Locale } from '../lib/locale';
 interface Props {
+  locale?: Locale;
   active?: 'home' | 'digests' | 'projects' | 'about' | 'tags' | 'support' | 'buy-bitcoin' | 'listen';
 }
-const { active } = Astro.props;
-const { ready } = await listeningState();
+const { active, locale = 'ru' } = Astro.props;
+const ready = locale === 'ru' ? (await listeningState()).ready : false;
+const t = labels[locale];
 ---
-<nav class="nav" aria-label="Primary" data-scroller>
-  <a href="/" aria-current={active === 'home' ? 'page' : undefined}>главная</a>
-  <a href="/digests" aria-current={active === 'digests' ? 'page' : undefined}>дайджесты</a>
+<nav class="nav" aria-label={t.primary} data-scroller>
+  <a href={localePath(locale)} aria-current={active === 'home' ? 'page' : undefined}>{t.home}</a>
+  <a href={localePath(locale, 'digests/')} aria-current={active === 'digests' ? 'page' : undefined}>{t.digests}</a>
   {ready && <a href="/listen/" aria-current={active === 'listen' ? 'page' : undefined}>слушать</a>}
-  <a href="/tags" aria-current={active === 'tags' ? 'page' : undefined}>топики</a>
-  <a href="/support" aria-current={active === 'support' ? 'page' : undefined}>поддержать</a>
-  <a href="/about" aria-current={active === 'about' ? 'page' : undefined}>о gm_₿</a>
-  <a href="/projects" aria-current={active === 'projects' ? 'page' : undefined}>проекты</a>
-  <a href="/buy-bitcoin" aria-current={active === 'buy-bitcoin' ? 'page' : undefined}>купить биткоин</a>
+  {locale === 'ru' && (<a href="/tags" aria-current={active === 'tags' ? 'page' : undefined}>топики</a>)}
+  <a href={localePath(locale, 'support/')} aria-current={active === 'support' ? 'page' : undefined}>{t.support}</a>
+  <a href={localePath(locale, 'about/')} aria-current={active === 'about' ? 'page' : undefined}>{t.about}</a>
+  {locale === 'ru' && (<a href="/projects" aria-current={active === 'projects' ? 'page' : undefined}>проекты</a>)}
+  {locale === 'ru' && (<a href="/buy-bitcoin" aria-current={active === 'buy-bitcoin' ? 'page' : undefined}>купить биткоин</a>)}
 </nav>
