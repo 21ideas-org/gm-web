@@ -337,8 +337,8 @@ not create a second payment configuration or split project costs by edition.
   required frontmatter field still follows Astro's existing schema-validation behavior.
 - **Topics** — `src/lib/topics-en.ts` maps the ten existing slugs to the English display names
   from `gm-bitcoiner/lib/topics.js` (`TOPIC_EN`). Chips are derived from the English H2 headings,
-  as in Russian, and render as wrapping informational text. They do not link to Russian hubs or
-  nonexistent English hubs. The heading plugin recognizes both topic languages and retains the
+  as in Russian, and render as wrapping links to `/en/tags/{slug}/`. English hubs use the same
+  positional story anchor formula with an independent English heading lookup and content index. The heading plugin recognizes both topic languages and retains the
   same `<slug>` / `<slug>-<n>` anchor contract and plugin order. Unknown frontmatter tags remain
   tolerated rather than enum-constrained.
 - **Dates and switching** — all dates use UTC calendar fields, including English month names.
@@ -354,15 +354,46 @@ not create a second payment configuration or split project costs by edition.
   and usable by direct URL but render `noindex, follow`, and Russian chrome does not advertise
   them. This is an indexing/promotion gate, not access control. English pages always offer the
   Russian language link.
-- **Discovery boundary** — English RSS, topic hubs, OG cards, language discovery metadata and
-  sitemap inclusion belong to the next discovery task. English pages do not advertise Russian
-  RSS/podcast feeds or use Russian OG cards/structured data; they have English HTML language,
-  basic titles/descriptions and canonical URLs. English URLs stay out of existing Russian feeds,
-  sitemaps and `llms.txt`, including a public-flag fixture build.
+- **English discovery** — `/en/rss.xml` is the English text feed (`en-US`, full sanitized
+  HTML, original source links, canonical `/en/digests/{date}/` item URLs). Private builds produce
+  an empty feed with no autodiscovery or subscription promotion. Public builds include only
+  eligible published English editions. Russian `/rss.xml`, Yandex RSS, `llms.txt` and podcast
+  identity stay Russian. English future publication timestamps are excluded by
+  `eligibleEnglishEdition()` from pages, pairing, hubs, feed and per-edition OG routes; this does
+  not change the Russian publication predicate.
+- **Topic indexing** — `/en/tags/` and all ten `/en/tags/{slug}/` routes use the existing immutable
+  topic slugs. Unknown English H2 headings reset the current topic and warn without assigning
+  subsequent stories to the preceding hub; unknown frontmatter tags remain valid. The five-story
+  indexing floor applies independently to each locale. Thin hubs remain usable but `noindex,
+  follow` and absent from `/tags-sitemap.xml`. That sitemap includes a locale's topic index only
+  once at least one of its hubs qualifies. English hubs never link to Russian stories.
+- **Cards and structured metadata** — `/og/en/default.png` and `/og/en/{date}.png` are separate
+  1200×630 assets; per-edition cards use the English edition title, teaser and UTC English date.
+  English cards have no Telegram promotion. English pages emit `en_US` Open Graph locale,
+  `GM, bitcoiner` publisher/site names, English WebSite/NewsArticle nodes, canonical English URLs
+  and English breadcrumbs. The existing Russian cards/metadata stay Russian.
+- **Language alternates** — public builds emit reciprocal `ru`/`en` head links for paired home,
+  archive, about, support and topic index pages; editions require actually eligible counterparts.
+  Hub alternates require both locale hubs to clear the indexing floor. Missing, draft, future,
+  untranslated and error pages have no fabricated alternate. Private builds omit all metadata
+  alternates, including advertisements from Russian pages. The visible language switch still
+  offers direct preview navigation and a labelled archive fallback for unpaired editions.
+- **Sitemaps** — public builds add eligible English reading pages to the main sitemap, qualifying
+  English hubs to the tag sitemap, and last-48-hour English editions to the shared Google News
+  sitemap with English publication name/language and actual publication timestamps. Private
+  builds omit English from all three. Thin hubs and the English error page never enter the main
+  sitemap. External API availability remains fail-soft rather than a publishing gate.
+- **Change notifications** — `scripts/indexnow-urls.mjs` prepares only actually built eligible
+  changed edition URLs and affected home/archive URLs, with exact public-flag gating for English.
+  It performs no network calls. The reusable build workflow exports these URLs to the existing
+  post-deploy IndexNow job. English submissions require the exact public flag; private, draft,
+  future and absent output pages are excluded. The notification job runs only after deployment
+  succeeds and does not turn an IndexNow failure into a site build failure.
 
 Offline regression tests (`scripts/english-reading.test.mjs`, `scripts/english-build.test.mjs`)
 cover guards, paired/missing switching, UTC dates, English chrome/labels and shared donation data.
-Full-page builds use a small temporary synthetic EN/RU collection and localhost Calendar fixture;
+Full-page builds use a small temporary synthetic EN/RU collection, a frozen discovery clock and
+localhost Calendar fixture. XML validation uses Python 3's standard library;
 no public English copies, live editorial/TTS calls or production API requests are involved.
 `GM_EN_KEEP_FIXTURE=true node --test scripts/english-build.test.mjs` retains the synthetic build
 and prints its path for local visual/keyboard inspection; ordinary `npm test` cleans it up.

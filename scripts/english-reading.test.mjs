@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { editionPublic, eligibleEdition, languageDestination, publishedEditions } from '../src/lib/editions.mjs';
+import { editionPublic, eligibleEnglishEdition, eligibleEdition, languageDestination, publishedEditions } from '../src/lib/editions.mjs';
 
 const edition = (id, options = {}) => ({ id, data: { pubDate: new Date(`${id}T00:00:00Z`), draft: false, ...options } });
 
@@ -39,4 +39,17 @@ test('edition switching uses an actual eligible counterpart, otherwise its label
   assert.equal(languageDestination('ru', '/digests/2026-10-03/', posts).href, '/en/digests/');
   assert.equal(languageDestination('en', '/en/about/', []).href, '/about/');
   assert.equal(languageDestination('ru', '/support', []).href, '/en/support/');
+});
+
+test('English future previews do not enter published reading and discovery surfaces', () => {
+  const now = Date.parse('2026-10-04T00:00:00Z');
+  assert.equal(eligibleEnglishEdition(edition('2026-10-04'), now), true);
+  assert.equal(eligibleEnglishEdition(edition('2026-10-05'), now), false);
+  assert.equal(eligibleEnglishEdition(edition('2026-10-03', { draft: true }), now), false);
+});
+test('topic routes switch to the same existing immutable topic route', () => {
+  assert.equal(languageDestination('en', '/en/tags/tech/', []).href, '/tags/tech/');
+  assert.equal(languageDestination('ru', '/tags/mining/', []).href, '/en/tags/mining/');
+  assert.equal(languageDestination('en', '/en/tags/', []).href, '/tags/');
+  assert.equal(languageDestination('en', '/en/tags/unknown/', []).href, '/');
 });

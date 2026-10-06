@@ -1,0 +1,21 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { buildTagIndex } from '../../../lib/tags';
+import { TAGS_EN } from '../../../lib/topics-en';
+const index = await buildTagIndex('en');
+const rows = TAGS_EN.map(t => ({ ...t, count: index.get(t.slug)?.length ?? 0 }))
+  .filter(t => t.count > 0).sort((a, b) => b.count - a.count);
+const max = rows.length ? Math.max(...rows.map(r => r.count)) : 1;
+---
+<Base locale="en" title="Topics — gm_₿" description="English Bitcoin news by topic." path="en/tags" pathMeta="ls tags/" activeNav="tags">
+  <section class="section">
+    <div class="section-header"><h1>topics</h1><span class="more">{rows.length}</span></div>
+    {rows.length === 0 && <p class="hub-empty">No English stories have been published yet.</p>}
+    <ul class="tag-index">
+      {rows.map(r => <li><a class="tag-row" href={`/en/tags/${r.slug}/`}>
+        <span class="name"><span class="hash">#</span>{r.label}</span>
+        <span class="count"><span class="bar" style={`width:${Math.round(r.count / max * 80)}px`}></span>{r.count}</span>
+      </a></li>)}
+    </ul>
+  </section>
+</Base>

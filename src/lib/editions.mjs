@@ -30,6 +30,11 @@ export function languageDestination(locale, pathname, counterparts) {
       locale: other,
     };
   }
-  const destination = ['/', '/digests', '/about', '/support'].includes(path) ? path : '/';
+  const destination = (['/', '/digests', '/about', '/support', '/tags'].includes(path) || /^\/tags\/(market|institutions|regulation|lightning|mining|tech|security|community|funds|scandals)$/.test(path)) ? path : '/';
   return { href: `${prefix}${destination === '/' ? '/' : `${destination}/`}`, label: other === 'en' ? 'English' : 'Russian', locale: other };
+}
+
+/** English scheduled previews remain private until their publication time. @param {any} post @param {number} [now] */
+export function eligibleEnglishEdition(post, now = Date.now()) {
+  return eligibleEdition(post) && post.data.pubDate.valueOf() <= now;
 }

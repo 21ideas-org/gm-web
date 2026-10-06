@@ -1,4 +1,5 @@
-import { eligibleEdition } from '../lib/editions.mjs';
+import { EN_EDITION_PUBLIC } from '../lib/locale';
+import { eligibleEnglishEdition, eligibleEdition } from '../lib/editions.mjs';
 import { getCollection } from 'astro:content';
 
 // Google News sitemap: ONLY digests from the last 48h (Google's hard rule —
@@ -12,7 +13,9 @@ const esc = (s: string) =>
 
 export async function GET() {
 	const cutoff = Date.now() - 48 * 3600 * 1000;
-	const posts = (await getCollection('digests', eligibleEdition))
+	const ru = (await getCollection('digests', eligibleEdition)).map(p => ({ ...p, locale: 'ru' }));
+	const en = EN_EDITION_PUBLIC ? (await getCollection('digests-en', post => eligibleEnglishEdition(post))).map(p => ({ ...p, locale: 'en' })) : [];
+	const posts = [...ru, ...en]
 		.filter((p) => p.data.pubDate.valueOf() >= cutoff)
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
@@ -20,9 +23,9 @@ export async function GET() {
 		.map(
 			(p) => `
   <url>
-    <loc>${SITE}/digests/${p.id}/</loc>
+    <loc>${SITE}/${p.locale === 'en' ? 'en/' : ''}digests/${p.id}/</loc>
     <news:news>
-      <news:publication><news:name>${esc(PUB_NAME)}</news:name><news:language>ru</news:language></news:publication>
+      <news:publication><news:name>${esc(p.locale === 'en' ? 'GM, bitcoiner' : PUB_NAME)}</news:name><news:language>${p.locale}</news:language></news:publication>
       <news:publication_date>${p.data.pubDate.toISOString()}</news:publication_date>
       <news:title>${esc(p.data.title)}</news:title>
     </news:news>

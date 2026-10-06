@@ -32,27 +32,20 @@ jobs:
   # Runs AFTER deploy so the URLs are live when engines fetch to verify.
   # The IndexNow key is public by protocol design — not a secret.
   indexnow:
-    needs: deploy
+    needs: [build, deploy]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 2 # need the previous commit to diff
-      - name: Ping IndexNow for new/changed digests
+      - name: Ping IndexNow for changed published digests
         env:
           KEY: "780de8aa80b33db923a259bda6278256" # public IndexNow key (not a secret)
           HOST: "gm.21ideas.org"
+          URLS: ${{ needs.build.outputs.indexnow_urls }}
         run: |
-          BEFORE="${{ github.event.before }}"
-          # guard against the all-zero SHA on first push / new branch / manual dispatch
-          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then BEFORE="HEAD~1"; fi
-          CHANGED=$(git diff --name-only "$BEFORE" "${{ github.sha }}" -- src/content/digests/ | grep '\.md$' || true)
-          submit() { curl -fsS "https://api.indexnow.org/indexnow?url=$1&key=$KEY&keyLocation=https://$HOST/$KEY.txt" && echo " ✓ $1" || echo " ✗ $1"; }
-          if [ -n "$CHANGED" ]; then
-            for f in $CHANGED; do submit "https://$HOST/digests/$(basename "$f" .md)/"; done
-            # the listings changed too
-            submit "https://$HOST/"
-            submit "https://$HOST/digests/"
+          submit() { curl --max-time 15 -fsS "https://api.indexnow.org/indexnow?url=$1&key=$KEY&keyLocation=https://$HOST/$KEY.txt" && echo " ✓ $1" || echo " ✗ $1"; }
+          if [ -n "$URLS" ]; then
+            while IFS= read -r url; do
+              [ -n "$url" ] && submit "$url"
+            done <<< "$URLS"
           else
-            echo "no digest changes — nothing to submit"
+            echo "no published digest changes — nothing to submit"
           fi
