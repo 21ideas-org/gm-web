@@ -27,7 +27,6 @@ const { id, title, description, pubDate, tags = [], audio: suppliedAudio, prevPo
 const t = labels[locale];
 const audio = locale === 'ru' ? suppliedAudio : undefined;
 const podcast = audio ? await listeningState() : undefined;
-const Chips = locale === 'en' ? 'div' : 'nav';
 const chips = tags.map((s) => tagBySlug(s)).filter(Boolean);
 const dateStr = locale === 'en' ? formatEditionDate(pubDate, locale) : formatDate(pubDate);
 const dateLabel = formatEditionDate(pubDate, locale);
@@ -78,11 +77,11 @@ const schema = [
       <span class="date">{dateStr}</span>
     </div>
     {chips.length > 0 && (
-      <Chips class:list={['tag-chips', { 'tag-chips--static': locale === 'en' }]} role={locale === 'en' ? 'group' : undefined} aria-label={t.topics} data-scroller={locale === 'ru' ? true : undefined}>
+      <nav class="tag-chips" aria-label={t.topics} data-scroller>
         {chips.map((tag) => locale === 'en'
           ? <a href={`/en/tags/${tag!.slug}/`}>#{TOPICS_EN[tag!.slug]}</a>
           : <a href={`/tags/${tag!.slug}`}>#{tag!.label}</a>)}
-      </Chips>
+      </nav>
     )}
   </header>
 

@@ -719,7 +719,6 @@ hr {
   color: var(--accent);
   border-bottom: 1px solid transparent;
 }
-.tag-chips--static { flex-wrap: wrap; }
 .tag-chips a:hover { border-bottom-color: var(--accent); }
 
 /* ─── Breadcrumbs (digest pages) ─── */
@@ -1198,7 +1197,9 @@ hr {
   -webkit-tap-highlight-color: transparent;
 }
 .theme-btn:hover { color: var(--text); }
-.theme-btn .icon { width: 18px; height: 18px; display: none; }
+.theme-btn .icon, .language-switch .icon { width: 18px; height: 18px; }
+.theme-btn .icon { display: none; }
+.language-switch .icon { display: block; }
 :root[data-theme="dark"] .theme-btn .icon-sun { display: block; }
 :root[data-theme="light"] .theme-btn .icon-moon { display: block; }
 
