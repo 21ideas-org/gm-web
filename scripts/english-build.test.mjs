@@ -76,9 +76,9 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(edition, /4 October 2026/);
     assert.match(edition, /aria-label="Breadcrumbs"/);
     assert.match(edition, /aria-label="Edition topics"/);
-    const chips = /<div\b([^>]*\bclass="tag-chips tag-chips--static"[^>]*)>([\s\S]*?)<\/div>/.exec(edition);
-    assert.ok(chips, 'EN topic chips use the wrapping informational group');
-    assert.doesNotMatch(chips[1], /data-scroller/);
+    const chips = /<nav\b([^>]*\bclass="tag-chips"[^>]*)>([\s\S]*?)<\/nav>/.exec(edition);
+    assert.ok(chips, 'EN topic chips use the shared single-row navigation');
+    assert.match(chips[1], /data-scroller/);
     assert.match(chips[2], /href="\/en\/tags\/tech\/"/);
     assert.match(edition, /aria-label="Adjacent editions"/);
     for (const [slug, label] of [['tech', 'Technology &amp; Development'], ['market', 'Price &amp; Market'], ['scandals', 'Bitcoin Rap Sheet']]) {
