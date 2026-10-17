@@ -28,6 +28,7 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(page, /<html lang="en"/);
     assert.match(page, /aria-label="(?:Switch to dark theme|Toggle theme)"/);
     assert.match(page, /aria-label="Primary navigation"/);
+    assert.match(page, /<a\b[^>]*href="\/en\/about\/"[^>]*>about<\/a>/);
     assert.match(page, new RegExp(`<meta name="robots" content="${isPublic && path !== '404' && (!path.startsWith('tags/') || (populated && path === 'tags/tech')) ? 'index, follow' : 'noindex, follow'}`));
     assert.doesNotMatch(visible(page), /[А-Яа-яЁё]/u, `Russian visible text at ${path}`);
     assert.doesNotMatch(page, /aria-label="[^"]*[А-Яа-яЁё]/u, `Russian a11y text at ${path}`);
@@ -250,7 +251,7 @@ test('isolated EN/RU builds cover empty, published, draft, malformed, missing-pa
         const output = await buildFixture(root, history.url, scenario.flag, scenario.timezone);
         assert.equal(history.requests() - before, 1, 'RU history is fetched once per build; EN does not trigger additional calls');
         assert.match(output, /\[history\] fetch ok/);
-        assert.doesNotMatch(output, /unmapped H2 \"Network statistics\"/);
+        assert.doesNotMatch(output, /unmapped H2 \"Network Stats\"/);
         validateEnglish(root, Boolean(scenario.public), scenario.populated);
         validateRussian(root, Boolean(scenario.public), scenario.populated);
       });
