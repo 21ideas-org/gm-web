@@ -250,6 +250,7 @@ test('isolated EN/RU builds cover empty, published, draft, malformed, missing-pa
         const output = await buildFixture(root, history.url, scenario.flag, scenario.timezone);
         assert.equal(history.requests() - before, 1, 'RU history is fetched once per build; EN does not trigger additional calls');
         assert.match(output, /\[history\] fetch ok/);
+        assert.doesNotMatch(output, /unmapped H2 \"Network statistics\"/);
         validateEnglish(root, Boolean(scenario.public), scenario.populated);
         validateRussian(root, Boolean(scenario.public), scenario.populated);
       });

@@ -50,7 +50,7 @@ async function computeTagIndex(locale: Locale): Promise<Map<string, NewsRef[]>> 
 			if (h.depth === 2) {
 				current = (locale === 'en' ? BY_TOPIC_EN : BY_TOPIC).get(h.text);
 				if (current && !digestSlugs.includes(current.slug)) digestSlugs.push(current.slug);
-				if (!current && !(locale === 'ru' && IGNORED_HEADINGS.has(h.text))) {
+				if (!current && !IGNORED_HEADINGS.has(h.text)) {
 					console.warn(`[tags] unmapped H2 ${JSON.stringify(h.text)} in ${entry.id} — items untagged`);
 				}
 			} else if (h.depth === 4 && current) {
