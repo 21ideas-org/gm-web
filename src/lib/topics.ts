@@ -34,7 +34,7 @@ export const HUB_MIN_ITEMS = 5;
 
 export const BY_SLUG = new Map(TAGS.map((t) => [t.slug, t]));
 export const BY_TOPIC = new Map(TAGS.map((t) => [t.topic, t]));
-export const IGNORED_HEADINGS = new Set(['Статистика сети', 'Network statistics']); // the stats panel H2 is not a topic
+export const IGNORED_HEADINGS = new Set(['Статистика сети', 'Network Stats', 'Network statistics']); // the stats panel H2 is not a topic
 
 export function tagBySlug(slug: string): TagDef | undefined {
 	return BY_SLUG.get(slug);

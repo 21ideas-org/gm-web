@@ -39,6 +39,9 @@ test('edition switching uses an actual eligible counterpart, otherwise its label
   assert.equal(languageDestination('ru', '/digests/2026-10-03/', posts).href, '/en/digests/');
   assert.equal(languageDestination('en', '/en/about/', []).href, '/about/');
   assert.equal(languageDestination('ru', '/support', []).href, '/en/support/');
+  for (const path of ['/projects/', '/buy-bitcoin/', '/listen/', '/listen/2026-10-17/']) {
+    assert.equal(languageDestination('ru', path, []).href, '/en/', `No EN counterpart: ${path}`);
+  }
 });
 
 test('English future previews do not enter published reading and discovery surfaces', () => {

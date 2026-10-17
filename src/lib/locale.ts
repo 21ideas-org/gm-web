@@ -12,7 +12,7 @@ export const labels = {
     archiveDescription: 'Все выпуски. В хронологическом порядке.',
   },
   en: {
-    home: 'home', digests: 'digests', support: 'support', about: 'about gm_₿',
+    home: 'home', digests: 'digests', support: 'support', about: 'about',
     primary: 'Primary navigation', theme: 'Toggle theme', dark: 'Switch to dark theme', light: 'Switch to light theme',
     breadcrumbs: 'Breadcrumbs', topics: 'Edition topics', adjacent: 'Adjacent editions', prev: '← previous', next: 'next →',
     supportProject: 'Support the project', postSupport: "That’s all for today. Found this digest useful? Support the project!",
