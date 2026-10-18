@@ -1,12 +1,12 @@
 // src/lib/history.mjs — build-time only (digest pages are prerendered). The «Сегодня в истории» data
-// comes from the deployed public Bitcoin Calendar API: ONE memoized Node fetch per build, shared by
-// every digest page. Pure ESM (no astro:* imports) so scripts/history.test.mjs can drive it offline.
+// comes from the public Bitcoin Calendar API: one memoized Node fetch per locale per build,
+// shared by every digest page. Pure ESM so scripts/history.test.mjs can drive it offline.
 //
 // FAIL-SOFT / NEVER-REJECTS. Digest pages share the bot's publish build lane, so a timeout, network
 // error, non-2xx, non-JSON body, or schema drift must never fail the build. Degradation is layered:
 // a malformed optional field (references/media) is dropped but the event kept → an invalid row is
 // skipped alone → a wholly unavailable response yields {} and every digest silently omits the section.
-// The only trace is one bounded `[history] fetch …` stderr line per build (codes + counts, never
+// The only trace is one bounded `[history] fetch …` stderr line per locale per build (codes + counts, never
 // upstream text).
 
 /**
@@ -41,12 +41,21 @@ export const HISTORY_API_URL = 'https://api.bitcoin-calendar.org/public/v2/event
 export const HISTORY_SCHEMA = 'bitcoin-calendar.public-events.v2';
 export const TIMEOUT_MS = 8000; // per attempt, covering headers + body
 export const RETRY_DELAY_MS = 1000;
-const MAX_ATTEMPTS = 2; // first try + at most one retry → at most two physical requests per build
+const MAX_ATTEMPTS = 2; // first try + at most one retry → at most two physical requests per loader
 
 // Local/test override (e.g. a fixture server); production needs no env and no secret.
-/** @param {Record<string, string | undefined>} env */
-export function resolveHistoryUrl(env) {
-  return env.HISTORY_API_URL?.trim() || HISTORY_API_URL;
+/** @param {Record<string, string | undefined>} env @param {'ru' | 'en'} [locale] */
+export function resolveHistoryUrl(env, locale = 'ru') {
+  const url = env.HISTORY_API_URL?.trim() || HISTORY_API_URL;
+  if (locale === 'ru') return url;
+  if (env.HISTORY_API_URL_EN?.trim()) return env.HISTORY_API_URL_EN.trim();
+  try {
+    const englishUrl = new URL(url);
+    englishUrl.searchParams.set('lang', 'en');
+    return englishUrl.href;
+  } catch {
+    return url; // The loader handles invalid overrides like any other unavailable endpoint.
+  }
 }
 
 // Leading-emoji prefix in the source titles ("🗣️ Сатоши…", "🇸🇻 Принят закон…"): either a flag (two
@@ -293,13 +302,17 @@ export function createHistoryLoader(options = {}) {
   return () => (memo ??= run());
 }
 
-/** @type {(() => Promise<HistoryResult>) | null} */
-let buildLoader = null;
+/** @type {Map<'ru' | 'en', () => Promise<HistoryResult>>} */
+const buildLoaders = new Map();
 
 // The per-build singleton History.astro consumes: module state persists across all prerendered
-// pages of one `astro build`, so this is one fetch (+ ≤1 retry) and one diagnostic per build.
-/** @returns {Promise<HistoryByDay>} */
-export async function historyByDay() {
-  buildLoader ??= createHistoryLoader();
-  return (await buildLoader()).byDay;
+// pages of one `astro build`: one fetch (+ ≤1 retry) and one diagnostic per rendered locale.
+/** @param {'ru' | 'en'} [locale] @returns {Promise<HistoryByDay>} */
+export async function historyByDay(locale = 'ru') {
+  let loader = buildLoaders.get(locale);
+  if (!loader) {
+    loader = createHistoryLoader({ url: resolveHistoryUrl(process.env, locale) });
+    buildLoaders.set(locale, loader);
+  }
+  return (await loader()).byDay;
 }

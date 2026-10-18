@@ -2,27 +2,29 @@
 import { historyByDay, eventsForDay } from '../lib/history.mjs';
 import { historyEventView } from '../lib/history-event.mjs';
 import { formatMonthDay } from '../lib/date';
+import type { Locale } from '../lib/locale';
 
 interface Props {
   pubDate: Date;
+  locale?: Locale;
 }
-const { pubDate } = Astro.props;
+const { pubDate, locale = 'ru' } = Astro.props;
 // historyByDay() never rejects: an unavailable Calendar API resolves to {} and the section is omitted.
 // Sources live on the Calendar event page. Missing or invalid paths omit only the button.
 // Paragraph splitting lives in the helper, not the template: an inline /\n{2,}/ regex literal trips
 // the Astro compiler ({2,} reads as a JSX brace).
-const events = eventsForDay(await historyByDay(), formatMonthDay(pubDate)).map(historyEventView);
+const events = eventsForDay(await historyByDay(locale), formatMonthDay(pubDate)).map(event => historyEventView(event, locale));
 ---
 {events.length > 0 && (
   <section class="history">
-    <h2><span class="hgh" aria-hidden="true">##</span> Сегодня в истории</h2>
+    <h2><span class="hgh" aria-hidden="true">##</span> {locale === 'en' ? 'Today in history' : 'Сегодня в истории'}</h2>
     {events.map((e) => (
       <details class="faq-item">
         <summary class="faq-q">{e.title}</summary>
         {e.paragraphs.map((p) => <p class="faq-a">{p}</p>)}
         {e.eventUrl && (
           <div class="history-actions">
-            <a class="cta-btn" href={e.eventUrl}>Открыть в Биткоин календаре <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="cta-btn" href={e.eventUrl}>{locale === 'en' ? 'Open in Bitcoin Calendar' : 'Открыть в Биткоин календаре'} <span class="arrow" aria-hidden="true">→</span></a>
           </div>
         )}
       </details>

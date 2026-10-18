@@ -102,7 +102,7 @@ const schema = [
     </article>
   )}
 
-  {locale === 'ru' && <History pubDate={pubDate} />}
+  <History pubDate={pubDate} locale={locale} />
 
   <Support locale={locale} text={t.postSupport} />
 

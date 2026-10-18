@@ -20,6 +20,15 @@ test('logical slug characters are encoded as one route segment, like the Calenda
     'https://bitcoin-calendar.org/ru/events/2000-02-29/%D1%82%D0%B5%D1%81%D1%82%20%25%3F%23');
 });
 
+test('English event views use English Calendar permalinks and preserve paragraphs', () => {
+  const english = { ...event, title: 'Historical event', description: 'First paragraph.\n\nSecond paragraph.' };
+  assert.deepEqual(historyEventView(english, 'en'), {
+    title: english.title, paragraphs: ['First paragraph.', 'Second paragraph.'],
+    eventUrl: 'https://bitcoin-calendar.org/en/events/2008-11-01/bitcoin-whitepaper-published',
+  });
+  assert.equal(historyEventView({ ...english, url_path: '//evil.org/path' }, 'en').eventUrl, null);
+});
+
 test('missing or invalid paths omit the button without losing event text', () => {
   for (const url_path of [undefined, null, 1, '', 'bad', 'https://evil.org/x', '//evil.org/x',
     '/2001-02-29/slug/', '/2000-02-30/slug/', '/2008-11-01/./', '/2008-11-01/../',

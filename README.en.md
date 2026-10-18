@@ -79,6 +79,14 @@ Files in `src/content/projects/*.md` power the 21ideas ecosystem section: `name`
 Static build deployed to GitHub Pages on push to `main` (see `.github/workflows/`), served from
 the custom domain in `public/CNAME` (`gm.21ideas.org`).
 
+The “Today in history” section loads events from the public Bitcoin Calendar API once per language
+per build, using `/public/v2/events?lang=ru` or `lang=en` and the
+`bitcoin-calendar.public-events.v2` schema. The stored `url_path` links to each event in the matching
+language. For local testing, override the endpoint with `HISTORY_API_URL` (English requests set
+`lang=en`) or use `HISTORY_API_URL_EN` for a separate English endpoint. No API key is required.
+If the API is unavailable or returns an incompatible schema, the build continues without that
+language’s history section; the reason appears in a `[history] fetch …` log line.
+
 ## Contributing
 
 Found an error in a digest or on the site? Open an issue or a pull request. Digests are

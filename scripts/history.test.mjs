@@ -375,6 +375,14 @@ test('request: plain GET with an Accept header and no credentials', async () => 
   assert.equal(Object.keys(init.headers).some((h) => /auth|key|token/i.test(h)), false);
 });
 
+test('English endpoint uses its own language and supports shared or dedicated overrides', () => {
+  assert.equal(resolveHistoryUrl({}, 'en'), 'https://api.bitcoin-calendar.org/public/v2/events?lang=en');
+  assert.equal(resolveHistoryUrl({ HISTORY_API_URL: 'http://localhost:8080/events?lang=ru&fixture=1' }, 'en'),
+    'http://localhost:8080/events?lang=en&fixture=1');
+  assert.equal(resolveHistoryUrl({ HISTORY_API_URL_EN: ' http://localhost:8080/english ' }, 'en'), 'http://localhost:8080/english');
+  assert.equal(resolveHistoryUrl({ HISTORY_API_URL: 'invalid' }, 'en'), 'invalid');
+});
+
 
 test('permalink paths survive normalization; malformed optional paths keep the event', () => {
   const fixture = loadFixture('history-healthy.json');

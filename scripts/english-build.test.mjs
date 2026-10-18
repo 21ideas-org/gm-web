@@ -32,7 +32,7 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(page, new RegExp(`<meta name="robots" content="${isPublic && path !== '404' && (!path.startsWith('tags/') || (populated && path === 'tags/tech')) ? 'index, follow' : 'noindex, follow'}`));
     assert.doesNotMatch(visible(page), /[А-Яа-яЁё]/u, `Russian visible text at ${path}`);
     assert.doesNotMatch(page, /aria-label="[^"]*[А-Яа-яЁё]/u, `Russian a11y text at ${path}`);
-    assert.doesNotMatch(page, /<audio\b|audio\.21ideas\.org|podcast\.xml|bitcoin-calendar/);
+    assert.doesNotMatch(page, /<audio\b|audio\.21ideas\.org|podcast\.xml/);
     assert.doesNotMatch(page, /href="\/(?:en\/)?(?:listen|projects|buy-bitcoin)(?:\/|")/);
     for (const url of internalLinks(page)) {
       const path = url.split('#')[0];
@@ -74,6 +74,13 @@ function validateEnglish(root, isPublic, populated) {
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-04')), ['/digests/2026-10-04/', 'Russian edition']);
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-01')), ['/digests/', 'Russian archive']);
     const edition = html(root, 'en/digests/2026-10-04');
+    assert.match(edition, /Today in history/);
+    assert.match(edition, /Synthetic history/);
+    assert.match(edition, /A historical fixture event\./);
+    assert.match(edition, /Second paragraph\./);
+    assert.match(edition, /href="https:\/\/bitcoin-calendar.org\/en\/events\/2009-10-04\/fixture"/);
+    assert.match(edition, /Open in Bitcoin Calendar/);
+    assert.doesNotMatch(html(root, 'en/digests/2026-10-01'), /class="history"/);
     assert.match(edition, /4 October 2026/);
     assert.match(edition, /aria-label="Breadcrumbs"/);
     assert.match(edition, /aria-label="Edition topics"/);
@@ -249,7 +256,7 @@ test('isolated EN/RU builds cover empty, published, draft, malformed, missing-pa
         if (scenario.name === 'populated default private') populateEnglish(root);
         const before = history.requests();
         const output = await buildFixture(root, history.url, scenario.flag, scenario.timezone);
-        assert.equal(history.requests() - before, 1, 'RU history is fetched once per build; EN does not trigger additional calls');
+        assert.equal(history.requests() - before, scenario.populated ? 2 : 1, 'History is fetched once per rendered locale per build');
         assert.match(output, /\[history\] fetch ok/);
         assert.doesNotMatch(output, /unmapped H2 \"Network Stats\"/);
         validateEnglish(root, Boolean(scenario.public), scenario.populated);

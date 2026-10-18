@@ -120,12 +120,13 @@ digest's `pubDate` (`src/components/History.astro`). It is a pure function of th
 involvement — so every past digest picks it up on the next build.
 
 - **Source** — the deployed public Bitcoin Calendar API,
-  `https://api.bitcoin-calendar.org/public/v2/events?lang=ru` (no key, no secret). The loader
+  `https://api.bitcoin-calendar.org/public/v2/events?lang=ru` or `lang=en`, matching the digest locale (no key, no secret). The loader
   `src/lib/history.mjs` fetches it **at build time only, in Node** — nothing is fetched in the
-  browser and no runtime service exists. `HISTORY_API_URL` overrides the endpoint for local/test runs.
-- **One request per build** — a module-level memoized promise is shared by every prerendered digest
-  page: 8-second timeout per attempt, at most one retry after 1 second (transient failures only:
-  timeout, network error, 5xx/429), so at most two physical requests per build.
+  browser and no runtime service exists. `HISTORY_API_URL` overrides the endpoint for local/test runs;
+  English requests set `lang=en` on that URL, unless `HISTORY_API_URL_EN` supplies a dedicated endpoint.
+- **One request per locale per build** — a module-level memoized promise for each locale is shared by its prerendered digest
+  pages: 8-second timeout per attempt, at most one retry after 1 second (transient failures only:
+  timeout, network error, 5xx/429), so at most two physical requests per locale per build.
 - **Validation & ordering** — the response must be `{ schema, database: { rows }, events: [...] }`
   with `schema` exactly `bitcoin-calendar.public-events.v2` (the versioned public contract). Rows are
   grouped by month-day, the leading emoji prefix is stripped from titles, and same-day events are
@@ -135,8 +136,9 @@ involvement — so every past digest picks it up on the next build.
   The loader also preserves the stored `url_path` string, or `null` when absent or of the wrong type.
 - **Event button** — below the description, inside the same accordion item, the event has one
   «Открыть в Биткоин календаре →» button using the existing `.cta-btn` style. The pure helper
-  `src/lib/history-event.mjs` splits description paragraphs and builds the Russian permalink under
-  `https://bitcoin-calendar.org/ru/events/`. It validates `url_path` as `/<date>/<slug>/` with a real
+  `src/lib/history-event.mjs` splits description paragraphs and builds a permalink under
+  `https://bitcoin-calendar.org/{locale}/events/`. English editions use “Today in history” and
+  “Open in Bitcoin Calendar” with English event titles and descriptions. It validates `url_path` as `/<date>/<slug>/` with a real
   calendar date and a single slug segment, rejecting whitespace-padded slugs, dot segments,
   backslashes and control characters. Date and slug are encoded separately. The path is never
   reconstructed from the title or historical `date`: the stored path's date may differ. Missing or
@@ -149,7 +151,7 @@ involvement — so every past digest picks it up on the next build.
   still renders. A timeout, network error, non-2xx, non-JSON body, or schema mismatch makes the whole
   source unavailable, and every digest **silently omits the section** — no reader-facing error text.
 - **Diagnostics** — exactly one `[history] fetch <ok|degraded|unavailable> …` line on stderr per
-  build, carrying only fixed reason codes and counts (never upstream error text). There is no public
+  locale per build, carrying only fixed reason codes and counts (never upstream error text). There is no public
   status route and no Actions annotation.
 - **Recovery** — the site is static, so an outage is baked into the pages built during it. Recovery
   is simply the next successful build (e.g. the next digest push or a manual re-run of the deploy
@@ -321,7 +323,8 @@ buttons; failed copying reveals a selectable URL, and success/failure is announc
 The English text surface shares the existing shell, pages and post layout through explicit
 `locale: 'ru' | 'en'` inputs. The default remains Russian. Routes are `/en/`, `/en/digests/`,
 `/en/digests/{YYYY-MM-DD}/`, `/en/about/` and `/en/support/`, plus the supporting `/en/404/` error page. Untranslated projects, promotions,
-Russian audio/podcast subscriptions and Calendar history are omitted from English pages.
+Russian audio/podcast subscriptions are omitted from English pages. Calendar history uses the
+English API data and English event links in the shared accordion component.
 The support page uses the same donation addresses and finance model/ledger as Russian; it does
 not create a second payment configuration or split project costs by edition.
 

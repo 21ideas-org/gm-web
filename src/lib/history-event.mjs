@@ -1,8 +1,8 @@
 // Pure presentation for «Сегодня в истории»: use the stored Calendar permalink,
 // never derive a slug or replace its date with the event's historical date.
 
-/** @param {unknown} value @returns {string | null} */
-export function calendarEventUrl(value) {
+/** @param {unknown} value @param {'ru' | 'en'} [locale] @returns {string | null} */
+export function calendarEventUrl(value, locale = 'ru') {
   if (typeof value !== 'string' || /[\\\u0000-\u001f\u007f]/u.test(value)) return null;
   const match = /^\/(\d{4}-\d{2}-\d{2})\/([^/]+)\/$/.exec(value);
   if (!match) return null;
@@ -13,17 +13,17 @@ export function calendarEventUrl(value) {
   parsed.setUTCFullYear(year);
   if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return null;
   try {
-    return `https://bitcoin-calendar.org/ru/events/${encodeURIComponent(date)}/${encodeURIComponent(slug)}`;
+    return `https://bitcoin-calendar.org/${locale}/events/${encodeURIComponent(date)}/${encodeURIComponent(slug)}`;
   } catch {
     return null; // Malformed Unicode must not break the digest build.
   }
 }
 
-/** @param {{ title: string, description: string, url_path?: unknown }} event */
-export function historyEventView(event) {
+/** @param {{ title: string, description: string, url_path?: unknown }} event @param {'ru' | 'en'} [locale] */
+export function historyEventView(event, locale = 'ru') {
   return {
     title: event.title,
     paragraphs: event.description.split(/\n{2,}/),
-    eventUrl: calendarEventUrl(event.url_path),
+    eventUrl: calendarEventUrl(event.url_path, locale),
   };
 }

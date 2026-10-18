@@ -19,11 +19,12 @@ export function editionMarkdown(id, locale, { draft = false, pubDate = id } = {}
 }
 export async function historyFixture() {
   let requests = 0;
-  const server = createServer((_request, response) => {
+  const server = createServer((request, response) => {
     requests++;
+    const english = new URL(request.url, 'http://localhost').searchParams.get('lang') === 'en';
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ schema: 'bitcoin-calendar.public-events.v2', database: { rows: 1 }, events: [
-      { id: 1, date: '2009-10-04', title: 'Синтетическая история', description: 'Тестовое историческое событие.', url_path: '/2009-10-04/fixture/' },
+      { id: 1, date: '2009-10-04', title: english ? 'Synthetic history' : 'Синтетическая история', description: english ? 'A historical fixture event.\n\nSecond paragraph.' : 'Тестовое историческое событие.', url_path: '/2009-10-04/fixture/' },
     ] }));
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
