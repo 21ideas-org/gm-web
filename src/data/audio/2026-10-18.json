@@ -4,11 +4,11 @@
   "guid": "gm-audio:2026-10-18",
   "publishedAt": "2026-10-18T00:50:08.534Z",
   "coveredDate": "2026-10-17",
-  "digestSha256": "5d4ed785756707bce2aa9a9e08248e76a7e1640a35e9eae665596cfb7caf4a7e",
-  "mediaVersion": 1,
-  "url": "https://audio.21ideas.org/podcasts/2026-10-18.mp3",
+  "digestSha256": "4cb68e3f2f0b022ae1381aa1d88f77942ec546dc251409cb8746cd8a41e44b23",
+  "mediaVersion": 2,
+  "url": "https://audio.21ideas.org/podcasts/2026-10-18-v2.mp3",
   "mimeType": "audio/mpeg",
-  "byteLength": 4124047,
-  "durationSeconds": 257.724082,
-  "sha256": "44a280f9dc7f11ed2f114cbff133c8b6a7f79037737c462b0e87e9f0eb3dc333"
+  "byteLength": 4171276,
+  "durationSeconds": 260.675918,
+  "sha256": "1d8f10dcbf596b879c5a399ea6feb3eb8ab113687ea80f51aa8bff85c8eb8cbf"
 }
