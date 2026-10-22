@@ -1,0 +1,22 @@
+---
+import type { Locale } from '../lib/locale';
+interface Props {
+  statistics: { key: string; label: string; value: string }[];
+  date: string;
+  locale?: Locale;
+}
+const { statistics, date, locale = 'ru' } = Astro.props;
+---
+<section class="front-statistics" aria-labelledby="front-statistics" data-network-stats data-stats-locale={locale}>
+  <div class="front-section-heading">
+    <h3 class="front-category" id="front-statistics">{locale === 'en' ? 'Network stats' : 'Статистика сети'}</h3>
+    <p class="front-statistics-date" data-stats-status data-state="snapshot" title={locale === 'en' ? `Issue snapshot · ${date}` : `Данные выпуска от ${date}`} aria-live="polite">
+      <span data-stats-label>{date}</span><span class="live-dot" data-stats-dot hidden aria-hidden="true">•</span>
+    </p>
+  </div>
+  <dl>{statistics.map(item => <div><dt>{item.label}</dt><dd data-stat-field={item.key}>{item.value}</dd></div>)}</dl>
+</section>
+<script>
+  import { initializeNetworkStats } from '../lib/network-stats.mjs';
+  document.querySelectorAll<HTMLElement>('[data-network-stats]').forEach(initializeNetworkStats);
+</script>

@@ -17,14 +17,14 @@ const events = eventsForDay(await historyByDay(locale), formatMonthDay(pubDate))
 ---
 {events.length > 0 && (
   <section class="history">
-    <h2><span class="hgh" aria-hidden="true">##</span> {locale === 'en' ? 'Today in history' : 'Сегодня в истории'}</h2>
+    <h2>{locale === 'en' ? 'Today in history' : 'Сегодня в истории'}</h2>
     {events.map((e) => (
       <details class="faq-item">
         <summary class="faq-q">{e.title}</summary>
         {e.paragraphs.map((p) => <p class="faq-a">{p}</p>)}
         {e.eventUrl && (
           <div class="history-actions">
-            <a class="cta-btn" href={e.eventUrl}>{locale === 'en' ? 'Open in Bitcoin Calendar' : 'Открыть в Биткоин календаре'} <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="cta-btn" href={e.eventUrl}>{locale === 'en' ? 'Open in Bitcoin Calendar' : 'Открыть в Биткоин календаре'}</a>
           </div>
         )}
       </details>

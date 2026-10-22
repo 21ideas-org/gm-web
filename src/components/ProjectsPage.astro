@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from './ProjectCard.astro';
+import { localizedProjects } from '../lib/projects';
+import { labels, type Locale } from '../lib/locale';
+import { plural } from '../lib/plural';
+
+interface Props { locale?: Locale; }
+const { locale = 'ru' } = Astro.props;
+const projects = await localizedProjects(locale);
+const pathMeta = `${projects.length} ${locale === 'en' ? 'projects' : plural(projects.length, ['проект', 'проекта', 'проектов'])}`;
+---
+<Base
+  locale={locale}
+  title={locale === 'en' ? 'projects — GM, bitcoiner' : 'проекты — gm_₿'}
+  description={locale === 'en' ? 'The 21ideas ecosystem — related Bitcoin-only projects.' : 'Экосистема 21ideas — связанные биткоин-онли проекты.'}
+  path={locale === 'en' ? 'en/projects' : 'projects'}
+  pathMeta={pathMeta}
+  activeNav="projects"
+>
+  <section class="section projects-page" aria-label={labels[locale].projects}>
+    <div class="section-header">
+      <h1>{labels[locale].projects}</h1>
+      <span class="more">{locale === 'en' ? '21ideas ecosystem' : 'экосистема 21ideas'}</span>
+    </div>
+    <div class="project-list">
+      {projects.map(project => <ProjectCard {...project.data} locale={locale} />)}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,20 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+import SunStamp from './SunStamp.astro';
+import { localePath, type Locale } from '../lib/locale';
+interface Props { locale?: Locale; home?: boolean; }
+const { locale = 'ru', home = false } = Astro.props;
+---
+<header class="masthead">
+  <div class="masthead-imprint">
+    <a class="masthead-logo" href={localePath(locale)} aria-label={locale === 'en' ? 'Home — GM, bitcoiner' : 'Главная — Доброе утро, биткоинер'}><SunStamp variant="ink" id="masthead-sun" /></a>
+    <div class="masthead-tools"><LanguageSwitch locale={locale} /><ThemeToggle locale={locale} /></div>
+  </div>
+  <slot />
+  {home && <div class="masthead-identity">
+    <p class="masthead-motto">{locale === 'en' ? 'Only Bitcoin,' : 'Только биткоин,'}<br />{locale === 'en' ? 'only signal' : 'только сигнал'}</p>
+    <h1 class:list={['masthead-wordmark', { 'masthead-wordmark--single-line': locale === 'en' }]}><a href={localePath(locale)}>{locale === 'en' ? 'GM,' : 'Доброе утро,'}{locale === 'en' && ' '}<em>{locale === 'en' ? 'bitcoiner' : 'биткоинер'}</em></a></h1>
+    <SunStamp variant="ink" />
+  </div>}
+</header>

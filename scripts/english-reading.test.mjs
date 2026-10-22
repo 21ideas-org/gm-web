@@ -39,7 +39,9 @@ test('edition switching uses an actual eligible counterpart, otherwise its label
   assert.equal(languageDestination('ru', '/digests/2026-10-03/', posts).href, '/en/digests/');
   assert.equal(languageDestination('en', '/en/about/', []).href, '/about/');
   assert.equal(languageDestination('ru', '/support', []).href, '/en/support/');
-  for (const path of ['/projects/', '/buy-bitcoin/', '/listen/', '/listen/2026-10-17/']) {
+  assert.equal(languageDestination('ru', '/projects/', []).href, '/en/projects/');
+  assert.equal(languageDestination('en', '/en/projects/', []).href, '/projects/');
+  for (const path of ['/buy-bitcoin/', '/listen/', '/listen/2026-10-17/']) {
     assert.equal(languageDestination('ru', path, []).href, '/en/', `No EN counterpart: ${path}`);
   }
 });
@@ -49,6 +51,18 @@ test('English future previews do not enter published reading and discovery surfa
   assert.equal(eligibleEnglishEdition(edition('2026-10-04'), now), true);
   assert.equal(eligibleEnglishEdition(edition('2026-10-05'), now), false);
   assert.equal(eligibleEnglishEdition(edition('2026-10-03', { draft: true }), now), false);
+});
+test('monthly archives switch to a real matching month or the other archive', () => {
+  const posts = [edition('2026-10-04'), edition('2026-09-30', { draft: true })];
+  assert.deepEqual(languageDestination('ru', '/digests/2026/10/', posts), {
+    href: '/en/digests/2026/10/', label: 'English monthly archive', locale: 'en',
+  });
+  assert.deepEqual(languageDestination('en', '/en/digests/2026/10/', posts), {
+    href: '/digests/2026/10/', label: 'Russian monthly archive', locale: 'ru',
+  });
+  assert.deepEqual(languageDestination('ru', '/digests/2026/09/', posts), {
+    href: '/en/digests/', label: 'English archive', locale: 'en',
+  });
 });
 test('topic routes switch to the same existing immutable topic route', () => {
   assert.equal(languageDestination('en', '/en/tags/tech/', []).href, '/tags/tech/');

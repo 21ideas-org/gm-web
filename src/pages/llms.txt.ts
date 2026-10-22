@@ -45,7 +45,7 @@ export async function GET() {
 
 ${recentList}
 
-## Топики
+## Рубрики
 
 ${hubList}
 

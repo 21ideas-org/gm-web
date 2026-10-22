@@ -1,6 +1,8 @@
 import type { Locale } from './locale';
 const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const formatEditionDate = (date: Date, locale: Locale) => locale === 'en' ? `${date.getUTCDate()} ${EN_MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}` : formatRuDate(date);
+// Homepage issue heading: "October 20" in English, "20 октября" in Russian.
+export const formatIssueDate = (date: Date, locale: Locale) => locale === 'en' ? `${EN_MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}` : formatRuDayMonth(date);
 export const formatEditionDayMonth = (date: Date, locale: Locale) => locale === 'en' ? `${date.getUTCDate()} ${EN_MONTHS[date.getUTCMonth()]}` : formatRuDayMonth(date);
 export const formatEditionMonth = (date: Date, locale: Locale) => locale === 'en' ? `${EN_MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}` : formatRuMonth(date);
 

@@ -8,14 +8,14 @@ const rows = TAGS.map((t) => ({ ...t, count: counts.get(t.slug) ?? 0 }))
   .sort((a, b) => b.count - a.count);
 const max = rows.length ? Math.max(...rows.map((r) => r.count)) : 1;
 ---
-<Base title="топики — gm_₿" description="Биткоин-новости по темам." path="tags" pathMeta="ls tags/" activeNav="tags">
-  <section class="section">
-    <div class="section-header"><h2>топики</h2><span class="more">{rows.length}</span></div>
+<Base title="рубрики — gm_₿" description="Биткоин-новости по темам." path="tags" pathMeta="ls tags/" activeNav="tags">
+  <section class="section topics-page">
+    <div class="section-header"><h1>рубрики</h1><span class="more">{rows.length}</span></div>
     <ul class="tag-index">
       {rows.map((r) => (
         <li>
           <a class="tag-row" href={`/tags/${r.slug}`}>
-            <span class="name"><span class="hash">#</span>{r.label}</span>
+            <span class="name">{r.label}</span>
             <span class="count"><span class="bar" style={`width:${Math.round((r.count / max) * 80)}px`}></span>{r.count}</span>
           </a>
         </li>
@@ -25,8 +25,8 @@ const max = rows.length ? Math.max(...rows.map((r) => r.count)) : 1;
 
   <section class="section" aria-label="Поддержать проект и купить биткоин">
     <div class="subscribe-actions">
-      <a class="cta-btn cta-btn--accent" href="/support">поддержать <span class="arrow">→</span></a>
-      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин <span class="arrow">→</span></a>
+      <a class="cta-btn cta-btn--accent" href="/support">поддержать</a>
+      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин</a>
     </div>
   </section>
 </Base>

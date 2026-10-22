@@ -1,0 +1,6 @@
+---
+import ArchivePage from '../../../components/ArchivePage.astro';
+import { archiveMonthPaths } from '../../../lib/digests';
+export async function getStaticPaths() { return archiveMonthPaths('ru'); }
+---
+<ArchivePage {...Astro.props} />

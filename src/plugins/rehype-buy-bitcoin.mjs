@@ -22,15 +22,7 @@ export function rehypeBuyBitcoin() {
 					type: 'element',
 					tagName: 'a',
 					properties: { className: ['cta-btn', 'cta-btn--accent'], href: '/buy-bitcoin/' },
-					children: [
-						{ type: 'text', value: 'купить биткоин ' },
-						{
-							type: 'element',
-							tagName: 'span',
-							properties: { className: ['arrow'], 'aria-hidden': 'true' },
-							children: [{ type: 'text', value: '→' }],
-						},
-					],
+					children: [{ type: 'text', value: 'купить биткоин' }],
 				}],
 			});
 			break;

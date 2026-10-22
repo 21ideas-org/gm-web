@@ -68,15 +68,14 @@ const schema = indexable
         <article class="project-card other-tags">
           <div class="head">
             <span class="name">other topics</span>
-            <span class="tag-bracket">[{others.length}]</span>
+            <span class="topic-count">{others.length} {others.length === 1 ? 'topic' : 'topics'}</span>
           </div>
-          <nav class="links" aria-label="Other topics">
-            {others.map((t, i) => (
-              <div>
-                <span class="branch">{i === others.length - 1 ? '└──' : '├──'}</span>{' '}
-                <a href={`/en/tags/${t.slug}/`}>#{t.label}</a>
-              </div>
-            ))}
+          <nav aria-label="Other topics">
+            <ul class="bullet-list" role="list">
+              {others.map((t) => (
+                <li><a href={`/en/tags/${t.slug}/`}>{t.label}</a></li>
+              ))}
+            </ul>
           </nav>
         </article>
       );

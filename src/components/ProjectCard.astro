@@ -1,34 +1,32 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../lib/locale';
 
-type Props = CollectionEntry<'projects'>['data'];
-const { name, description, status, stack, url, telegram, repo } = Astro.props;
+type Props = CollectionEntry<'projects'>['data'] & { locale?: Locale };
+const { name, description, stack, url, telegram, repo, org, locale = 'ru' } = Astro.props;
 
-const statusClass = status.toLowerCase();
 const links = [
-  ...(url ? [{ k: 'ссылка', href: url }] : []),
+  ...(url ? [{ k: locale === 'en' ? 'website' : 'ссылка', href: url }] : []),
   ...(telegram ? [{ k: 'telegram', href: telegram }] : []),
   ...(repo ? [{ k: 'repo', href: repo }] : []),
+  ...(org ? [{ k: 'org', href: org }] : []),
 ];
 ---
 <article class="project-card">
   <div class="head">
     <span class="name">{name}</span>
-    <span class={`tag-bracket ${statusClass}`}>[{status}]</span>
   </div>
   {description && <p class="desc">{description}</p>}
   {stack && stack.length > 0 && (
-    <div class="stack"><span class="k">стек:</span> <span class="v">{stack.join(', ')}</span></div>
+    <div class="stack"><span class="k">{locale === 'en' ? 'stack:' : 'стек:'}</span> <span class="v">{stack.join(', ')}</span></div>
   )}
   {links.length > 0 && (
-    <div class="links">
-      {links.map((link, i) => (
-        <div>
-          <span class="branch">{i === links.length - 1 ? '└──' : '├──'}</span>{' '}
-          <span class="k">{link.k}</span>{' '}
-          <a href={link.href} rel="noopener">{link.href.replace(/^https?:\/\//, '')}</a>
-        </div>
+    <ul class="bullet-list links" role="list">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} rel="noopener"><span class="k">{link.k}</span>{' '}{link.href.replace(/^https?:\/\//, '')}</a>
+        </li>
       ))}
-    </div>
+    </ul>
   )}
 </article>

@@ -19,27 +19,59 @@ const switchLink = html => {
 };
 const internalLinks = html => [...html.matchAll(/\b(?:href|src)="(\/[^" ]*)"/g)].map(match => match[1]);
 
+function validateProjects(root, locale) {
+  const prefix = locale === 'en' ? 'en/' : '';
+  const home = html(root, prefix);
+  const featured = /<section\b[^>]*aria-labelledby="featured"[^>]*>([\s\S]*?)<\/section>/.exec(home)?.[1];
+  assert.ok(featured, `${locale} homepage has a project selection`);
+  const names = page => [...page.matchAll(/<span class="name">([^<]+)<\/span>/g)].map(match => match[1]);
+  assert.deepEqual(names(featured), ['21ideas.org', 'Bitcoin Calendar', 'Security Watcher']);
+  const projects = html(root, `${prefix}projects`);
+  assert.deepEqual(names(projects), locale === 'en'
+    ? ['21ideas.org', 'Bitcoin Calendar', 'Security Watcher', '21ideas Wiki']
+    : ['21ideas.org', 'Bitcoin Calendar', 'Security Watcher', 'Телеграм-канал', 'Вики 21ideas']);
+  const description = locale === 'en' ? 'Bitcoin-related Historical Milestones.' : 'Календарь исторических биткоин-событий.';
+  assert.ok(featured.includes(description));
+  assert.ok(projects.includes(description));
+  const ideasUrl = locale === 'en' ? 'https://21ideas.org/en/' : 'https://21ideas.org';
+  assert.ok(featured.includes(`href="${ideasUrl}"`));
+  assert.ok(projects.includes(`href="${ideasUrl}"`));
+  const calendarUrl = locale === 'en' ? 'https://bitcoin-calendar.org/' : 'https://bitcoin-calendar.org/ru/';
+  assert.ok(featured.includes(`href="${calendarUrl}"`));
+  assert.ok(projects.includes(`href="${calendarUrl}"`));
+  assert.match(projects, /<a href="https:\/\/github.com\/Bitcoin-Calendar"[^>]*><span class="k">org<\/span>\s*github\.com\/Bitcoin-Calendar<\/a>/);
+  assert.doesNotMatch(featured, /t\.me\//);
+  if (locale === 'en') assert.doesNotMatch(projects, /href="https:\/\/t\.me\//);
+  else assert.match(projects, /href="https:\/\/t\.me\/bitcoin21ideas"/);
+  assert.equal(switchLink(projects)?.[0], locale === 'en' ? '/projects/' : '/en/projects/');
+}
+
 function validateEnglish(root, isPublic, populated) {
   assert.ok(existsSync(join(root, 'dist/en/rss.xml')), 'English text feed is built');
-  const paths = ['', 'digests', 'about', 'support', '404', 'tags', ...['community', 'funds', 'institutions', 'lightning', 'market', 'mining', 'regulation', 'scandals', 'security', 'tech'].map(slug => `tags/${slug}`), ...(populated ? ['digests/2026-10-04', 'digests/2026-10-01'] : [])];
+  const paths = ['', 'digests', 'about', 'support', 'projects', '404', 'tags', ...['community', 'funds', 'institutions', 'lightning', 'market', 'mining', 'regulation', 'scandals', 'security', 'tech'].map(slug => `tags/${slug}`), ...(populated ? ['digests/2026-10-04', 'digests/2026-10-01', 'digests/2026/10'] : [])];
   assert.equal(allHtml(join(root, 'dist/en')).length, paths.length);
   for (const path of paths) {
     const page = html(root, `en/${path}`);
     assert.match(page, /<html lang="en"/);
     assert.match(page, /aria-label="(?:Switch to dark theme|Toggle theme)"/);
     assert.match(page, /aria-label="Primary navigation"/);
+    if (path === '') assert.match(page, /class="masthead-identity"/);
+    else assert.doesNotMatch(page, /class="masthead-identity"/);
+    assert.doesNotMatch(page, /class="masthead-edition"/);
     assert.match(page, /<a\b[^>]*href="\/en\/about\/"[^>]*>about<\/a>/);
     assert.match(page, new RegExp(`<meta name="robots" content="${isPublic && path !== '404' && (!path.startsWith('tags/') || (populated && path === 'tags/tech')) ? 'index, follow' : 'noindex, follow'}`));
     assert.doesNotMatch(visible(page), /[А-Яа-яЁё]/u, `Russian visible text at ${path}`);
     assert.doesNotMatch(page, /aria-label="[^"]*[А-Яа-яЁё]/u, `Russian a11y text at ${path}`);
     assert.doesNotMatch(page, /<audio\b|audio\.21ideas\.org|podcast\.xml/);
-    assert.doesNotMatch(page, /href="\/(?:en\/)?(?:listen|projects|buy-bitcoin)(?:\/|")/);
+    assert.doesNotMatch(page, /href="\/(?:en\/)?(?:listen|buy-bitcoin)(?:\/|")/);
+    assert.match(page, /<a\b[^>]*href="\/en\/projects\/"[^>]*>projects<\/a>/);
     for (const url of internalLinks(page)) {
       const path = url.split('#')[0];
       assert.ok(existsSync(join(root, 'dist', path)) || existsSync(join(root, 'dist', path, 'index.html')), `Broken link ${url}`);
 
     }
   }
+  validateProjects(root, 'en');
   const errorPage = html(root, 'en/404');
   assert.match(visible(errorPage), /The page you requested could not be found/);
   assert.match(errorPage, /href="\/en\/digests\/"/);
@@ -69,7 +101,36 @@ function validateEnglish(root, isPublic, populated) {
   const archive = html(root, 'en/digests');
   assert.equal(switchLink(archive)?.[0], '/digests/');
   if (populated) {
+    const home = html(root, 'en');
+    assert.match(visible(home), /GM, bitcoiner/);
+    assert.match(visible(home), /Fresh issue/);
+    assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">October 4<\/time><\/h2>/);
+    assert.match(home, /Synthetic English headlines 2026-10-04/);
+    assert.doesNotMatch(visible(home), /Synthetic protocol|Synthetic market news|Synthetic investigation/);
+    assert.match(home, /data-network-stats data-stats-locale="en"/);
+    assert.match(home, /<h3[^>]*>Network stats<\/h3>/);
+    for (const [key, label, value] of [['price', 'Price', '$82,000'], ['block', 'Block', '#970,000'], ['hashrate', 'Hashrate', '1,040 EH/s'], ['fee', 'Fee', '1 sat/vB']]) {
+      assert.ok(home.includes(`<dt>${label}</dt><dd data-stat-field="${key}">${value}</dd>`), `Published English ${key} snapshot is visible before JS`);
+    }
+    assert.match(home, /data-state="snapshot" title="Issue snapshot/);
+    assert.match(home, /class="edition-block">Block 970,000<\/span>/);
     assert.match(archive, /2 editions/);
+    assert.match(archive, /class="archive-months" aria-label="Archive months" data-scroller/);
+    assert.match(archive, /href="\/en\/digests\/2026\/10\/"[^>]*>October<\/a>/);
+    const monthly = html(root, 'en/digests/2026/10');
+    assert.match(monthly, /href="\/en\/digests\/2026\/10\/" aria-current="page"/);
+    assert.match(monthly, /<h2>October 2026<\/h2>/);
+    const monthNavs = [...monthly.matchAll(/<nav\b[^>]*class="archive-months[^>]*>[\s\S]*?<\/nav>/g)].map(match => match[0]);
+    assert.equal(monthNavs.length, 2, 'month navigation is available before and after the editions');
+    const links = nav => [...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+    assert.deepEqual(links(monthNavs[0]), links(monthNavs[1]));
+    assert.match(monthNavs[1], /data-scroller/);
+    assert.match(monthNavs[1], /href="\/en\/digests\/2026\/10\/" aria-current="page"/);
+    assert.ok(monthly.lastIndexOf('archive-months') > monthly.lastIndexOf('</ul>'));
+    assert.match(monthly, /href="\/en\/digests\/2026-10-04\/"/);
+    assert.match(monthly, /href="\/en\/digests\/2026-10-01\/"/);
+    assert.equal(switchLink(monthly)?.[0], '/digests/2026/10/');
+    assert.ok(!existsSync(join(root, 'dist/en/digests/2026/09/index.html')));
     assert.ok(archive.indexOf('digests/2026-10-04/') < archive.indexOf('digests/2026-10-01/'));
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-04')), ['/digests/2026-10-04/', 'Russian edition']);
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-01')), ['/digests/', 'Russian archive']);
@@ -81,8 +142,11 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(edition, /href="https:\/\/bitcoin-calendar.org\/en\/events\/2009-10-04\/fixture"/);
     assert.match(edition, /Open in Bitcoin Calendar/);
     assert.doesNotMatch(html(root, 'en/digests/2026-10-01'), /class="history"/);
-    assert.match(edition, /4 October 2026/);
-    assert.match(edition, /aria-label="Breadcrumbs"/);
+    assert.match(edition, /property="article:published_time" content="2026-10-04T00:00:00.000Z"/);
+    assert.doesNotMatch(edition, /data-network-stats/);
+    assert.doesNotMatch(edition, /class="breadcrumbs"/);
+    assert.doesNotMatch(edition, /class="masthead-identity"/);
+    assert.doesNotMatch(edition, /<div class="meta">/);
     assert.match(edition, /aria-label="Edition topics"/);
     const chips = /<nav\b([^>]*\bclass="tag-chips"[^>]*)>([\s\S]*?)<\/nav>/.exec(edition);
     assert.ok(chips, 'EN topic chips use the shared single-row navigation');
@@ -90,11 +154,12 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(chips[2], /href="\/en\/tags\/tech\/"/);
     assert.match(edition, /aria-label="Adjacent editions"/);
     for (const [slug, label] of [['tech', 'Technology &amp; Development'], ['market', 'Price &amp; Market'], ['scandals', 'Bitcoin Rap Sheet']]) {
-      assert.ok(edition.includes(`#${label}`), label);
+      assert.ok(chips[2].includes(`href="/en/tags/${slug}/">${label}</a>`), label);
       assert.ok(edition.includes(`id="${slug}"`));
       assert.ok(edition.includes(`id="${slug}-1"`));
       assert.ok(edition.includes(`href="#${slug}-1"`));
     }
+    assert.doesNotMatch(chips[2], />#/);
     assert.match(edition, /aria-label="Copy code"/);
     assert.match(edition, /href="\/en\/digests\/2026-10-01\/"/);
   } else {
@@ -104,6 +169,18 @@ function validateEnglish(root, isPublic, populated) {
   validateDiscovery(root, isPublic, populated);
   const ruSupport = html(root, 'support');
   const enSupport = html(root, 'en/support');
+  assert.match(enSupport, /<div class="section-header"><h1>support<\/h1><\/div>/);
+  assert.doesNotMatch(visible(enSupport), /both language editions/);
+  const about = html(root, 'en/about');
+  assert.match(about, /<div class="section-header"><h1>about<\/h1><\/div>/);
+  assert.doesNotMatch(visible(about), /English edition|English archive|English and Russian|matching Russian|₽/);
+  assert.match(visible(about), /An automated editorial pipeline selects significant stories from approved sources and prepares a digest\./);
+  const faq = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(about)[1])['@graph'].find(node => node['@type'] === 'FAQPage');
+  const questions = [...about.matchAll(/<summary class="faq-q">([^<]+)<\/summary>/g)].map(match => match[1]);
+  assert.deepEqual(questions, ['What does the digest cover?', 'Where can I check the details?', 'How can I browse older stories?', 'Is the digest free?']);
+  assert.deepEqual(faq.mainEntity.map(item => item.name), questions);
+  assert.match(about, /class="short-wordmark" role="img" aria-label="gm_₿"/);
+  assert.match(about, /<svg class="bitcoin-symbol"/);
   assert.match(enSupport, /gmbitcoiner@coinos\.io/);
   assert.match(enSupport, /aria-label="Copy ⚡ lightning address"/);
   // Shared raw addresses and exact ledger numbers, rather than a second finance dataset.
@@ -150,13 +227,18 @@ function validateDiscovery(root, isPublic, populated) {
   if (isPublic) {
     assert.match(sitemap, /https:\/\/gm.21ideas.org\/en\/about\//);
     if (populated) {
+      assert.match(sitemap, /https:\/\/gm.21ideas.org\/en\/digests\/2026\/10\//);
+      const monthPair = [['ru', 'https://gm.21ideas.org/digests/2026/10/'], ['en', 'https://gm.21ideas.org/en/digests/2026/10/']];
+      assert.deepEqual(alternateLinks(html(root, 'digests/2026/10')), monthPair);
+      assert.deepEqual(alternateLinks(html(root, 'en/digests/2026/10')), monthPair);
       assert.match(sitemap, /https:\/\/gm.21ideas.org\/en\/digests\/2026-10-04\//);
       assert.match(tagmap, /<loc>https:\/\/gm.21ideas.org\/en\/tags\/tech\/<\/loc><lastmod>2026-10-04T00:00:00.000Z/);
     }
   }
+  assert.deepEqual(alternateLinks(html(root, 'digests/2026/09')), [], 'a month without an English counterpart has no alternate');
   assert.doesNotMatch(tagmap, /\/en\/tags\/market\/|<loc>https:\/\/gm.21ideas.org\/tags\/tech\//);
   assert.doesNotMatch(sitemap, /\/tags\/|\/404\/|2099|unknown|\/en\/digests\/2026-10-03\//);
-  for (const path of ['', 'digests', 'about', 'support', 'tags']) {
+  for (const path of ['', 'digests', 'about', 'support', 'projects', 'tags']) {
     const expected = isPublic ? [['ru', `https://gm.21ideas.org/${path ? `${path}/` : ''}`], ['en', `https://gm.21ideas.org/en/${path ? `${path}/` : ''}`]] : [];
     assert.deepEqual(alternateLinks(html(root, path)), expected);
     assert.deepEqual(alternateLinks(html(root, `en/${path}`)), expected);
@@ -210,12 +292,33 @@ function validateDiscovery(root, isPublic, populated) {
   assert.ok(!existsSync(join(dist, 'og/en/2099-01-01.png')));
 }
 function validateRussian(root, isPublic, populated) {
+  if (isPublic) validateProjects(root, 'ru');
   const routeInventory = allHtml(join(root, 'dist')).map(path => relative(join(root, 'dist'), path)).filter(path => !path.startsWith('en/'));
-  assert.deepEqual(routeInventory.sort(), ['404.html', 'about/index.html', 'buy-bitcoin/index.html', 'digests/2026-10-02/index.html', 'digests/2026-10-03/index.html', 'digests/2026-10-04/index.html', 'digests/index.html', 'index.html', 'listen/index.html', 'projects/index.html', 'support/index.html', 'tags/index.html', ...['community', 'funds', 'institutions', 'lightning', 'market', 'mining', 'regulation', 'scandals', 'security', 'tech'].map(slug => `tags/${slug}/index.html`)].sort());
+  assert.deepEqual(routeInventory.sort(), ['404.html', 'about/index.html', 'buy-bitcoin/index.html', 'digests/2026-09-30/index.html', 'digests/2026-10-02/index.html', 'digests/2026-10-03/index.html', 'digests/2026-10-04/index.html', 'digests/2026/09/index.html', 'digests/2026/10/index.html', 'digests/index.html', 'index.html', 'listen/index.html', 'projects/index.html', 'support/index.html', 'tags/index.html', ...['community', 'funds', 'institutions', 'lightning', 'market', 'mining', 'regulation', 'scandals', 'security', 'tech'].map(slug => `tags/${slug}/index.html`)].sort());
+  for (const path of routeInventory.filter(path => path !== 'index.html')) {
+    assert.doesNotMatch(readFileSync(join(root, 'dist', path), 'utf8'), /class="masthead-identity"|class="masthead-edition"/, path);
+  }
+  const month = html(root, 'digests/2026/09');
+  for (const page of [html(root, 'digests'), month]) {
+    const monthNavs = [...page.matchAll(/<nav\b[^>]*class="archive-months[^>]*>[\s\S]*?<\/nav>/g)].map(match => match[0]);
+    assert.equal(monthNavs.length, 2);
+    const links = nav => [...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+    assert.deepEqual(links(monthNavs[0]), links(monthNavs[1]));
+    assert.ok(page.lastIndexOf('archive-months') > page.lastIndexOf('</ul>'));
+    assert.match(monthNavs[1], /data-scroller/);
+  }
+  assert.match(month, /<h2>сентябрь 2026<\/h2>/);
+  assert.match(month, /href="\/digests\/2026-09-30\/"/);
+  assert.doesNotMatch(month, /href="\/digests\/2026-10-04\/"/);
+  const october = html(root, 'digests/2026/10');
+  assert.match(october, /href="\/digests\/2026-10-04\/"/);
+  assert.doesNotMatch(october, /href="\/digests\/2026-09-30\/"/);
+  assert.equal(switchLink(month)?.[0], isPublic ? '/en/digests/' : undefined);
   const post = html(root, 'digests/2026-10-04');
   assert.match(post, /<html lang="ru"/);
-  assert.match(post, /04-10-2026/);
-  assert.match(post, /4 октября 2026/);
+  assert.doesNotMatch(post, /04-10-2026/);
+  assert.match(post, /property="article:published_time" content="2026-10-04T00:00:00.000Z"/);
+  assert.doesNotMatch(post, /class="breadcrumbs"|class="masthead-identity"|<div class="meta">/);
   assert.match(post, /Сегодня в истории/);
   assert.match(post, /Синтетическая история/);
   assert.match(post, /<audio\b/);
@@ -225,7 +328,11 @@ function validateRussian(root, isPublic, populated) {
   assert.match(post, /href="\/rss.xml"/);
   assert.match(post, /href="\/listen\/"/);
   assert.match(html(root, 'listen'), /id="episode-2026-10-04"/);
-  assert.match(html(root, ''), /подписаться/);
+  const home = html(root, '');
+  assert.match(home, /подписаться/);
+  assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">4 октября<\/time><\/h2>/);
+  assert.match(home, /Синтетический выпуск 2026-10-04/);
+  assert.doesNotMatch(visible(home), /Синтетическая новость/);
   const podcast = readFileSync(join(root, 'dist/podcast.xml'), 'utf8');
   assert.match(podcast, /<guid isPermaLink="false">gm-audio:2026-10-04<\/guid>/);
   assert.match(podcast, /https:\/\/audio.21ideas.org\/podcasts\/2026-10-04.mp3/);

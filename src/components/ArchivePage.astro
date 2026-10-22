@@ -4,27 +4,43 @@ import { labels, localePath, type Locale } from '../lib/locale';
 
 import Base from '../layouts/Base.astro';
 import PostCard from '../components/PostCard.astro';
+import ArchiveMonthNav from './ArchiveMonthNav.astro';
 import { plural } from '../lib/plural';
-interface Props { locale?: Locale; }
-const { locale = 'ru' } = Astro.props;
+import { archiveMonths, archiveMonthTitle } from '../lib/archive-months.mjs';
+interface Props { locale?: Locale; monthKey?: string; }
+const { locale = 'ru', monthKey } = Astro.props;
 const t = labels[locale];
 
-const posts = await publishedDigests(locale);
+const allPosts = await publishedDigests(locale);
+const months = archiveMonths(allPosts);
+const selectedMonth = months.find(month => month.key === monthKey);
+if (monthKey && !selectedMonth) throw new Error(`No published editions for ${locale}/${monthKey}`);
+const posts = selectedMonth?.posts ?? allPosts;
+const period = selectedMonth ? archiveMonthTitle(selectedMonth.key, locale) : undefined;
+const editionCount = (count: number) => `${count} ${locale === 'en' ? (count === 1 ? 'edition' : 'editions') : plural(count, ['дайджест', 'дайджеста', 'дайджестов'])}`;
 
-const pathMeta = `${posts.length} ${locale === 'en' ? (posts.length === 1 ? 'edition' : 'editions') : plural(posts.length, ['дайджест', 'дайджеста', 'дайджестов'])}`;
+const pathMeta = editionCount(allPosts.length);
 ---
 <Base
   locale={locale}
-  title={`${t.digests} — gm_₿`}
-  description={t.archiveDescription}
-  path={locale === 'en' ? 'en/digests' : 'digests'}
+  title={`${t.digests}${period ? ` · ${period}` : ''} — gm_₿`}
+  description={`${t.archiveDescription}${period ? ` ${period}.` : ''}`}
+  path={`${locale === 'en' ? 'en/' : ''}digests${monthKey ? `/${monthKey.replace('-', '/')}` : ''}`}
   pathMeta={pathMeta}
   activeNav="digests"
 >
   <section class="section">
     <div class="section-header">
-      <h2>{t.digests}</h2>
+      <h1>{t.digests}</h1>
     </div>
+    <p class="archive-summary">{pathMeta}</p>
+
+    <ArchiveMonthNav months={months} locale={locale} selectedKey={selectedMonth?.key} />
+
+    {period && <div class="archive-period">
+      <h2>{period}</h2>
+      <span>{editionCount(posts.length)}</span>
+    </div>}
 
     {posts.length === 0 && <p class="subscribe-lead">{t.empty}</p>}
     <ul class="post-list">
@@ -39,5 +55,6 @@ const pathMeta = `${posts.length} ${locale === 'en' ? (posts.length === 1 ? 'edi
         </li>
       ))}
     </ul>
+    <ArchiveMonthNav months={months} locale={locale} selectedKey={selectedMonth?.key} position="bottom" />
   </section>
 </Base>

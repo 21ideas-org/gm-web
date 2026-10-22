@@ -73,19 +73,19 @@ function buildTheme({ name, type, bg, fg, dim, accent, muted }) {
 export const gmDark = buildTheme({
 	name: 'gm-dark',
 	type: 'dark',
-	bg: '#121216',
-	fg: '#e6e6ea',
-	dim: '#44444f',
-	accent: '#ffb000',
-	muted: '#8a8a96',
+	bg: '#303027',
+	fg: '#eae5d7',
+	dim: '#9e9e87',
+	accent: '#f0a083',
+	muted: '#bcbba8',
 });
 
 export const gmLight = buildTheme({
 	name: 'gm-light',
 	type: 'light',
-	bg: '#efece4',
-	fg: '#1a1a1a',
-	dim: '#a8a190',
-	accent: '#9a6700',
-	muted: '#5b5a52',
+	bg: '#e2d8c0',
+	fg: '#292b24',
+	dim: '#797762',
+	accent: '#a83d27',
+	muted: '#626151',
 });

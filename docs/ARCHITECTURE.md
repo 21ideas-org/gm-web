@@ -43,17 +43,57 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
 
 ## Routing
 
-`/` · `/listen` · `/digests` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
+`/` · `/listen` · `/digests` · `/digests/[year]/[month]` · `/digests/[slug]` · `/projects` · `/about` · `/support` · `/tags` · `/tags/[tag]` ·
 `/rss.xml` · `/podcast.xml` (only once the show is configured) · `/sitemap-index.xml` · `/news-sitemap.xml` · `/yandex-news.xml` · `/tags-sitemap.xml`
 · `/og/*.png` · `robots.txt`.
 
 ## Layouts & components
 
-- **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `PathStrip` → `Nav` →
+- **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `Masthead` (with `Nav`) →
   `<slot>` → `Footer`.
-- **`Post.astro`** — wraps `Base`, adds the post header (date + clickable topic chips), the
+- **`Masthead.astro`** — compact sun-logo home link, theme/language controls and navigation.
+  Theme and language controls stay in the imprint, above `Nav` and the large editorial name. `Nav` keeps every destination
+  in one horizontally scrollable row, with edge hints and automatic positioning of the active link.
+  All inner pages use a compact masthead: imprint → navigation, followed directly by page content.
+  Edition date and published block height appear only in the homepage's fresh-issue context.
+  The large editorial name and large sun stamp appear only on the homepage. Digest pages continue with
+  the digest title and scrollable topic chips.
+- **`SunStamp.astro` / `sun-stamp.mjs`** — shared sun mark with eight rays and the original
+  [Bitboy symbol SVG from Bitcoin Design](https://bitcoin.design/assets/images/guide/getting-started/visual-language/bitcoin-symbol.svg),
+  retaining its built-in 14° clockwise rotation. The symbol and its edge are protected from the
+  print-wear filter. Two vector print treatments (solid ink and hatched engraving) share
+  the geometry; the homepage uses solid ink, placed to the right of the title at every width.
+  Ink colors adapt to light and dark paper. The imprint uses a 32px version linked to the
+  current language's homepage; unique SVG IDs keep it independent of the large homepage mark.
+  Inner pages contain no hero or large stamp.
+  **`npm run generate:favicons`** regenerates the matching SVG, PNG, ICO and Apple touch icons.
+  The SVG adapts its ink to the browser's color scheme; tiny raster fallbacks omit wear for clarity.
+  `ShortWordmark.astro` reuses the original Bitcoin path in the inline `gm_₿` name on About,
+  avoiding font-dependent currency glyphs.
+- **`digest-statistics.mjs`** — reads the published RU or EN network snapshot for the homepage and
+  fresh-issue block height, with stable metric keys independent of translated labels.
+  Both homepages lead with the edition description, without extracting individual news stories.
+  The English homepage keeps `GM, bitcoiner` on one line and labels the issue with a month-first date.
+- **`NetworkStats.astro` / `network-stats.mjs`** — progressively enhances the homepage snapshot
+  with public mempool.space prices, tip height, three-day hashrate and recommended fees. Refreshes
+  every minute while visible, backs off on errors and retains the last valid snapshot. The `live`
+  indicator appears only after all four responses validate. Both homepages share this component,
+  with localized labels, number formatting, fee units and update/error text. With JavaScript disabled
+  or the API unavailable, the published snapshot remains readable; archived edition bodies remain unchanged.
+- **`Post.astro`** — wraps `Base`, adds the post header (title + clickable topic chips), the
   «Сегодня в истории» rubric (`History.astro`) + prev/next nav. (The Giscus `<Comments />` slot
-  exists but is not imported in v1.)
+  exists but is not imported in v1.) Visible breadcrumbs and the repeated numeric date are omitted;
+  the `BreadcrumbList` structured data remains in the page metadata.
+- **`ArchivePage.astro` / `archive-months.mjs`** — the full archive and static monthly pages share
+  one list layout. Only months with published editions generate `/digests/YYYY/MM/` or
+  `/en/digests/YYYY/MM/`. `ArchiveMonthNav.astro` renders the same horizontally scrollable month row
+  below the total edition count and after the last issue, newest month first, with an all-editions
+  link. Each row reuses the navigation edge hints and active-link
+  positioning. Current UTC-year labels omit the year; other years append two digits (e.g. `январь 26`).
+  Monthly titles always include the full year. Language switches pair only existing counterpart
+  months and otherwise return to the other archive; reciprocal metadata follows the same rule.
+- **`AboutPage.astro`** — localized FAQ arrays drive both the visible questions and FAQPage JSON-LD.
+  English questions focus on coverage, original sources, archive navigation and free access.
 
 ## Content collections (`src/content.config.ts`)
 
@@ -62,6 +102,12 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
   in section order). Filenames `YYYY-MM-DD.md`.
 - **`projects`** — the 21ideas ecosystem section: `name`, `description`, `status`
   (`LIVE | WIP | ARCHIVED`), optional `url`, `stack`, `featured`, `order`.
+  Optional `repo` and `org` distinguish source repositories from GitHub organizations.
+  An optional `en` object supplies the English description and, when needed, name and destination URL.
+  `localizedProjects()` shares one ordered list between each homepage selection and projects page.
+  Featured projects are 21ideas.org, Bitcoin Calendar and Security Watcher, in that order.
+  The Telegram project stays in the full Russian list; entries without English copy and Telegram
+  channel links are omitted from English project cards.
 
 Draft posts are excluded at the collection-query level, not the file level.
 
@@ -71,7 +117,13 @@ Follows the system preference. CSS `:root` holds the dark tokens; `:root[data-th
 light tokens. An inline `<script>` in `Base.astro` resolves the theme before first paint, with the
 precedence: explicit toggle (`localStorage.theme`) → system (`prefers-color-scheme`) → light
 fallback. Styling is plain CSS only (no framework), all in `src/styles/global.css`; custom
-properties (`--accent`, `--green`, `--muted`, …) are the design-token system.
+properties (`--accent`, `--green`, `--muted`, …) are the design-token system. The newsprint texture
+is a local SVG under `public/textures/`; IBM Plex Serif supplies display type, IBM Plex Sans the
+reading text and interface, and JetBrains Mono the captions and technical data. All browser fonts
+are self-hosted WOFF2 files under `src/assets/fonts/web/`, with licenses and provenance beside them.
+`src/styles/fonts.css` defines Latin and Cyrillic subsets with `font-display: swap`; Astro emits
+hashed asset URLs for caching. `BaseHead` preloads the regular Sans Latin subset and, on Russian
+pages, the Cyrillic subset. There are no Google Fonts requests at runtime.
 
 ## Code blocks & syntax highlighting
 
@@ -135,7 +187,7 @@ involvement — so every past digest picks it up on the next build.
   filtering). Neither list is rendered in gm-web; sources are available on the Calendar event page.
   The loader also preserves the stored `url_path` string, or `null` when absent or of the wrong type.
 - **Event button** — below the description, inside the same accordion item, the event has one
-  «Открыть в Биткоин календаре →» button using the existing `.cta-btn` style. The pure helper
+  «Открыть в Биткоин календаре» button using the existing `.cta-btn` style. The pure helper
   `src/lib/history-event.mjs` splits description paragraphs and builds a permalink under
   `https://bitcoin-calendar.org/{locale}/events/`. English editions use “Today in history” and
   “Open in Bitcoin Calendar” with English event titles and descriptions. It validates `url_path` as `/<date>/<slug>/` with a real
@@ -296,7 +348,7 @@ build`, and the lychee internal-link check.
 `/listen/` is the permanent audio landing page; `/digests/{episodeId}/` remains the canonical
 episode URL. It reuses `audioEpisodes()` and the progressively enhanced custom `AudioPlayer.astro`,
 showing all published digests with matching validated audio as newest-first cards. Each card has
-a date without terminal prefixes, a player, a tree of verified show links and a text/source button.
+a date without terminal prefixes, a player, a bulleted list of verified show links and a text/source button.
 Stable `episode-{episodeId}` fragments resolve to cards; clicking a date copies its full URL without
 scrolling, with success/error feedback and the address bar as the clipboard-failure fallback.
 No media is fetched at build time; every player keeps `preload="none"`. Missing audio renders a
@@ -322,7 +374,7 @@ buttons; failed copying reveals a selectable URL, and success/failure is announc
 
 The English text surface shares the existing shell, pages and post layout through explicit
 `locale: 'ru' | 'en'` inputs. The default remains Russian. Routes are `/en/`, `/en/digests/`,
-`/en/digests/{YYYY-MM-DD}/`, `/en/about/` and `/en/support/`, plus the supporting `/en/404/` error page. Untranslated projects, promotions,
+`/en/digests/{YYYY-MM-DD}/`, `/en/about/`, `/en/projects/` and `/en/support/`, plus the supporting `/en/404/` error page. Untranslated promotions,
 Russian audio/podcast subscriptions are omitted from English pages. Calendar history uses the
 English API data and English event links in the shared accordion component.
 The support page uses the same donation addresses and finance model/ledger as Russian; it does
@@ -347,7 +399,7 @@ not create a second payment configuration or split project costs by edition.
 - **Dates and switching** — all dates use UTC calendar fields, including English month names.
   The language link on an edition points to the other collection's actually eligible edition of
   the same date. Without one it says `Russian archive` / `English archive` and opens that archive.
-  Home, archive, about and support pair by route; untranslated Russian routes switch to English
+  Home, archive, about, projects and support pair by route; untranslated Russian routes switch to English
   home. There are no inferred counterpart URLs.
 - **Private preview flag** — `EN_EDITION_PUBLIC` is an optional, non-secret build flag. Only the
   exact string `true` enables it; missing, empty, false or malformed values default to false.
@@ -376,7 +428,7 @@ not create a second payment configuration or split project costs by edition.
   `GM, bitcoiner` publisher/site names, English WebSite/NewsArticle nodes, canonical English URLs
   and English breadcrumbs. The existing Russian cards/metadata stay Russian.
 - **Language alternates** — public builds emit reciprocal `ru`/`en` head links for paired home,
-  archive, about, support and topic index pages; editions require actually eligible counterparts.
+  archive, about, projects, support and topic index pages; editions require actually eligible counterparts.
   Hub alternates require both locale hubs to clear the indexing floor. Missing, draft, future,
   untranslated and error pages have no fabricated alternate. Private builds omit all metadata
   alternates, including advertisements from Russian pages. The visible language switch still

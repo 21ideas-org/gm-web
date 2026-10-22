@@ -1,10 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { publishedDigests } from '../lib/digests';
+import { localizedProjects } from '../lib/projects';
 import { EN_EDITION_PUBLIC, labels, localePath, type Locale } from '../lib/locale';
 
-import Cursor from '../components/Cursor.astro';
+import { digestStatistics } from '../lib/digest-statistics.mjs';
+import { formatEditionDate, formatIssueDate } from '../lib/date';
+import { audioForDigest } from '../lib/audio.mjs';
+import NetworkStats from './NetworkStats.astro';
 import PostCard from '../components/PostCard.astro';
 import Subscribe from '../components/Subscribe.astro';
 import Support from '../components/Support.astro';
@@ -14,9 +17,14 @@ const t = labels[locale];
 const buildDate = new Date().toISOString().slice(0, 10);
 
 const posts = (await publishedDigests(locale)).slice(0, 3);
+const latest = posts[0];
+const statistics = digestStatistics(latest?.body, locale);
+const block = statistics.find(item => item.key === 'block')?.value.replace('#', '');
+const audio = locale === 'ru' && latest ? audioForDigest(latest.id) : undefined;
+const latestHref = latest ? localePath(locale, `digests/${latest.id}/`) : localePath(locale, 'digests/');
+const showSubscription = locale === 'ru' || EN_EDITION_PUBLIC;
 
-const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.featured) : [])
-  .sort((a, b) => (a.data.featuredOrder ?? a.data.order) - (b.data.featuredOrder ?? b.data.order));
+const featured = (await localizedProjects(locale)).filter(project => project.data.featured);
 ---
 <Base
   locale={locale}
@@ -26,29 +34,44 @@ const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.
   pathMeta={`${locale === 'en' ? 'last build' : 'последняя сборка'}: ${buildDate}`}
   activeNav="home"
 >
-  <section class="hero" aria-label={locale === 'en' ? 'About the digest' : 'Identity'}>
-    <div class="hero-stack">
-      <span class="line"><span class="prompt">$</span> cat /etc/motd</span>
-      <span class="line"><span class="arrow">&gt;</span> {locale === 'en' ? 'GM, bitcoiner — a daily Bitcoin-only digest' : 'Доброе утро, биткоинер — ежедневный биткоин-онли дайджест'}</span>
-      <span class="line"><span class="prompt">$</span> ls <a href={localePath(locale, 'digests/')} class="about-link">{localePath(locale, 'digests')}</a><Cursor /></span>
+  {latest && <section class="front-page" aria-labelledby="fresh-edition">
+    <div class:list={['front-page-grid', { 'front-page-grid--single-column': statistics.length === 0 }]}>
+      <article class="front-lead front-digest">
+        <div class="front-section-heading">
+          <p class="front-category">{locale === 'en' ? 'Fresh issue' : 'Свежий выпуск'}</p>
+          {block && <span class="edition-block">{locale === 'en' ? 'Block' : 'Блок'} {block}</span>}
+        </div>
+        <h2 id="fresh-edition"><time datetime={latest.data.pubDate.toISOString()}>{formatIssueDate(latest.data.pubDate, locale)}</time></h2>
+        <div class="front-copy"><p>{latest.data.description}</p></div>
+        <div class="front-actions">
+          <a class="cta-btn cta-btn--accent" href={latestHref}>{locale === 'en' ? 'Read' : 'Читать'}</a>
+          {audio && <a class="cta-btn" href={latestHref + '#audio-player'}>Слушать</a>}
+        </div>
+      </article>
+      {statistics.length > 0 && <aside class="front-sidebar">
+        <NetworkStats statistics={statistics} date={formatEditionDate(latest.data.pubDate, locale)} locale={locale} />
+      </aside>}
     </div>
-  </section>
+  </section>}
 
-  {locale === 'ru' && (
-  <Subscribe
-    heading="подписаться"
-    audioAction
-    text="Хочешь получать ежедневную сводку биткоин-новостей?"
-  />
-
-  )}
-
-  {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
+  <div class:list={['front-community', { 'front-community--single-column': !showSubscription }]}>
+    <Support
+      locale={locale}
+      heading={t.support}
+      text={locale === 'en' ? 'GM, bitcoiner is a non-commercial project. Help keep the daily digest running.' : 'Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!'}
+    />
+    {locale === 'ru' && <Subscribe
+      heading="подписаться"
+      audioAction
+      text="Хочешь получать ежедневную сводку биткоин-новостей?"
+    />}
+    {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
+  </div>
 
   <section class="section" aria-labelledby="recent">
     <div class="section-header">
       <h2 id="recent">{t.recent}</h2>
-      <a class="more" href={localePath(locale, 'digests/')}>{t.all} &nbsp;→</a>
+      <a class="more" href={localePath(locale, 'digests/')}>{t.all}</a>
     </div>
     {posts.length === 0 && <p class="subscribe-lead">{t.empty}</p>}
     <ul class="post-list">
@@ -65,29 +88,22 @@ const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.
     </ul>
   </section>
 
-  {locale === 'ru' && (
   <section class="section" aria-labelledby="featured">
     <div class="section-header">
-      <h2 id="featured">проекты</h2>
-      <a class="more" href="/projects">все проекты &nbsp;→</a>
+      <h2 id="featured">{t.projects}</h2>
+      <a class="more" href={localePath(locale, 'projects/')}>{locale === 'en' ? 'all projects' : 'все проекты'}</a>
     </div>
     <div class="featured-list">
       {featured.map(p => (
-        <a class="featured-card" href={p.data.url ?? p.data.repo ?? '/projects'} rel="noopener">
-          <span class={`status tag-bracket ${p.data.status.toLowerCase()}`}>[{p.data.status}]</span>
+        <a class="featured-card" href={p.data.url ?? p.data.repo ?? p.data.org ?? localePath(locale, 'projects/')} rel="noopener">
           <span>
             <span class="name">{p.data.name}</span>
-            <p class="desc">{p.data.description}</p>
+            <p class="desc">{p.data.shortDescription ?? p.data.description}</p>
           </span>
-          <span class="arrow">→</span>
         </a>
       ))}
     </div>
   </section>
-
-  )}
-
-  <Support locale={locale} text={locale === 'en' ? 'GM, bitcoiner is a non-commercial project. Help keep the daily digest running.' : 'Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!'} />
 
   {locale === 'ru' && (
   <section class="section" aria-labelledby="buy-bitcoin-heading">
@@ -96,7 +112,7 @@ const featured = (locale === 'ru' ? await getCollection('projects', p => p.data.
     </div>
     <p class="subscribe-lead">Для обмена фиата на биткоин я пользуюсь услугами Hermes Exchange. Нужно обменять биткоин или другую криптовалюту на доллар, евро, рубль или другую валюту? Подробности по клику ниже.</p>
     <div class="subscribe-actions">
-      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин <span class="arrow">→</span></a>
+      <a class="cta-btn cta-btn--accent" href="/buy-bitcoin/">купить биткоин</a>
     </div>
   </section>
   )}
