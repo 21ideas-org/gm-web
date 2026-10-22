@@ -40,6 +40,20 @@ for (const [index, size] of sizes.entries()) {
   offset += images[index].length;
 }
 await writeFile(publicFile('favicon.ico'), Buffer.concat([directory, ...images]));
+// Larger exports retain the print texture used by the homepage mark.
+for (const variant of ['ink', 'engraved']) {
+  const exportMark = sunStampSvg(variant, `export-${variant}`)
+    .replace('<defs>', `<style>svg { color: ${lightInk}; }</style><defs>`);
+  const png = await sharp(Buffer.from(exportMark)).resize(512, 512).png().toBuffer();
+  await writeFile(publicFile(`sun-stamp-${variant}-512x512.png`), png);
+  if (variant === 'ink') {
+    await writeFile(publicFile('android-chrome-512x512.png'), png);
+    await sharp(Buffer.from(exportMark))
+      .resize(192, 192)
+      .png()
+      .toFile(fileURLToPath(publicFile('android-chrome-192x192.png')));
+  }
+}
 await sharp(Buffer.from(mark.replace('<defs>', `<style>svg { color: ${lightInk}; }</style><defs>`)))
   .resize(152, 152)
   .extend({ top: 14, bottom: 14, left: 14, right: 14, background: '#eae1cc' })
@@ -47,4 +61,4 @@ await sharp(Buffer.from(mark.replace('<defs>', `<style>svg { color: ${lightInk};
   .png()
   .toFile(fileURLToPath(publicFile('apple-touch-icon.png')));
 
-console.log('Generated SVG, PNG, ICO and Apple touch icons from the ink sun stamp.');
+console.log('Generated SVG, PNG, ICO and Apple touch icons, plus both 512px sun stamp exports.');
