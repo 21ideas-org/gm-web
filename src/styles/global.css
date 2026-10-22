@@ -960,20 +960,18 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .footer a { color: var(--muted); border-bottom: none; }
 .footer a:hover { color: var(--text); }
 .footer .left { letter-spacing: 0.02em; align-self: center; }
-.footer .right { display: flex; gap: 16px; }
+.footer .right { display: flex; gap: 8px; }
 .footer a.footer-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--dim);
-  border-radius: 50%;
+  width: 24px;
+  height: 24px;
 }
 .footer a.footer-icon:hover,
-.footer a.footer-icon:focus-visible { color: var(--text); border-color: currentColor; }
+.footer a.footer-icon:focus-visible { color: var(--text); }
 @media (pointer: coarse) {
-  .footer a.footer-icon { width: 44px; height: 44px; }
+  .footer a.footer-icon { width: 32px; height: 44px; }
 }
 
 /* A missing page is a short editorial notice, with readable recovery links. */
