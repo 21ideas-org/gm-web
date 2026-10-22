@@ -30,7 +30,16 @@ export function languageDestination(locale, pathname, counterparts) {
       locale: other,
     };
   }
-  const destination = (['/', '/digests', '/about', '/support', '/tags'].includes(path) || /^\/tags\/(market|institutions|regulation|lightning|mining|tech|security|community|funds|scandals)$/.test(path)) ? path : '/';
+  const month = /^\/digests\/(\d{4})\/(\d{2})$/.exec(path);
+  if (month) {
+    const paired = counterparts.some(post => eligibleEdition(post) && post.id.startsWith(`${month[1]}-${month[2]}-`));
+    return {
+      href: paired ? `${prefix}${path}/` : `${prefix}/digests/`,
+      label: `${other === 'en' ? 'English' : 'Russian'} ${paired ? 'monthly archive' : 'archive'}`,
+      locale: other,
+    };
+  }
+  const destination = (['/', '/digests', '/about', '/support', '/projects', '/tags'].includes(path) || /^\/tags\/(market|institutions|regulation|lightning|mining|tech|security|community|funds|scandals)$/.test(path)) ? path : '/';
   return { href: `${prefix}${destination === '/' ? '/' : `${destination}/`}`, label: other === 'en' ? 'English' : 'Russian', locale: other };
 }
 

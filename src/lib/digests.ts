@@ -2,6 +2,7 @@ import { getCollection } from 'astro:content';
 import { eligibleEnglishEdition, publishedEditions } from './editions.mjs';
 import { formatEditionDayMonth } from './date';
 import type { Locale } from './locale';
+import { archiveMonths } from './archive-months.mjs';
 export async function publishedDigests(locale: Locale) {
   const posts = publishedEditions(await getCollection(locale === 'en' ? 'digests-en' : 'digests'));
   return locale === 'en' ? posts.filter(post => eligibleEnglishEdition(post)) : posts;
@@ -15,4 +16,11 @@ export async function editionPaths(locale: Locale) {
     prevPost: posts[i + 1] ? navLabel(posts[i + 1]) : undefined,
     nextPost: posts[i - 1] ? navLabel(posts[i - 1]) : undefined,
   } }));
+}
+
+export async function archiveMonthPaths(locale: Locale) {
+  return archiveMonths(await publishedDigests(locale)).map(({ key }) => {
+    const [year, month] = key.split('-');
+    return { params: { year, month }, props: { locale, monthKey: key } };
+  });
 }

@@ -24,13 +24,18 @@ const projects = defineCollection({
 	schema: z.object({
 		name: z.string(),
 		description: z.string(),
+		en: z.object({
+			name: z.string().optional(),
+			description: z.string(),
+			url: z.url().optional(),
+		}).optional(),
 		status: z.enum(['LIVE', 'WIP', 'ARCHIVED']),
 		url: z.url().optional(), // canonical link to the project / channel
 		telegram: z.url().optional(), // Telegram channel (optional second link)
 		repo: z.url().optional(), // source repository (optional second link)
+		org: z.url().optional(), // GitHub organization
 		stack: z.array(z.string()).optional(), // ecosystem links don't need a tech stack
 		featured: z.boolean().default(false),
-		featuredOrder: z.number().optional(),
 		order: z.number().default(0),
 	}),
 });

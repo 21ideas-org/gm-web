@@ -1,0 +1,6 @@
+---
+import { sunStampSvg } from '../lib/sun-stamp.mjs';
+interface Props { variant?: 'ink' | 'engraved'; }
+const { variant = 'ink' } = Astro.props;
+---
+<Fragment set:html={sunStampSvg(variant)} />

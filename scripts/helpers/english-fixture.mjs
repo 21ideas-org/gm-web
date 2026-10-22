@@ -13,7 +13,7 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 export function editionMarkdown(id, locale, { draft = false, pubDate = id } = {}) {
   const title = locale === 'en' ? `GM, bitcoiner — ${id}` : `Доброе утро, биткоинер — ${id}`;
   const body = locale === 'en'
-    ? `Intro with [original source](https://example.org/story).\n\n## Network Stats\n\n\`\`\`text\nMARKET\n  Price  $82,000\n\`\`\`\n\n## Technology & Development\n\n#### Synthetic protocol news\n\nA fixture story with a [source](https://example.org/source).\n\n## Price & Market\n\n#### Synthetic market news\n\nAnother fixture story.\n\n## Bitcoin Rap Sheet\n\n#### Synthetic investigation\n\nA final fixture story.\n\n\`\`\`text\nfixture code\n\`\`\`\n`
+    ? `Intro with [original source](https://example.org/story).\n\n## Network Stats\n\n\`\`\`text\nMARKET\n  Price  $82,000\nNETWORK\n  Block  #970,000\n  Hashrate  1,040 EH/s\nMEMPOOL\n  Fee  1 sat/vB\n\`\`\`\n\n## Technology & Development\n\n#### Synthetic protocol news\n\nA fixture story with a [source](https://example.org/source).\n\n## Price & Market\n\n#### Synthetic market news\n\nAnother fixture story.\n\n## Bitcoin Rap Sheet\n\n#### Synthetic investigation\n\nA final fixture story.\n\n\`\`\`text\nfixture code\n\`\`\`\n`
     : `Синтетическое введение.\n\n## Статистика сети\n\n\`\`\`text\nfixture stats\n\`\`\`\n\n## Технологии и разработка\n\n#### Синтетическая новость\n\n[Источник](https://example.org/source).\n`;
   return `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(locale === 'en' ? `Synthetic English headlines ${id}` : `Синтетический выпуск ${id}`)}\npubDate: ${JSON.stringify(pubDate)}\ndraft: ${draft}\ntags: [tech${locale === 'en' ? ', market, scandals, unknown-future-topic' : ''}]\n---\n\n${body}`;
 }
@@ -40,7 +40,7 @@ export function fixtureSite() {
   symlinkSync(resolve(repository, 'node_modules'), join(root, 'node_modules'), 'dir');
   for (const name of ['digests', 'digests-en']) mkdirSync(join(root, 'src/content', name), { recursive: true });
   mkdirSync(join(root, 'src/data/audio'), { recursive: true });
-  for (const id of ['2026-10-04', '2026-10-03', '2026-10-02']) {
+  for (const id of ['2026-10-04', '2026-10-03', '2026-10-02', '2026-09-30']) {
     writeFileSync(join(root, 'src/content/digests', `${id}.md`), editionMarkdown(id, 'ru'));
   }
   writeFileSync(join(root, 'src/content/digests/2026-10-05.md'), editionMarkdown('2026-10-05', 'ru', { draft: true }));

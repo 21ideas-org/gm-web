@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { TAGS, tagBySlug, buildTagIndex, HUB_MIN_ITEMS, type NewsRef } from '../../lib/tags';
 import { breadcrumbNode } from '../../lib/schema';
+import { plural } from '../../lib/plural';
 
 export async function getStaticPaths() {
   const index = await buildTagIndex();
@@ -66,15 +67,14 @@ const schema = indexable
         <article class="project-card other-tags">
           <div class="head">
             <span class="name">другие темы</span>
-            <span class="tag-bracket">[{others.length}]</span>
+            <span class="topic-count">{others.length} {plural(others.length, ['тема', 'темы', 'тем'])}</span>
           </div>
-          <nav class="links" aria-label="Другие темы">
-            {others.map((t, i) => (
-              <div>
-                <span class="branch">{i === others.length - 1 ? '└──' : '├──'}</span>{' '}
-                <a href={`/tags/${t.slug}`}>#{t.label}</a>
-              </div>
-            ))}
+          <nav aria-label="Другие темы">
+            <ul class="bullet-list" role="list">
+              {others.map((t) => (
+                <li><a href={`/tags/${t.slug}`}>{t.label}</a></li>
+              ))}
+            </ul>
           </nav>
         </article>
       );

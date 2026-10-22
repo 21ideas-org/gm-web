@@ -13,7 +13,7 @@ const max = rows.length ? Math.max(...rows.map(r => r.count)) : 1;
     {rows.length === 0 && <p class="hub-empty">No English stories have been published yet.</p>}
     <ul class="tag-index">
       {rows.map(r => <li><a class="tag-row" href={`/en/tags/${r.slug}/`}>
-        <span class="name"><span class="hash">#</span>{r.label}</span>
+        <span class="name">{r.label}</span>
         <span class="count"><span class="bar" style={`width:${Math.round(r.count / max * 80)}px`}></span>{r.count}</span>
       </a></li>)}
     </ul>

@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
-import PathStrip from '../components/PathStrip.astro';
+import Masthead from '../components/Masthead.astro';
 import { EN_EDITION_PUBLIC, type Locale } from '../lib/locale';
 
 interface Props {
@@ -23,8 +23,6 @@ interface Props {
 const {
   title,
   description,
-  path,
-  pathMeta,
   activeNav,
   image,
   ogType,
@@ -62,14 +60,15 @@ const {
     <script defer src="https://cloud.umami.is/script.js" data-website-id="f78f89fd-4254-4f5a-a727-de07928747ed" is:inline></script>
   </head>
   <body>
-    <div class="shell">
-      <PathStrip path={path} meta={pathMeta} locale={locale} />
-      <Nav active={activeNav} locale={locale} />
+    <div class:list={['shell', { 'shell--article': ogType === 'article', 'shell--home': activeNav === 'home' }]}>
+      <Masthead locale={locale} home={activeNav === 'home'}>
+        <Nav active={activeNav} locale={locale} />
+      </Masthead>
       <slot />
       <Footer locale={locale} />
     </div>
     <script>
-      // Horizontal scrollers (nav, tag chips): hint overflow with an edge fade
+      // Horizontal scrollers (nav, tag chips, archive months): hint overflow with an edge fade
       // shown only on the side(s) that have hidden content, and center the
       // active link on load. Touch/trackpad scrolling is native (CSS).
       const scrollers = document.querySelectorAll<HTMLElement>('[data-scroller]');

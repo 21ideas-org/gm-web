@@ -1,0 +1,23 @@
+---
+import { archiveMonthLabel, archiveMonthTitle } from '../lib/archive-months.mjs';
+import { localePath, type Locale } from '../lib/locale';
+
+interface Props {
+  months: { key: string }[];
+  locale?: Locale;
+  selectedKey?: string;
+  position?: 'top' | 'bottom';
+}
+const { months, locale = 'ru', selectedKey, position = 'top' } = Astro.props;
+const label = locale === 'en'
+  ? `Archive months${position === 'bottom' ? ' (bottom)' : ''}`
+  : `Месяцы архива${position === 'bottom' ? ' внизу' : ''}`;
+---
+{months.length > 0 && <nav class:list={['archive-months', { 'archive-months--bottom': position === 'bottom' }]} aria-label={label} data-scroller>
+  <a href={localePath(locale, 'digests/')} aria-current={!selectedKey ? 'page' : undefined}>{locale === 'en' ? 'all' : 'все'}</a>
+  {months.map(month => <a
+    href={localePath(locale, `digests/${month.key.replace('-', '/')}/`)}
+    aria-current={month.key === selectedKey ? 'page' : undefined}
+    title={archiveMonthTitle(month.key, locale)}
+  >{archiveMonthLabel(month.key, locale)}</a>)}
+</nav>}

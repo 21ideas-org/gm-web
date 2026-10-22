@@ -1,9 +1,11 @@
 ---
 name: Bitcoin Calendar
-description: Календарь исторических событий Биткоина.
+description: Календарь исторических биткоин-событий.
+en:
+  description: Bitcoin-related Historical Milestones.
 status: LIVE
 url: https://bitcoin-calendar.org
-repo: https://github.com/Bitcoin-Calendar
-featured: false
-order: 5
+org: https://github.com/Bitcoin-Calendar
+featured: true
+order: 2
 ---

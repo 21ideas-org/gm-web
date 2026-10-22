@@ -21,6 +21,7 @@ test('places one buy link after the stats panel and before news', () => {
 	assert.equal(index, 5);
 	assert.equal(tree.children[index].children[0].properties.href, '/buy-bitcoin/');
 	assert.equal(tree.children[index].children[0].children[0].value.trim(), 'купить биткоин');
+	assert.deepEqual(tree.children[index].children[0].children, [text('купить биткоин')]);
 	assert.equal(tree.children.filter((child) => child.properties?.className?.includes('buy-bitcoin-cta')).length, 1);
 });
 

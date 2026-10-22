@@ -14,13 +14,13 @@ const date = formatRuDate(post.data.pubDate);
   <h2 id={`${anchor}-heading`} class="episode-heading">
     <a href={`#${anchor}`} class="episode-date-link" data-episode-link>
       <time datetime={post.data.pubDate.toISOString()}>{date}</time>
-      <span class="episode-link-icon" aria-hidden="true" data-episode-feedback>↗</span>
+      <span class="episode-link-icon" aria-hidden="true" data-episode-feedback></span>
     </a>
   </h2>
   <span class="episode-share-status" role="status" aria-live="polite" data-episode-status></span>
   <AudioPlayer episode={audio} dateLabel={date} />
-  <PodcastApps apps={apps} tree idPrefix={anchor} />
-  <a class="cta-btn episode-text-button" href={`/digests/${post.id}/`}>текстовая версия <span class="arrow">→</span></a>
+  <PodcastApps apps={apps} bullets idPrefix={anchor} />
+  <a class="cta-btn episode-text-button" href={`/digests/${post.id}/`}>текстовая версия</a>
 </article>
 <script>
   document.querySelectorAll<HTMLAnchorElement>('[data-episode-link]').forEach(link => {
@@ -47,7 +47,7 @@ const date = formatRuDate(post.data.pubDate);
       timer = setTimeout(() => {
         delete link.dataset.state;
         if (status) status.textContent = '';
-        if (feedback) feedback.textContent = '↗';
+        if (feedback) feedback.textContent = '';
       }, 1500);
     });
   });

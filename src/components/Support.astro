@@ -11,8 +11,8 @@ interface Props {
 const { text, locale = 'ru' } = Astro.props;
 ---
 <section class="support-cta" aria-label={labels[locale].supportProject}>
-  <p class="subscribe-lead"><span class="arrow">&gt;</span> {text}</p>
+  <p class="subscribe-lead">{text}</p>
   <div class="subscribe-actions">
-    <a class="cta-btn cta-btn--accent" href={localePath(locale, 'support/')}>{labels[locale].support} <span class="arrow">→</span></a>
+    <a class="cta-btn cta-btn--accent" href={localePath(locale, 'support/')}>{labels[locale].support}</a>
   </div>
 </section>
