@@ -22,7 +22,7 @@ const schema = indexable
   ? [
       breadcrumbNode([
         { name: 'Главная', path: '' },
-        { name: 'Топики', path: 'tags/' },
+        { name: 'Рубрики', path: 'tags/' },
         { name: def.hubTitle, path: `tags/${def.slug}/` },
       ]),
     ]
@@ -40,7 +40,7 @@ const schema = indexable
   <nav class="breadcrumbs" aria-label="Хлебные крошки">
     <ol>
       <li><a href="/">главная</a></li>
-      <li><a href="/tags">топики</a></li>
+      <li><a href="/tags">рубрики</a></li>
       <li aria-current="page">{def.label}</li>
     </ol>
   </nav>
