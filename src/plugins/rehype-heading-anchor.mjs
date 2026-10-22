@@ -48,10 +48,10 @@ export function rehypeHeadingAnchor({ topicSlugs = {}, anchorFor = (s, n) => `${
 				const slug = topicSlugs[headingText(node).trim()];
 				currentSlug = slug; // resets section context; undefined for e.g. «Статистика сети»
 				glyph = '##';
-				// Non-topic H2 (e.g. «Статистика сети»): keep the decorative "## " prefix it always
+				// Non-topic H2 (e.g. «Статистика сети»): keep the decorative "##" prefix it always
 				// had, but don't make it a shareable self-link (no slug, no id change).
 				if (!slug) {
-					node.children = [glyphSpan(glyph), { type: 'text', value: ' ' }, ...node.children];
+					node.children = [glyphSpan(glyph), ...node.children];
 					return SKIP;
 				}
 				id = slug;
@@ -70,7 +70,7 @@ export function rehypeHeadingAnchor({ topicSlugs = {}, anchorFor = (s, n) => `${
 					type: 'element',
 					tagName: 'a',
 					properties: { className: ['head-link'], href: `#${id}` },
-					children: [glyphSpan(glyph), { type: 'text', value: ' ' }, ...node.children],
+					children: [glyphSpan(glyph), ...node.children],
 				},
 			];
 
