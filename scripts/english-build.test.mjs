@@ -36,6 +36,9 @@ function validateProjects(root, locale) {
   const ideasUrl = locale === 'en' ? 'https://21ideas.org/en/' : 'https://21ideas.org';
   assert.ok(featured.includes(`href="${ideasUrl}"`));
   assert.ok(projects.includes(`href="${ideasUrl}"`));
+  const calendarUrl = locale === 'en' ? 'https://bitcoin-calendar.org/' : 'https://bitcoin-calendar.org/ru/';
+  assert.ok(featured.includes(`href="${calendarUrl}"`));
+  assert.ok(projects.includes(`href="${calendarUrl}"`));
   assert.match(projects, /<a href="https:\/\/github.com\/Bitcoin-Calendar"[^>]*><span class="k">org<\/span>\s*github\.com\/Bitcoin-Calendar<\/a>/);
   assert.doesNotMatch(featured, /t\.me\//);
   if (locale === 'en') assert.doesNotMatch(projects, /href="https:\/\/t\.me\//);
@@ -101,7 +104,7 @@ function validateEnglish(root, isPublic, populated) {
     const home = html(root, 'en');
     assert.match(visible(home), /GM, bitcoiner/);
     assert.match(visible(home), /Fresh issue/);
-    assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">October 4, 2026<\/time><\/h2>/);
+    assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">October 4<\/time><\/h2>/);
     assert.match(home, /Synthetic English headlines 2026-10-04/);
     assert.doesNotMatch(visible(home), /Synthetic protocol|Synthetic market news|Synthetic investigation/);
     assert.match(home, /data-network-stats data-stats-locale="en"/);
@@ -327,7 +330,7 @@ function validateRussian(root, isPublic, populated) {
   assert.match(html(root, 'listen'), /id="episode-2026-10-04"/);
   const home = html(root, '');
   assert.match(home, /подписаться/);
-  assert.match(home, /<h2 id="fresh-edition">Дайджест <time datetime="2026-10-04T00:00:00.000Z">4 октября 2026<\/time><\/h2>/);
+  assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">4 октября<\/time><\/h2>/);
   assert.match(home, /Синтетический выпуск 2026-10-04/);
   assert.doesNotMatch(visible(home), /Синтетическая новость/);
   const podcast = readFileSync(join(root, 'dist/podcast.xml'), 'utf8');

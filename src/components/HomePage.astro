@@ -40,7 +40,7 @@ const featured = (await localizedProjects(locale)).filter(project => project.dat
           <p class="front-category">{locale === 'en' ? 'Fresh issue' : 'Свежий выпуск'}</p>
           {block && <span class="edition-block">{locale === 'en' ? 'Block' : 'Блок'} {block}</span>}
         </div>
-        <h2 id="fresh-edition">{locale === 'ru' && 'Дайджест '}<time datetime={latest.data.pubDate.toISOString()}>{formatIssueDate(latest.data.pubDate, locale)}</time></h2>
+        <h2 id="fresh-edition"><time datetime={latest.data.pubDate.toISOString()}>{formatIssueDate(latest.data.pubDate, locale)}</time></h2>
         <div class="front-copy"><p>{latest.data.description}</p></div>
         <div class="front-actions">
           <a class="cta-btn cta-btn--accent" href={latestHref}>{locale === 'en' ? 'Read' : 'Читать'}</a>

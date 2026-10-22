@@ -118,8 +118,12 @@ light tokens. An inline `<script>` in `Base.astro` resolves the theme before fir
 precedence: explicit toggle (`localStorage.theme`) → system (`prefers-color-scheme`) → light
 fallback. Styling is plain CSS only (no framework), all in `src/styles/global.css`; custom
 properties (`--accent`, `--green`, `--muted`, …) are the design-token system. The newsprint texture
-is a local SVG under `public/textures/`; Cormorant Garamond supplies display type, PT Serif the
-reading text, Golos Text the interface, and JetBrains Mono the captions and technical data.
+is a local SVG under `public/textures/`; IBM Plex Serif supplies display type, IBM Plex Sans the
+reading text and interface, and JetBrains Mono the captions and technical data. All browser fonts
+are self-hosted WOFF2 files under `src/assets/fonts/web/`, with licenses and provenance beside them.
+`src/styles/fonts.css` defines Latin and Cyrillic subsets with `font-display: swap`; Astro emits
+hashed asset URLs for caching. `BaseHead` preloads the regular Sans Latin subset and, on Russian
+pages, the Cyrillic subset. There are no Google Fonts requests at runtime.
 
 ## Code blocks & syntax highlighting
 

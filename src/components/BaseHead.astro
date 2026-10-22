@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import readingLatinFont from '../assets/fonts/web/ibm-plex-sans-normal-400-700-latin.woff2?url';
+import readingCyrillicFont from '../assets/fonts/web/ibm-plex-sans-normal-400-700-cyrillic.woff2?url';
 import { SITE_NAME } from '../consts';
 import { organizationNode, websiteNode, graph } from '../lib/schema';
 import { PODCAST_SHOW } from '../lib/podcast-config.mjs';
@@ -70,9 +72,8 @@ const podcastReady = locale === 'ru' && podcastShowStatus(PODCAST_SHOW).complete
 
 <!-- Search-engine ownership verification (public token, safe to commit) -->
 <meta name="yandex-verification" content="5b5fcc7cde989fe6" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="preload" href={readingLatinFont} as="font" type="font/woff2" crossorigin />
+{locale === 'ru' && <link rel="preload" href={readingCyrillicFont} as="font" type="font/woff2" crossorigin />}
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

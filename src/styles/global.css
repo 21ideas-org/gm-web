@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 /* gm_₿ — newsprint, editorial typography, and shared page styles. */
 :root {
   color-scheme: dark;
@@ -12,9 +14,9 @@
   --accent: #f0a083;
   --stamp-ink: #e6bc8e;
   --paper-grain: .18;
-  --font: "Golos Text", Arial, sans-serif;
-  --font-reading: "PT Serif", Georgia, serif;
-  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font: "IBM Plex Sans", Arial, sans-serif;
+  --font-reading: "IBM Plex Sans", Arial, sans-serif;
+  --font-display: "IBM Plex Serif", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --fs-xs: 11px;
   --fs-sm: 13px;
@@ -26,7 +28,7 @@
   --fs-h1: 48px;
   --fs-xl: 54px;
   --lh-ui: 1.45;
-  --lh-prose: 1.75;
+  --lh-prose: 1.65;
   --t: 120ms linear;
   --maxw-page: 1080px;
   --maxw-prose: 68ch;
