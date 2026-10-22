@@ -68,6 +68,8 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
   Inner pages contain no hero or large stamp.
   **`npm run generate:favicons`** regenerates the matching SVG, PNG, ICO and Apple touch icons.
   The SVG adapts its ink to the browser's color scheme; tiny raster fallbacks omit wear for clarity.
+  Android icons (192px and 512px) use the same ink stamp. Transparent 512px exports of both treatments
+  are saved in `public/sun-stamp-ink-512x512.png` and `public/sun-stamp-engraved-512x512.png`.
   `ShortWordmark.astro` reuses the original Bitcoin path in the inline `gm_₿` name on About,
   avoiding font-dependent currency glyphs.
 - **`digest-statistics.mjs`** — reads the published RU or EN network snapshot for the homepage and
