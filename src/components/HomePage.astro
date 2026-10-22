@@ -22,6 +22,7 @@ const statistics = digestStatistics(latest?.body, locale);
 const block = statistics.find(item => item.key === 'block')?.value.replace('#', '');
 const audio = locale === 'ru' && latest ? audioForDigest(latest.id) : undefined;
 const latestHref = latest ? localePath(locale, `digests/${latest.id}/`) : localePath(locale, 'digests/');
+const showSubscription = locale === 'ru' || EN_EDITION_PUBLIC;
 
 const featured = (await localizedProjects(locale)).filter(project => project.data.featured);
 ---
@@ -53,16 +54,19 @@ const featured = (await localizedProjects(locale)).filter(project => project.dat
     </div>
   </section>}
 
-  {locale === 'ru' && (
-  <Subscribe
-    heading="подписаться"
-    audioAction
-    text="Хочешь получать ежедневную сводку биткоин-новостей?"
-  />
-
-  )}
-
-  {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
+  <div class:list={['front-community', { 'front-community--single-column': !showSubscription }]}>
+    <Support
+      locale={locale}
+      heading={t.support}
+      text={locale === 'en' ? 'GM, bitcoiner is a non-commercial project. Help keep the daily digest running.' : 'Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!'}
+    />
+    {locale === 'ru' && <Subscribe
+      heading="подписаться"
+      audioAction
+      text="Хочешь получать ежедневную сводку биткоин-новостей?"
+    />}
+    {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
+  </div>
 
   <section class="section" aria-labelledby="recent">
     <div class="section-header">
@@ -94,14 +98,12 @@ const featured = (await localizedProjects(locale)).filter(project => project.dat
         <a class="featured-card" href={p.data.url ?? p.data.repo ?? p.data.org ?? localePath(locale, 'projects/')} rel="noopener">
           <span>
             <span class="name">{p.data.name}</span>
-            <p class="desc">{p.data.description}</p>
+            <p class="desc">{p.data.shortDescription ?? p.data.description}</p>
           </span>
         </a>
       ))}
     </div>
   </section>
-
-  <Support locale={locale} text={locale === 'en' ? 'GM, bitcoiner is a non-commercial project. Help keep the daily digest running.' : 'Ежедневный дайджест «Доброе утро, биткоинер» — некоммерческий проект. Не забудь поддержать его разработку!'} />
 
   {locale === 'ru' && (
   <section class="section" aria-labelledby="buy-bitcoin-heading">

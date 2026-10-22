@@ -24,9 +24,11 @@ const projects = defineCollection({
 	schema: z.object({
 		name: z.string(),
 		description: z.string(),
+		shortDescription: z.string().optional(),
 		en: z.object({
 			name: z.string().optional(),
 			description: z.string(),
+			shortDescription: z.string().optional(),
 			url: z.url().optional(),
 		}).optional(),
 		status: z.enum(['LIVE', 'WIP', 'ARCHIVED']),

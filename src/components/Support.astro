@@ -1,16 +1,16 @@
 ---
-// Support CTA — donation nudge funnelling to /support. Rendered at the digest
-// foot, directly above <Subscribe>. Reuses the subscribe lead/actions layout;
-// its button carries the accent-bordered `cta-btn--accent` variant so it reads
-// as the primary ask, distinct from the ghost telegram/rss buttons below.
+// Support CTA — donation nudge for the homepage and digest foot.
+// The optional heading is used by the homepage's two-column CTA row.
 import { labels, localePath, type Locale } from '../lib/locale';
 interface Props {
   locale?: Locale;
+  heading?: string;
   text: string;
 }
-const { text, locale = 'ru' } = Astro.props;
+const { heading, text, locale = 'ru' } = Astro.props;
 ---
 <section class="support-cta" aria-label={labels[locale].supportProject}>
+  {heading && <div class="section-header"><h2>{heading}</h2></div>}
   <p class="subscribe-lead">{text}</p>
   <div class="subscribe-actions">
     <a class="cta-btn cta-btn--accent" href={localePath(locale, 'support/')}>{labels[locale].support}</a>

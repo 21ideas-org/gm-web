@@ -10,6 +10,7 @@ export async function localizedProjects(locale: Locale) {
       data: {
         ...project.data,
         ...(locale === 'en' ? project.data.en : {}),
+        shortDescription: locale === 'en' ? project.data.en?.shortDescription : project.data.shortDescription,
         telegram: locale === 'en' ? undefined : project.data.telegram,
       },
     }))
