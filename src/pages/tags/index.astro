@@ -9,7 +9,7 @@ const rows = TAGS.map((t) => ({ ...t, count: counts.get(t.slug) ?? 0 }))
 const max = rows.length ? Math.max(...rows.map((r) => r.count)) : 1;
 ---
 <Base title="топики — gm_₿" description="Биткоин-новости по темам." path="tags" pathMeta="ls tags/" activeNav="tags">
-  <section class="section">
+  <section class="section topics-page">
     <div class="section-header"><h1>топики</h1><span class="more">{rows.length}</span></div>
     <ul class="tag-index">
       {rows.map((r) => (

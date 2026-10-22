@@ -51,19 +51,21 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
 
 - **`Base.astro`** — root HTML shell: inline theme script → `BaseHead` → `Masthead` (with `Nav`) →
   `<slot>` → `Footer`.
-- **`Masthead.astro`** — shared imprint, theme/language controls and navigation.
+- **`Masthead.astro`** — compact sun-logo home link, theme/language controls and navigation.
   Theme and language controls stay in the imprint, above `Nav` and the large editorial name. `Nav` keeps every destination
   in one horizontally scrollable row, with edge hints and automatic positioning of the active link.
   All inner pages use a compact masthead: imprint → navigation, followed directly by page content.
   Edition date and published block height appear only in the homepage's fresh-issue context.
-  The large editorial name and sun stamp appear only on the homepage. Digest pages continue with
+  The large editorial name and large sun stamp appear only on the homepage. Digest pages continue with
   the digest title and scrollable topic chips.
-- **`SunStamp.astro` / `sun-stamp.mjs`** — homepage sun mark with eight rays and the original
+- **`SunStamp.astro` / `sun-stamp.mjs`** — shared sun mark with eight rays and the original
   [Bitboy symbol SVG from Bitcoin Design](https://bitcoin.design/assets/images/guide/getting-started/visual-language/bitcoin-symbol.svg),
   retaining its built-in 14° clockwise rotation. The symbol and its edge are protected from the
   print-wear filter. Two vector print treatments (solid ink and hatched engraving) share
   the geometry; the homepage uses solid ink, placed to the right of the title at every width.
-  Ink colors adapt to light and dark paper. Inner pages contain no hero or stamp.
+  Ink colors adapt to light and dark paper. The imprint uses a 32px version linked to the
+  current language's homepage; unique SVG IDs keep it independent of the large homepage mark.
+  Inner pages contain no hero or large stamp.
   **`npm run generate:favicons`** regenerates the matching SVG, PNG, ICO and Apple touch icons.
   The SVG adapts its ink to the browser's color scheme; tiny raster fallbacks omit wear for clarity.
   `ShortWordmark.astro` reuses the original Bitcoin path in the inline `gm_₿` name on About,

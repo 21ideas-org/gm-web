@@ -8,7 +8,7 @@ const rows = TAGS_EN.map(t => ({ ...t, count: index.get(t.slug)?.length ?? 0 }))
 const max = rows.length ? Math.max(...rows.map(r => r.count)) : 1;
 ---
 <Base locale="en" title="Topics — gm_₿" description="English Bitcoin news by topic." path="en/tags" pathMeta="ls tags/" activeNav="tags">
-  <section class="section">
+  <section class="section topics-page">
     <div class="section-header"><h1>topics</h1><span class="more">{rows.length}</span></div>
     {rows.length === 0 && <p class="hub-empty">No English stories have been published yet.</p>}
     <ul class="tag-index">

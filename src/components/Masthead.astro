@@ -8,8 +8,7 @@ const { locale = 'ru', home = false } = Astro.props;
 ---
 <header class="masthead">
   <div class="masthead-imprint">
-    <a href="https://21ideas.org" rel="noopener">21ideas</a>
-    <span class="masthead-description">{locale === 'en' ? 'Bitcoin-only daily digest' : 'Биткоин-онли дайджесты'}</span>
+    <a class="masthead-logo" href={localePath(locale)} aria-label={locale === 'en' ? 'Home — GM, bitcoiner' : 'Главная — Доброе утро, биткоинер'}><SunStamp variant="ink" id="masthead-sun" /></a>
     <div class="masthead-tools"><LanguageSwitch locale={locale} /><ThemeToggle locale={locale} /></div>
   </div>
   <slot />

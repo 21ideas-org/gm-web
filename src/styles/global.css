@@ -99,9 +99,9 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   text-transform: uppercase;
   letter-spacing: .04em;
 }
-.masthead-imprint > a { color: var(--text); }
-.masthead-description { margin-left: auto; }
-.masthead-tools { display: flex; align-items: center; gap: 14px; }
+.masthead-logo { display: inline-flex; align-items: center; flex: 0 0 auto; border: 0; }
+.masthead-logo .sun-stamp { width: 32px; height: 32px; margin: 0; }
+.masthead-tools { display: flex; align-items: center; gap: 14px; margin-left: auto; }
 .masthead-identity {
   display: grid;
   grid-template-columns: 105px minmax(0, 1fr) 105px;
@@ -195,7 +195,6 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 @media (max-width: 680px) {
   .shell { padding: 18px 20px 36px; }
   .masthead-imprint { gap: 12px; }
-  .masthead-description { font-size: 9px; }
   .masthead-tools { gap: 10px; margin-left: auto; }
   .masthead-identity { grid-template-columns: 65px minmax(0, 1fr); gap: 14px; padding: 24px 0; }
   .masthead-motto { display: none; }
@@ -209,13 +208,13 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   .front-digest h2 { font-size: 40px; }
 }
 @media (max-width: 400px) {
-  .masthead-description { max-width: 120px; }
   .masthead-identity { grid-template-columns: 52px minmax(0, 1fr); gap: 10px; }
   .shell--home .masthead-identity { grid-template-columns: minmax(0, 1fr) 52px; }
   .ink-stamp { width: 52px; height: 52px; }
   .masthead-wordmark { font-size: clamp(31px, 9vw, 36px); }
 }
 @media (pointer: coarse) {
+  .masthead-logo { min-width: 44px; min-height: 44px; }
   .nav a { min-height: 44px; display: inline-flex; align-items: center; }
   .theme-btn, .language-switch { min-width: 36px; min-height: 44px; justify-content: center; }
 }
@@ -1309,7 +1308,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .project-card { background: transparent; border: 0; border-top: 1px solid var(--border); padding: 22px 0; }
 .project-card .name { font-size: 30px; font-weight: 700; }
 .section-header { border-bottom: 1px solid var(--text); padding-bottom: 12px; }
-.projects-page > .section-header { border-bottom: 0; padding-bottom: 0; }
+.projects-page > .section-header,
+.topics-page > .section-header { border-bottom: 0; padding-bottom: 0; }
 .subscribe .section-header { border-bottom: 0; padding-bottom: 0; }
 .shell--home .section-header { border-bottom: 0; padding-bottom: 0; }
 .shell--home .post-list li:first-child { border-top: 0; }
