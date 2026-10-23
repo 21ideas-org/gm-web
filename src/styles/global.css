@@ -1078,10 +1078,13 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   margin: 0 0 12px;
 }
 
-.about-section p {
+.about-section p,
+.about-section .faq-item {
   font-family: var(--font-reading);
   max-width: var(--maxw-prose);
   font-size: var(--fs-body);
+}
+.about-section p {
   line-height: var(--lh-prose);
   color: var(--text);
   margin: 0 0 12px;
@@ -1322,6 +1325,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 
 /* Editorial layout around the existing readers, players, and project links. */
 .shell--article > article,
+.shell--article .prose,
 .shell--article .post-header,
 .shell--article .history,
 .shell--article .support-cta,
@@ -1331,7 +1335,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   margin-left: auto;
   margin-right: auto;
 }
-.shell--article .prose { max-width: none; }
+.shell--article .history .faq-item { max-width: none; }
 .post-header { padding-top: 25px; }
 .breadcrumbs, .post-header .meta, .footer, .status-label,
 .code-copy, .code-toolbar, .fin-wallet, .post-nav .label {
