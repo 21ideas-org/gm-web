@@ -67,7 +67,7 @@ export const PODCAST_SHOW = Object.freeze({
   ownerEmail: 'bitcoin.translated@gmail.com', // operator-approved public ownership contact
   category: 'Education', // Apple Podcasts category text
   imageUrl: 'https://gm.21ideas.org/podcasts/21ideas-cover.jpg', // existing 21ideas cover, verified 3000×3000 JPEG
-  episodeImageUrl: 'https://gm.21ideas.org/podcasts/gm-bitcoiner-cover.png',
+  episodeImageUrl: 'https://gm.21ideas.org/podcasts/gm-bitcoiner-sun-stamp-light-v1.png', // website stamp on the light-theme background; versioned for artwork caches
   dailyLightningAddress: 'gmbitcoiner@coinos.io', // operator-approved 100% recipient for daily GM episodes
   archiveValue: {
     ...PRICE_OF_TOMORROW_VALUE,

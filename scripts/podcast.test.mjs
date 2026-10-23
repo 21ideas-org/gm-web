@@ -235,7 +235,9 @@ test('approved production config publishes the existing show with daily artwork'
   assert.equal(PODCAST_SHOW.ownerEmail, 'bitcoin.translated@gmail.com');
   const { audio, digests } = scenario();
   const xml = renderPodcastFeed({ show: PODCAST_SHOW, digests, audio });
-  assert.equal((xml.match(/<itunes:image href="https:\/\/gm.21ideas.org\/podcasts\/gm-bitcoiner-cover.png"\/>/g) ?? []).length, 2);
+  assert.ok(xml.split('<item>')[0].includes('<itunes:image href="https://gm.21ideas.org/podcasts/21ideas-cover.jpg"/>'));
+  assert.equal((xml.match(/<itunes:image href="https:\/\/gm.21ideas.org\/podcasts\/gm-bitcoiner-sun-stamp-light-v1.png"\/>/g) ?? []).length, 2);
+  assert.ok(!xml.includes('/podcasts/gm-bitcoiner-cover.png'));
 });
 
 test('an invalid optional daily cover prevents publishing an unsafe feed', () => {

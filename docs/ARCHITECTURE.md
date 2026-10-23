@@ -296,8 +296,11 @@ unchanged. Builder: `src/lib/podcast.mjs` (pure, deterministic); route: `src/pag
   contact), `category` (Apple category text), `imageUrl` (HTTPS `.jpg`/`.png`, square 1400–3000 px —
   not the 1200×630 `/og/` card). `ownerEmail` uses the operator-approved public project contact. The existing
   3000×3000 show cover is served from `/podcasts/21ideas-cover.jpg`; optional `episodeImageUrl`
-  supplies `/podcasts/gm-bitcoiner-cover.png` for new digest episodes only. Historical episode
-  artwork is preserved. An invalid configured episode cover suppresses feed publication.
+  supplies `/podcasts/gm-bitcoiner-sun-stamp-light-v1.png` for daily digest episodes only.
+  `npm run generate:podcast-cover` exports the shared `sunStampSvg('ink')` vector at 3000×3000
+  with an opaque light-theme background and ink colors from `src/styles/global.css`. A new
+  artwork version uses a new filename and config URL so directory caches can detect it.
+  Historical episode artwork is preserved. An invalid configured episode cover suppresses feed publication.
   Optional `guid` preserves the verified existing Podcast Index UUIDv5 across hosting moves;
   invalid configured GUIDs also suppress publication. The Podcast Namespace funding tag points to
   `/support/`. `archiveValue` defines the archive default at 95/4/1; `archiveValueOverrides` preserves
