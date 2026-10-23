@@ -106,11 +106,12 @@ function template(title: string, description: string, stamp: string | undefined,
 		rule(isCover ? 324 : 264, true),
 		isCover ? box({
 			position: 'absolute', left: 100, top: 354, width: 1000, height: 190,
-			alignItems: 'center', justifyContent: 'center',
-		}, [text(description, {
-			display: 'block', width: 900, fontSize: 38, lineHeight: 1.3,
+			flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+		}, description.split('\n').map(line => text(line, {
+			display: 'block', ...(description.includes('\n') ? { maxWidth: 900 } : { width: 900 }),
+			fontSize: 38, lineHeight: 1.3,
 			letterSpacing: -0.3, textAlign: 'center', lineClamp: 3,
-		})]) : text(description, {
+		}))) : text(description, {
 			display: 'block',
 			position: 'absolute', left: 58, top: 294, width: 1084,
 			fontSize: 38, lineHeight: 1.24, letterSpacing: -0.3,

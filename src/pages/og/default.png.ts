@@ -4,7 +4,7 @@ import { renderOgPng } from '../../lib/og';
 export const GET: APIRoute = async () => {
 	const png = await renderOgPng(
 		'Доброе утро, биткоинер',
-		'Ежедневные биткоин-онли дайджесты у вашего цифрового порога.',
+		'Ежедневные биткоин-онли дайджесты\nу вашего цифрового порога',
 	);
 	return new Response(new Uint8Array(png), {
 		headers: {
