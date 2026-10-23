@@ -17,7 +17,9 @@ function render(...args) {
         return localFetch(url, options);
       };
       const { renderOgPng } = await import('./src/lib/og.ts');
-      process.stdout.write(await renderOgPng(...JSON.parse(process.env.OG_TEST_ARGS)));
+      const args = JSON.parse(process.env.OG_TEST_ARGS);
+      if (args[2] === null) args[2] = undefined;
+      process.stdout.write(await renderOgPng(...args));
     `,
     timeout: 30_000,
     maxBuffer: 4 * 1024 * 1024,
@@ -53,4 +55,35 @@ test('long Cyrillic summaries leave the footer visible and unchanged', async () 
   const long = render('Доброе утро, биткоинер', 'Биткоин, технологии, майнинг и Lightning. '.repeat(30), '22.10.2026');
   assert.ok(!await sameRegion(short, long, 294, 250), 'Summary content is rendered');
   assert.ok(await sameRegion(short, long, 564, 66), 'Summary does not obscure the footer');
+});
+
+async function inkBounds(png, top, height) {
+  const data = await region(png, top, height);
+  const xs = [], ys = [];
+  for (let index = 0; index < data.length; index += 3) {
+    if ((data[index] + data[index + 1] + data[index + 2]) / 3 >= 160) continue;
+    const pixel = index / 3;
+    xs.push(pixel % 1200);
+    ys.push(top + Math.floor(pixel / 1200));
+  }
+  if (!xs.length) return undefined;
+  return { left: Math.min(...xs), right: Math.max(...xs), top: Math.min(...ys), bottom: Math.max(...ys) };
+}
+
+test('undated site covers center the address and tagline with space above the wordmark', async () => {
+  for (const [locale, title, description] of [
+    ['ru', 'Доброе утро, биткоинер', 'Ежедневные биткоин-онли дайджесты у вашего цифрового порога.'],
+    ['en', 'GM, bitcoiner', 'Your daily Bitcoin-only news digest, with original sources.'],
+  ]) {
+    const png = render(title, description, undefined, locale);
+    const header = await inkBounds(png, 0, 108);
+    assert.ok(header, `${locale}: site address is visible`);
+    assert.ok(header.left > 350 && header.right < 850, `${locale}: header contains only the centered site address`);
+    assert.ok(Math.abs((header.left + header.right) / 2 - 600) < 4, `${locale}: site address is centered`);
+    assert.equal(await inkBounds(png, 120, 70), undefined, `${locale}: wordmark is lower on the cover`);
+    const tagline = await inkBounds(png, 354, 190);
+    assert.ok(tagline, `${locale}: tagline is visible`);
+    assert.ok(Math.abs((tagline.left + tagline.right) / 2 - 600) < 8, `${locale}: tagline is centered horizontally`);
+    assert.ok(Math.abs((tagline.top + tagline.bottom) / 2 - 449) < 12, `${locale}: tagline is centered vertically`);
+  }
 });

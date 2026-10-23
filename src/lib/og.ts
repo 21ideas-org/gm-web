@@ -64,6 +64,7 @@ const sun = `data:image/svg+xml;base64,${Buffer.from(
 
 function template(title: string, description: string, stamp: string | undefined, locale: Locale): Node {
 	const ru = locale === 'ru';
+	const isCover = !stamp;
 	// English edition titles also contain the issue date; it has its own header field.
 	const brandTitle = title.split(' — ')[0];
 	const parts = brandTitle.match(/^(.*?,)\s+(.+)$/);
@@ -71,6 +72,19 @@ function template(title: string, description: string, stamp: string | undefined,
 	const wordmark = parts
 		? [text(parts[1], titleStyle), text(parts[2], { ...titleStyle, fontStyle: 'italic' })]
 		: [text(brandTitle, titleStyle)];
+	const titleRow = box({
+		position: isCover ? 'relative' : 'absolute',
+		...(isCover ? { paddingRight: 144 } : { left: 56, top: 150 }),
+		alignItems: 'baseline', gap: 20,
+		fontFamily: 'IBM Plex Serif', fontWeight: 700, fontSize: 80,
+		lineHeight: 1.03, letterSpacing: -3.4,
+	}, [
+		{ type: 'img', props: {
+			src: sun, width: 116, height: 116,
+			style: { position: 'absolute', right: isCover ? 0 : -144, top: -15, width: 116, height: 116 },
+		} },
+		...wordmark,
+	]);
 
 	return box({
 		width: 1200, height: 630, position: 'relative', overflow: 'hidden',
@@ -78,27 +92,25 @@ function template(title: string, description: string, stamp: string | undefined,
 	}, [
 		box({
 			position: 'absolute', left: 56, top: 28, width: 1088,
-			alignItems: 'baseline', justifyContent: 'space-between',
+			alignItems: 'baseline', justifyContent: isCover ? 'center' : 'space-between',
 		}, [
 			mono('gm.21ideas.org', { fontSize: 34, color: COLORS.muted }),
-			text(stamp || (ru ? 'БИТКОИН-ОНЛИ' : 'BITCOIN ONLY'), {
+			...(stamp ? [text(stamp, {
 				fontSize: 44, color: COLORS.accent, letterSpacing: 0.6,
-			}),
+			})] : []),
 		]),
 		rule(108),
-		box({
-			position: 'absolute', left: 56, top: 150, alignItems: 'baseline', gap: 20,
-			fontFamily: 'IBM Plex Serif', fontWeight: 700, fontSize: 80,
-			lineHeight: 1.03, letterSpacing: -3.4,
-		}, [
-			{ type: 'img', props: {
-				src: sun, width: 116, height: 116,
-				style: { position: 'absolute', right: -144, top: -15, width: 116, height: 116 },
-			} },
-			...wordmark,
-		]),
-		rule(264, true),
-		text(description, {
+		isCover ? box({
+			position: 'absolute', left: 56, top: 210, width: 1088, justifyContent: 'center',
+		}, [titleRow]) : titleRow,
+		rule(isCover ? 324 : 264, true),
+		isCover ? box({
+			position: 'absolute', left: 100, top: 354, width: 1000, height: 190,
+			alignItems: 'center', justifyContent: 'center',
+		}, [text(description, {
+			display: 'block', width: 900, fontSize: 38, lineHeight: 1.3,
+			letterSpacing: -0.3, textAlign: 'center', lineClamp: 3,
+		})]) : text(description, {
 			display: 'block',
 			position: 'absolute', left: 58, top: 294, width: 1084,
 			fontSize: 38, lineHeight: 1.24, letterSpacing: -0.3,
