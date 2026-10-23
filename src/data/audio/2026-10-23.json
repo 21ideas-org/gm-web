@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "episodeId": "2026-10-23",
+  "guid": "gm-audio:2026-10-23",
+  "publishedAt": "2026-10-23T00:50:05.714Z",
+  "coveredDate": "2026-10-22",
+  "digestSha256": "a35b830ab098fbeb07f8975a5b8999defca5f90ec275bbca3215b945af69d0aa",
+  "mediaVersion": 1,
+  "url": "https://audio.21ideas.org/podcasts/2026-10-23.mp3",
+  "mimeType": "audio/mpeg",
+  "byteLength": 5629954,
+  "durationSeconds": 351.843265,
+  "sha256": "cbb72f82b890f224973f0e69d15931994218abe7b3661d83e4146d047aff42b2"
+}
