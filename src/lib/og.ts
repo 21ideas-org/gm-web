@@ -105,11 +105,11 @@ function template(title: string, description: string, stamp: string | undefined,
 		}, [titleRow]) : titleRow,
 		rule(isCover ? 324 : 264, true),
 		isCover ? box({
-			position: 'absolute', left: 100, top: 354, width: 1000, height: 190,
+			position: 'absolute', left: 100, top: 354, width: 1000, height: 236,
 			flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
 		}, description.split('\n').map(line => text(line, {
 			display: 'block', ...(description.includes('\n') ? { maxWidth: 900 } : { width: 900 }),
-			fontSize: 38, lineHeight: 1.3,
+			fontSize: 48, lineHeight: 1.3,
 			letterSpacing: -0.3, textAlign: 'center', lineClamp: 3,
 		}))) : text(description, {
 			display: 'block',
@@ -118,11 +118,11 @@ function template(title: string, description: string, stamp: string | undefined,
 			// Keep even unusually long future summaries above the footer.
 			lineClamp: 5,
 		}),
-		rule(564),
+		...(isCover ? [] : [rule(564),
 		mono(ru ? 'ЕЖЕДНЕВНЫЙ БИТКОИН-ДАЙДЖЕСТ' : 'YOUR DAILY BITCOIN DIGEST', {
 			position: 'absolute', left: 56, top: 582, width: 1088,
 			justifyContent: 'center', color: COLORS.muted, fontSize: 19,
-		}),
+		})]),
 	]);
 }
 

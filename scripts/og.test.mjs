@@ -57,11 +57,11 @@ test('long Cyrillic summaries leave the footer visible and unchanged', async () 
   assert.ok(await sameRegion(short, long, 564, 66), 'Summary does not obscure the footer');
 });
 
-async function inkBounds(png, top, height) {
+async function inkBounds(png, top, height, threshold = 160) {
   const data = await region(png, top, height);
   const xs = [], ys = [];
   for (let index = 0; index < data.length; index += 3) {
-    if ((data[index] + data[index + 1] + data[index + 2]) / 3 >= 160) continue;
+    if ((data[index] + data[index + 1] + data[index + 2]) / 3 >= threshold) continue;
     const pixel = index / 3;
     xs.push(pixel % 1200);
     ys.push(top + Math.floor(pixel / 1200));
@@ -81,9 +81,11 @@ test('undated site covers center the address and tagline with space above the wo
     assert.ok(header.left > 350 && header.right < 850, `${locale}: header contains only the centered site address`);
     assert.ok(Math.abs((header.left + header.right) / 2 - 600) < 4, `${locale}: site address is centered`);
     assert.equal(await inkBounds(png, 120, 70), undefined, `${locale}: wordmark is lower on the cover`);
-    const tagline = await inkBounds(png, 354, 190);
+    const tagline = await inkBounds(png, 354, 236);
     assert.ok(tagline, `${locale}: tagline is visible`);
     assert.ok(Math.abs((tagline.left + tagline.right) / 2 - 600) < 8, `${locale}: tagline is centered horizontally`);
-    assert.ok(Math.abs((tagline.top + tagline.bottom) / 2 - 449) < 12, `${locale}: tagline is centered vertically`);
+    assert.ok(Math.abs((tagline.top + tagline.bottom) / 2 - 472) < 12, `${locale}: tagline is centered vertically`);
+    assert.ok(tagline.bottom - tagline.top > 85, `${locale}: tagline uses larger lettering`);
+    assert.equal(await inkBounds(png, 560, 70, 190), undefined, `${locale}: cover has no footer rule or caption`);
   }
 });
