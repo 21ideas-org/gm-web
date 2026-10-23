@@ -1,220 +1,130 @@
 import type { Locale } from './locale';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import satori from 'satori';
+import satori, { type Font } from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
+import { sunStampSvg } from './sun-stamp.mjs';
 
-// Light-theme tokens, mirrored from :root[data-theme="light"] in global.css.
-// The card renders light regardless of site theme.
+// Light-theme paper, text, rules and stamp ink from global.css, regardless of site theme.
 const COLORS = {
-	bg: '#f6f4ef',
-	text: '#1a1a1a',
-	muted: '#5b5a52',
-	dim: '#a8a190',
-	border: '#cfc8b6',
-	accent: '#9a6700',
+	bg: '#eae1cc',
+	text: '#292b24',
+	muted: '#626151',
+	border: '#aaa58f',
+	accent: '#a13c26',
 };
 
-let fontCache: { regular: Buffer; bold: Buffer } | null = null;
+let fontCache: Promise<Font[]> | undefined;
 
-async function loadFonts() {
-	if (fontCache) return fontCache;
-	// This endpoint only runs at build time (prerendered), so the CWD is the project root.
-	const root = process.cwd();
-	const [regular, bold] = await Promise.all([
-		readFile(resolve(root, 'src/assets/fonts/JetBrainsMono-Regular.ttf')),
-		readFile(resolve(root, 'src/assets/fonts/JetBrainsMono-Bold.ttf')),
-	]);
-	fontCache = { regular, bold };
+function loadFonts(): Promise<Font[]> {
+	// Prerendered endpoints run at build time with the project root as CWD.
+	fontCache ??= Promise.all(([
+		{ name: 'IBM Plex Serif', file: 'IBMPlexSerif-Bold.ttf', weight: 700, style: 'normal' },
+		{ name: 'IBM Plex Serif', file: 'IBMPlexSerif-BoldItalic.ttf', weight: 700, style: 'italic' },
+		{ name: 'IBM Plex Sans', file: 'IBMPlexSans-Regular.ttf', weight: 400, style: 'normal' },
+		{ name: 'JetBrains Mono', file: 'JetBrainsMono-Regular.ttf', weight: 400, style: 'normal' },
+	] as const).map(async ({ name, file, weight, style }) => ({
+		name, weight, style,
+		data: await readFile(resolve(process.cwd(), 'src/assets/fonts', file)),
+	})));
 	return fontCache;
 }
 
-// Titles render on a single line (Satori doesn't wrap the title text), so size to
-// fit the 1024px content width. The brand title "Доброе утро, биткоинер" (22 chars)
-// lands at 70px.
-function titleFontSize(title: string): number {
-	const len = title.length;
-	if (len <= 14) return 88;
-	if (len <= 24) return 70;
-	if (len <= 34) return 50;
-	return 44;
-}
-
+type Style = Record<string, unknown>;
 type Node = {
 	type: string;
 	props: Record<string, unknown> & { children?: unknown };
 };
 
-function el(type: string, props: Record<string, unknown> & { children?: unknown }): Node {
-	return { type, props };
+function box(style: Style, children?: unknown): Node {
+	return { type: 'div', props: { style: { display: 'flex', ...style }, children } };
 }
 
-function template(title: string, description: string, stamp: string, locale: Locale): Node {
-	const titleSize = titleFontSize(title);
+function text(value: string, style: Style = {}): Node {
+	return box({ fontFamily: 'IBM Plex Sans', fontWeight: 400, ...style }, value);
+}
 
-	// Scanlines layer (replaces ::before)
-	const scanlines = el('div', {
-		style: {
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			right: 0,
-			bottom: 0,
-			backgroundImage:
-				'repeating-linear-gradient(to bottom, rgba(26,26,26,0.05) 0px, rgba(26,26,26,0.05) 1px, transparent 1px, transparent 2px)',
-		},
+function mono(value: string, style: Style = {}): Node {
+	return text(value, { fontFamily: 'JetBrains Mono', letterSpacing: 0.6, ...style });
+}
+
+function rule(top: number, double = false): Node {
+	return box({
+		position: 'absolute', left: 56, top, width: 1088,
+		height: double ? 7 : 1,
+		borderTop: `${double ? 3 : 1}px solid ${double ? COLORS.text : COLORS.border}`,
+		...(double ? { borderBottom: `1px solid ${COLORS.text}` } : {}),
 	});
+}
 
-	// Vignette layer (replaces ::after)
-	const vignette = el('div', {
-		style: {
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			right: 0,
-			bottom: 0,
-			backgroundImage:
-				'radial-gradient(ellipse at center, transparent 45%, rgba(70,60,40,0.10) 100%)',
-		},
-	});
+const sun = `data:image/svg+xml;base64,${Buffer.from(
+	sunStampSvg('ink', 'og-sun').replaceAll('currentColor', COLORS.accent),
+).toString('base64')}`;
 
-	const topStrip = el('div', {
-		style: {
-			display: 'flex',
-			alignItems: 'center',
-			justifyContent: 'space-between',
-			fontSize: 20,
-			color: COLORS.dim,
-			letterSpacing: 0.4,
-			paddingBottom: 22,
-			borderBottom: `1px solid ${COLORS.border}`,
-		},
-		children: [
-			el('div', {
-				style: { display: 'flex' },
-				children: '[ ~/gm_₿ ]',
+function template(title: string, description: string, stamp: string | undefined, locale: Locale): Node {
+	const ru = locale === 'ru';
+	// English edition titles also contain the issue date; it has its own header field.
+	const brandTitle = title.split(' — ')[0];
+	const parts = brandTitle.match(/^(.*?,)\s+(.+)$/);
+	const titleStyle = { fontFamily: 'IBM Plex Serif', fontWeight: 700, fontSize: 80, flexShrink: 0 };
+	const wordmark = parts
+		? [text(parts[1], titleStyle), text(parts[2], { ...titleStyle, fontStyle: 'italic' })]
+		: [text(brandTitle, titleStyle)];
+
+	return box({
+		width: 1200, height: 630, position: 'relative', overflow: 'hidden',
+		backgroundColor: COLORS.bg, color: COLORS.text, fontFamily: 'IBM Plex Sans',
+	}, [
+		box({
+			position: 'absolute', left: 56, top: 28, width: 1088,
+			alignItems: 'baseline', justifyContent: 'space-between',
+		}, [
+			mono('gm.21ideas.org', { fontSize: 34, color: COLORS.muted }),
+			text(stamp || (ru ? 'БИТКОИН-ОНЛИ' : 'BITCOIN ONLY'), {
+				fontSize: 44, color: COLORS.accent, letterSpacing: 0.6,
 			}),
-			el('div', {
-				style: { display: 'flex', color: COLORS.muted, fontSize: 36 },
-				children: stamp,
-			}),
-		],
-	});
-
-	// Title — single line, no logo mark (dropped in card v1).
-	const lockup = el('div', {
-		style: {
-			display: 'flex',
-			fontFamily: 'JetBrainsMono',
-			fontWeight: 700,
-			fontSize: titleSize,
-			lineHeight: 1.05,
-			letterSpacing: -titleSize * 0.01,
-			color: COLORS.text,
-			overflow: 'hidden',
-		},
-		children: title,
-	});
-
-	const subhead = el('div', {
-		style: {
-			display: 'flex',
-			fontFamily: 'JetBrainsMono',
-			fontWeight: 400,
-			fontSize: 34,
-			lineHeight: 1.3,
-			color: COLORS.text,
-			letterSpacing: 0.17,
-		},
-		children: [
-			el('span', {
-				style: { color: COLORS.accent, marginRight: 14 },
-				children: '>',
-			}),
-			el('span', {
-				style: { display: 'flex', flex: 1 },
-				children: description,
-			}),
-		],
-	});
-
-	const content = el('div', {
-		style: {
-			display: 'flex',
-			flexDirection: 'column',
-			flex: 1,
-			justifyContent: 'center',
-			gap: 28,
-		},
-		children: [lockup, subhead],
-	});
-
-	const bottomStrip = el('div', {
-		style: {
-			display: 'flex',
-			alignItems: 'center',
-			justifyContent: 'space-between',
-			paddingTop: 22,
-			borderTop: `1px solid ${COLORS.border}`,
-			fontSize: 18,
-			color: COLORS.muted,
-		},
-		children: [
-			el('div', {
-				style: { display: 'flex', color: COLORS.dim, letterSpacing: 0.36 },
-				children: 'gm_₿ v1.0.0 MIT',
-			}),
-			el('div', {
-				style: { display: 'flex', color: COLORS.muted },
-				children: locale === 'en' ? 'github · rss' : 'github · telegram · rss',
-			}),
-		],
-	});
-
-	// Foreground content stack — wraps strips + content so it sits above scanlines/vignette.
-	const foreground = el('div', {
-		style: {
-			position: 'absolute',
-			top: 48,
-			left: 88,
-			right: 88,
-			bottom: 48,
-			display: 'flex',
-			flexDirection: 'column',
-		},
-		children: [topStrip, content, bottomStrip],
-	});
-
-	return el('div', {
-		style: {
-			width: 1200,
-			height: 630,
-			display: 'flex',
-			backgroundColor: COLORS.bg,
-			color: COLORS.text,
-			fontFamily: 'JetBrainsMono',
-			position: 'relative',
-			overflow: 'hidden',
-		},
-		children: [scanlines, vignette, foreground],
-	});
+		]),
+		rule(108),
+		box({
+			position: 'absolute', left: 56, top: 150, alignItems: 'baseline', gap: 20,
+			fontFamily: 'IBM Plex Serif', fontWeight: 700, fontSize: 80,
+			lineHeight: 1.03, letterSpacing: -3.4,
+		}, [
+			{ type: 'img', props: {
+				src: sun, width: 116, height: 116,
+				style: { position: 'absolute', right: -144, top: -15, width: 116, height: 116 },
+			} },
+			...wordmark,
+		]),
+		rule(264, true),
+		text(description, {
+			display: 'block',
+			position: 'absolute', left: 58, top: 294, width: 1084,
+			fontSize: 38, lineHeight: 1.24, letterSpacing: -0.3,
+			// Keep even unusually long future summaries above the footer.
+			lineClamp: 5,
+		}),
+		rule(564),
+		mono(ru ? 'ЕЖЕДНЕВНЫЙ БИТКОИН-ДАЙДЖЕСТ' : 'YOUR DAILY BITCOIN DIGEST', {
+			position: 'absolute', left: 56, top: 582, width: 1088,
+			justifyContent: 'center', color: COLORS.muted, fontSize: 19,
+		}),
+	]);
 }
 
 export async function renderOgPng(
 	title: string,
 	description: string,
-	stamp = 'og-image · 1200×630',
+	stamp?: string,
 	locale: Locale = 'ru',
 ): Promise<Buffer> {
-	const { regular, bold } = await loadFonts();
-	const svg = await satori(template(title, description, stamp, locale) as unknown as never, {
-		width: 1200,
-		height: 630,
-		fonts: [
-			{ name: 'JetBrainsMono', data: regular, weight: 400, style: 'normal' },
-			{ name: 'JetBrainsMono', data: bold, weight: 700, style: 'normal' },
-		],
+	const fonts = await loadFonts();
+	let svg = await satori(template(title, description, stamp, locale) as unknown as never, {
+		width: 1200, height: 630, fonts,
 	});
+	// Subtle, deterministic newsprint grain over the local fonts and vector stamp.
+	svg = svg.replace('</svg>', '<defs><filter id="paper-grain"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="21" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="1200" height="630" filter="url(#paper-grain)" opacity=".07" style="mix-blend-mode:multiply"/></svg>');
 	const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
-	return png;
+	return sharp(png).png({ palette: true, colours: 128, dither: 0, compressionLevel: 9 }).toBuffer();
 }
