@@ -16,16 +16,16 @@
     "generate:podcast-cover": "node scripts/generate-podcast-cover.mjs"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/markdown-remark": "^7.3.3",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.3.3",
+    "astro": "^7.4.1",
     "markdown-it": "^14.3.0",
     "sanitize-html": "^2.17.6",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.11",
     "@resvg/resvg-js": "^2.6.2",
     "@types/markdown-it": "^14.1.2",
     "@types/sanitize-html": "^2.16.1",
