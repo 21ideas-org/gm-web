@@ -135,6 +135,83 @@
       "sats": 5000,
       "usdCents": 419,
       "rail": "lightning"
+    },
+    {
+      "id": "807ccd437756ad4e17ae89522665b9d8888fbfcc03207c4746a6fc30048115f9",
+      "ts": "2026-10-05",
+      "sats": 21,
+      "usdCents": 2,
+      "rail": "lightning"
+    },
+    {
+      "id": "f57cabc2b0cfc561c247ecaf023757c18a5556be2bbca3a3e0414090ffea4bbf",
+      "ts": "2026-10-06",
+      "sats": 10000,
+      "usdCents": 855,
+      "rail": "lightning"
+    },
+    {
+      "id": "0a8b1d3b55b9c66b9ebbb63ae57dc95f533881c304cdf2d9de2615ca538cb223",
+      "ts": "2026-10-07",
+      "sats": 705,
+      "usdCents": 59,
+      "rail": "lightning"
+    },
+    {
+      "id": "eac2b2ca684548fa446c0b99cbf0fbc1415f86d3b66841cc99ca5e2ddebc5b47",
+      "ts": "2026-10-08",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "2cc6a4ff576cb416d36fc05afeb192b4fdbc4f4a3afda540c0ccccf48c00aea4",
+      "ts": "2026-10-09",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "ade1c5f95659a75b57fc10959be049136977746bc8ad8a145ba356b0382725a8",
+      "ts": "2026-10-12",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "4e7682239e1ecb13e230b675bfc9459f6c712bda4c98441ce665afe34768bf1d",
+      "ts": "2026-10-13",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "33f3de5a400e83c72884c536f971a02be07236ba3b7c828285f2a6c6559cdfe1",
+      "ts": "2026-10-17",
+      "sats": 226,
+      "usdCents": 18,
+      "rail": "lightning"
+    },
+    {
+      "id": "9755a0782a5173e128d43cb33a4ca468bd3defa830dbdac2a1d45f867f50b424",
+      "ts": "2026-10-21",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "c87769bc957254e5e824a0e93ced89615acc2f51148af33164cde7d7018d2e84",
+      "ts": "2026-10-22",
+      "sats": 226,
+      "usdCents": 19,
+      "rail": "lightning"
+    },
+    {
+      "id": "df766ca86e05e8db42c82274eb188eefd2d0bb9c0e740b1a38e475ffd47a42a0",
+      "ts": "2026-10-24",
+      "sats": 226,
+      "usdCents": 18,
+      "rail": "lightning"
     }
   ]
 }
