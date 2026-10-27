@@ -73,7 +73,7 @@ async function inkBounds(png, top, height, threshold = 160) {
 test('undated site covers center the address and tagline with space above the wordmark', async () => {
   for (const [locale, title, description] of [
     ['ru', 'Доброе утро, биткоинер', 'Ежедневные биткоин-онли дайджесты\nу вашего цифрового порога'],
-    ['en', 'GM, bitcoiner', 'Your daily Bitcoin-only news digest, with original sources.'],
+    ['en', 'GM, bitcoiner', 'Your daily Bitcoin-only news digest, delivered to your digital doorstep.'],
   ]) {
     const png = render(title, description, undefined, locale);
     const header = await inkBounds(png, 0, 108);

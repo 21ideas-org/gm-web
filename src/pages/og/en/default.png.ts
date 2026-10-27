@@ -4,7 +4,7 @@ import { renderOgPng } from '../../../lib/og';
 export const GET: APIRoute = async () => {
 	const png = await renderOgPng(
 		'GM, bitcoiner',
-		'Your daily Bitcoin-only news digest, with original sources.',
+		'Your daily Bitcoin-only news digest, delivered to your digital doorstep.',
 		undefined,
 		'en',
 	);
