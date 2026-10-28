@@ -5,7 +5,7 @@
       "id": "sovereignty-through-math",
       "title": "Суверенитет посредством математики",
       "author": "Кнут Сванхольм",
-      "imageUrl": "https://gm.21ideas.org/podcasts/books/sovereignty-through-math-cover-v1.png",
+      "imageUrl": "https://gm.21ideas.org/podcasts/books/sovereignty-through-math-cover-v2.png",
       "recipients": [
         {
           "name": "BitKorn",
@@ -27,12 +27,12 @@
           "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-1/",
           "publishedAt": "2026-10-28T08:00:00Z",
           "published": true,
-          "mediaVersion": 1,
-          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-01.mp3",
+          "mediaVersion": 2,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-01-v2.mp3",
           "mimeType": "audio/mpeg",
-          "byteLength": 14212894,
+          "byteLength": 14212893,
           "durationSeconds": 527.860771,
-          "sha256": "24d0f114e9aec5fb679eadcd8ddbab195928e9bc06643fb41278dea7ad467155"
+          "sha256": "32676f8c3f970f16facd950e29ef3de55963c6181b49609773f628b3c382f209"
         }
       ]
     }
