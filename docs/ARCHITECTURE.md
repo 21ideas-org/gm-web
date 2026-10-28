@@ -261,6 +261,12 @@ host (`https://audio.21ideas.org`, the 21ideas box). The site itself stays on Gi
 
 ## Podcast feed (`/podcast.xml`)
 
+New audiobook chapters use the reviewed `src/data/podcast/books.json` catalog and the pure
+`src/lib/podcast-books.mjs` validator/renderer. Only explicitly published chapters at or before
+the route’s build-time cutoff enter the existing feed. Each has its own artwork and Lightning
+Address split; daily and frozen archive items are preserved. See
+[`podcast/book-series.md`](podcast/book-series.md) for media placement and release steps.
+
 The channel continues the existing **21ideas** podcast; its identity is independent of the daily
 digest brand. `src/data/podcast/21ideas-archive.json` is a frozen import of the historical Anchor
 episodes. `src/lib/podcast-archive.mjs` validates and renders that archive; the feed merges it with

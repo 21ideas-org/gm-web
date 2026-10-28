@@ -1,0 +1,15 @@
+# Book episodes in the existing 21ideas feed
+
+`src/data/podcast/books.json` is the reviewed book catalog. Each series declares a permanent slug, author, versioned square artwork URL and Lightning Address recipients whose shares sum to 100. Each chapter has a stable GUID (`21ideas:book:<series>:chapter-<number>`), approved title and description, chapter text link, UTC publication timestamp, explicit `published` flag and measured MP3 metadata.
+
+`src/lib/podcast-books.mjs` validates the complete catalog and renders the book items. The existing feed builder merges them with daily and archived episodes without changing those items. GUIDs and enclosure URLs must remain unique across the whole feed. Book chapters do not use daily digest sidecars or their duration limits. Invalid catalogs fail the build rather than silently lose a release or change payment routing.
+
+The route supplies an explicit build-time cutoff. Only records with `published: true` whose timestamp has arrived enter RSS. A future timestamp does not itself schedule a rebuild: publishing another chapter requires an approved catalog update or an explicitly configured rebuild schedule. No automatic series schedule is enabled by this release.
+
+MP3 files live outside Git under `/srv/media/static/podcasts/books/<series>/chapter-01.mp3`, served through `https://audio.21ideas.org/podcasts/books/…`. A different recording uses a new `-vN` URL while keeping the chapter GUID. `docs/podcast/audio-books.nginx.conf` defines the constrained nginx route; temporary files and directory listings remain unavailable. Copy to a hidden staging file, verify SHA-256 and ffprobe metadata, then create the final name atomically without overwriting. Validate nginx before reload and verify public HEAD and byte-range responses before deploying the catalog entry. Keep the local mastered files and their integrity manifest as the recovery copy.
+
+The first approved chapter is «Вся наша жизнь — торговля» from «Суверенитет посредством математики». Its MP3 includes the approved BitKorn v2 outro and embedded 3000×3000 artwork. Its item-level payment block directs 21 shares to `BitKorn@coinos.io` and 79 to `gmbitcoiner@coinos.io`, preserving the exact account spelling. This releases only chapter 1; later chapters are not in the catalog. Existing archive payment overrides are unchanged.
+
+Coinos destinations require application support for Lightning Address/LNURL invoice payments. Publishing an RSS value block does not establish successful receipt or compatibility with every app. No invoice, real payment or Telegram announcement is part of this release.
+
+Before a subsequent chapter release, measure and verify its final bytes, approve its notes, place the immutable MP3, verify public delivery, then add its catalog entry and deploy. Keep future/unapproved chapters outside the feed. The tests in `scripts/podcast-books.test.mjs` cover release filtering, payment splits, XML escaping, identity collisions and preservation of daily items.

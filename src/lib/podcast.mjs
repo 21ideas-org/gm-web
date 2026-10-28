@@ -9,6 +9,7 @@
 // then the canonical digest URL and the support line. Both URLs are assembled here from the trusted
 // show config — never taken from digest text.
 
+import { publishedBookEpisodes, renderBookEpisode } from './podcast-books.mjs';
 import { SITE_NAME } from '../site-identity.mjs';
 import { selfHostedArchive, renderArchivedEpisode } from './podcast-archive.mjs';
 
@@ -184,19 +185,24 @@ export function podcastEpisodes({ digests, audio }) {
 
 /**
  * The full podcast RSS 2.0 + iTunes document, or null when the show identity is incomplete.
- * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode>, archive?: import('./podcast-archive.mjs').PodcastArchive, archiveMedia?: import('./podcast-archive.mjs').ArchiveMediaManifest }} opts
+ * @param {{ show: Partial<PodcastShow> | undefined, digests: PodcastDigest[], audio: Map<string, AudioEpisode>, archive?: import('./podcast-archive.mjs').PodcastArchive, archiveMedia?: import('./podcast-archive.mjs').ArchiveMediaManifest, books?: import('./podcast-books.mjs').BookCatalog, asOf?: number }} opts
  * @returns {string | null}
  */
-export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia }) {
+export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia, books, asOf }) {
   if (!show || !podcastShowStatus(show).complete) return null;
   const s = /** @type {PodcastShow} */ (show);
   const historical = selfHostedArchive(archive, archiveMedia);
   const current = podcastEpisodes({ digests, audio });
+  const bookEpisodes = publishedBookEpisodes(books, asOf);
   const guids = new Set(historical.map((e) => e.guid));
   const urls = new Set(historical.map((e) => e.enclosure.url));
   for (const { episode } of current) {
     if (guids.has(episode.guid) || urls.has(episode.url)) throw new Error('podcast archive: duplicate identity with daily episode');
     guids.add(episode.guid); urls.add(episode.url);
+  }
+  for (const { chapter } of bookEpisodes) {
+    if (guids.has(chapter.guid) || urls.has(chapter.url)) throw new Error('podcast books: duplicate identity with existing episode');
+    guids.add(chapter.guid); urls.add(chapter.url);
   }
   const items = current.map(({ digest, episode }) => {
     const notes = { siteOrigin: s.siteOrigin, episodeId: digest.id, dateLabel: digest.dateLabel, teaser: digest.description };
@@ -222,6 +228,7 @@ export function renderPodcastFeed({ show, digests, audio, archive, archiveMedia 
     ].join('\n');
   });
   const ordered = [
+    ...bookEpisodes.map((item) => ({ xml: renderBookEpisode(item, escapeXml), publishedAt: Date.parse(item.chapter.publishedAt), guid: item.chapter.guid })),
     ...items.map((xml, i) => ({ xml, publishedAt: Date.parse(current[i].episode.publishedAt), guid: current[i].episode.guid })),
     ...historical.map((e) => {
       const override = s.archiveValueOverrides && Object.hasOwn(s.archiveValueOverrides, e.guid) ? s.archiveValueOverrides[e.guid] : undefined;

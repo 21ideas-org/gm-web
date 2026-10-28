@@ -271,7 +271,7 @@ test('site branding updates daily notes while preserving the existing 21ideas sh
   const root = mkdtempSync(join(tmpdir(), 'gm-podcast-brand-'));
   mkdirSync(join(root, 'src', 'lib'), { recursive: true });
   const source = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
-  for (const file of ['podcast.mjs', 'podcast-config.mjs', 'podcast-archive.mjs']) {
+  for (const file of ['podcast.mjs', 'podcast-config.mjs', 'podcast-archive.mjs', 'podcast-books.mjs']) {
     copyFileSync(join(source, 'lib', file), join(root, 'src', 'lib', file));
   }
   const name = 'Новое имя проекта';

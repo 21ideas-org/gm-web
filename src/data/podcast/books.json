@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "series": [
+    {
+      "id": "sovereignty-through-math",
+      "title": "Суверенитет посредством математики",
+      "author": "Кнут Сванхольм",
+      "imageUrl": "https://gm.21ideas.org/podcasts/books/sovereignty-through-math-cover-v1.png",
+      "recipients": [
+        {
+          "name": "BitKorn",
+          "address": "BitKorn@coinos.io",
+          "split": 21
+        },
+        {
+          "name": "21ideas",
+          "address": "gmbitcoiner@coinos.io",
+          "split": 79
+        }
+      ],
+      "chapters": [
+        {
+          "number": 1,
+          "guid": "21ideas:book:sovereignty-through-math:chapter-1",
+          "title": "Вся наша жизнь — торговля. «Суверенитет посредством математики» Глава 1",
+          "description": "«Суверенитет посредством математики». Глава 1: Вся наша жизнь — торговля.\n\n«Суверенитет посредством математики» Кнута Сванхольма — книга о Биткоине, деньгах и личной свободе. Автор связывает устройство Биткоина с экономическими и социальными проблемами современного общества и объясняет, как деньги с независимыми правилами меняют отношения человека с государством и окружающим миром.\n\nПервая глава связывает субъективную ценность вещей, редкость человеческого времени и потребность в деньгах, которые позволяют эффективно переносить плоды труда в будущее.\n\n«Все взаимодействия между людьми могут быть определены как торговля.»\n\nТекстовая версия: https://21ideas.org/suverenitet-posredstvom-matematiki/glava-1/\n\nПоддержите работу над переводом и озвучкой книг: https://21ideas.org/contribute/",
+          "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-1/",
+          "publishedAt": "2026-10-28T08:00:00Z",
+          "published": true,
+          "mediaVersion": 1,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-01.mp3",
+          "mimeType": "audio/mpeg",
+          "byteLength": 14212894,
+          "durationSeconds": 527.860771,
+          "sha256": "24d0f114e9aec5fb679eadcd8ddbab195928e9bc06643fb41278dea7ad467155"
+        }
+      ]
+    }
+  ]
+}
