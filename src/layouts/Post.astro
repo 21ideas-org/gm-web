@@ -94,7 +94,7 @@ const schema = [
 
   <Support locale={locale} text={t.postSupport} />
 
-  {(locale === 'ru' || EN_EDITION_PUBLIC) && <Subscribe locale={locale} text={locale === 'en' ? "Get the next English digest in your feed reader." : "Свежий дайджест каждое утро. Не пропусти следующий выпуск."} />}
+  {(locale === 'ru' || EN_EDITION_PUBLIC) && <Subscribe locale={locale} text={locale === 'en' ? "Follow us on Nostr for the next digest announcement, or subscribe to the full-text RSS feed." : "Свежий дайджест каждое утро. Не пропусти следующий выпуск."} />}
 
   {(prevPost || nextPost) && (
     <nav class="post-nav" aria-label={t.adjacent}>

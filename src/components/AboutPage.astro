@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import ShortWordmark from './ShortWordmark.astro';
-import type { Locale } from '../lib/locale';
+import { EN_EDITION_PUBLIC, type Locale } from '../lib/locale';
+import { EN_NOSTR_PROFILE } from '../lib/social';
 interface Props { locale?: Locale; }
 const { locale = 'ru' } = Astro.props;
 import { faqPageNode } from '../lib/schema';
@@ -123,6 +124,10 @@ const faqs = locale === 'en' ? faqsEn : faqsRu;
       <p>An automated editorial pipeline selects significant stories from approved sources and prepares a digest. Original source links accompany the stories so you can explore the details.</p>
       <p>Materials are provided for information and are not investment advice. Access is free, without a paid subscription. The <a href="https://github.com/21ideas-org/gm-web" rel="noopener">website source</a> is available under the MIT licence.</p>
     </section>
+    {EN_EDITION_PUBLIC && <section class="about-section">
+      <h2>How to follow</h2>
+      <p>We publish daily digest announcements on <a href={EN_NOSTR_PROFILE} rel="noopener">Nostr</a>. Subscribe to the <a href="/en/rss.xml">full-text RSS feed</a> to read each edition in your feed reader.</p>
+    </section>}
     <section class="about-section">
       <h2>Support the project</h2>
       <p>Reader donations help cover the project's servers and editorial tools. Donation addresses and the shared financial report are on the <a href="/en/support/">support page</a>.</p>

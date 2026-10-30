@@ -28,8 +28,8 @@ const featured = (await localizedProjects(locale)).filter(project => project.dat
 ---
 <Base
   locale={locale}
-  title={locale === 'en' ? 'GM, bitcoiner — daily Bitcoin digest in English' : 'Доброе утро, биткоинер — ежедневный биткоин-дайджест на русском'}
-  description={locale === 'en' ? 'A daily Bitcoin-only news digest with links to original sources. Mining, Lightning, technology, regulation and adoption.' : 'Доброе утро, биткоинер. Каждый день — короткая сводка главных биткоин-новостей на русском: сеть, майнинг, Lightning, регулирование, институционалы. Только биткоин, только сигнал — без шума и щиткоинов.'}
+  title={locale === 'en' ? 'GM, bitcoiner — daily bitcoin-only digest' : 'Доброе утро, биткоинер — ежедневный биткоин-дайджест'}
+  description={locale === 'en' ? 'A daily Bitcoin-only news digest. Mining, Lightning, technology, regulation, adoption and more.' : 'Доброе утро, биткоинер. Каждый день — ёмкая сводка главных биткоин-новостей: сеть, майнинг, Lightning, регулирование, институционалы. Только биткоин, только сигнал.'}
   path={locale === 'en' ? 'en/site' : 'site'}
   pathMeta={`${locale === 'en' ? 'last build' : 'последняя сборка'}: ${buildDate}`}
   activeNav="home"
@@ -65,7 +65,7 @@ const featured = (await localizedProjects(locale)).filter(project => project.dat
       audioAction
       text="Хочешь получать ежедневную сводку биткоин-новостей?"
     />}
-    {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get the daily English digest in your feed reader." />}
+    {locale === 'en' && EN_EDITION_PUBLIC && <Subscribe locale="en" heading="subscribe" text="Get daily digest announcements on Nostr, or subscribe to the full-text RSS feed." />}
   </div>
 
   <section class="section" aria-labelledby="recent">

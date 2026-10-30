@@ -1,7 +1,8 @@
 ---
 import { localePath, type Locale } from '../lib/locale';
 import { listeningState } from '../lib/listen-state';
-// Subscribe CTA — Telegram + RSS, with an optional section heading.
+import { EN_NOSTR_PROFILE } from '../lib/social';
+// Subscribe CTA — locale-specific channels + RSS, with an optional section heading.
 // Home renders the heading; digests pass no `heading`
 // (the `subscribe--bare` variant adds a top separator instead).
 interface Props {
@@ -23,6 +24,7 @@ const TELEGRAM = 'https://t.me/bitcoin21ideas';
   <p class="subscribe-lead">{text}</p>
   <div class="subscribe-actions">
     {locale === 'ru' && <a class="cta-btn" href={TELEGRAM} rel="noopener">telegram</a>}
+    {locale === 'en' && <a class="cta-btn" href={EN_NOSTR_PROFILE} rel="noopener">nostr</a>}
     <a class="cta-btn" href={localePath(locale, 'rss.xml')}>rss</a>
     {showAudio && <a class="cta-btn" href="/listen/">аудио</a>}
   </div>
