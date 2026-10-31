@@ -12,6 +12,8 @@ permissions:
 
 concurrency:
   group: pages
+  # Serialize publication without interrupting an in-flight Pages deployment.
+  # Queue order is not commit order; the deploy job also checks the current main SHA.
   cancel-in-progress: false
 
 jobs:
@@ -19,13 +21,35 @@ jobs:
     uses: ./.github/workflows/_build.yml
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      deployed: ${{ steps.deployment.outcome == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - id: freshness
+        name: Skip superseded builds
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          latest_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if [[ ! "$latest_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Could not resolve the current main commit"
+            exit 1
+          fi
+          if [[ "$GITHUB_SHA" == "$latest_sha" ]]; then
+            echo "is_current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_current=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded build $GITHUB_SHA; main is $latest_sha"
+          fi
       - id: deployment
+        if: steps.freshness.outputs.is_current == 'true'
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
 
   # Notify IndexNow (Yandex + Bing, one shared endpoint) of new/changed digests.
@@ -33,6 +57,7 @@ jobs:
   # The IndexNow key is public by protocol design — not a secret.
   indexnow:
     needs: [build, deploy]
+    if: needs.deploy.outputs.deployed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Ping IndexNow for changed published digests
