@@ -30,7 +30,7 @@ const schema = indexable
 ---
 <Base
   locale="en"
-  title={`${def.hubTitle} — gm_₿`}
+  title={def.hubTitle}
   description={def.hubDesc}
   path={`en/tags/${def.slug}`}
   pathMeta={`grep -rl '#${def.slug}' digests/`}
@@ -51,7 +51,7 @@ const schema = indexable
     <p class="hub-desc">{def.hubDesc}</p>
 
     {items.length === 0 ? (
-      <p class="hub-empty">No English stories in this topic yet.</p>
+      <p class="hub-empty">No stories in this topic yet.</p>
     ) : (
       <ul class="post-list">
         {items.map((it) => (

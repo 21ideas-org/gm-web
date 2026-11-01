@@ -30,7 +30,7 @@ function validateProjects(root, locale) {
   assert.deepEqual(names(projects), locale === 'en'
     ? ['21ideas.org', 'Bitcoin Calendar', 'Security Watcher', '21ideas Wiki']
     : ['21ideas.org', 'Bitcoin Calendar', 'Security Watcher', 'Телеграм-канал', 'Вики 21ideas']);
-  const description = locale === 'en' ? 'Bitcoin-related Historical Milestones.' : 'Календарь исторических биткоин-событий.';
+  const description = locale === 'en' ? 'A calendar of events in Bitcoin history.' : 'Календарь исторических биткоин-событий.';
   assert.ok(featured.includes(description));
   assert.ok(projects.includes(description));
   const ideasUrl = locale === 'en' ? 'https://21ideas.org/en/' : 'https://21ideas.org';
@@ -73,7 +73,7 @@ function validateEnglish(root, isPublic, populated) {
   }
   validateProjects(root, 'en');
   const errorPage = html(root, 'en/404');
-  assert.match(visible(errorPage), /The page you requested could not be found/);
+  assert.match(visible(errorPage), /There is no page at this address\. It may have moved, or the link may be incorrect\./);
   assert.match(errorPage, /href="\/en\/digests\/"/);
   const inlineScripts = page => [...page.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]);
   const redirect = inlineScripts(html(root, '')).find(script => script.includes("location.replace('/en/404/"));
@@ -163,8 +163,8 @@ function validateEnglish(root, isPublic, populated) {
     assert.match(edition, /aria-label="Copy code"/);
     assert.match(edition, /href="\/en\/digests\/2026-10-01\/"/);
   } else {
-    assert.match(archive, /No English editions have been published yet/);
-    assert.match(html(root, 'en'), /No English editions have been published yet/);
+    assert.match(archive, /No editions have been published yet/);
+    assert.match(html(root, 'en'), /No editions have been published yet/);
   }
   validateDiscovery(root, isPublic, populated);
   const ruSupport = html(root, 'support');

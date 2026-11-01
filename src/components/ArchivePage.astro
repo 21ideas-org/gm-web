@@ -23,7 +23,7 @@ const pathMeta = editionCount(allPosts.length);
 ---
 <Base
   locale={locale}
-  title={`${t.digests}${period ? ` · ${period}` : ''} — gm_₿`}
+  title={`${t.digests}${period ? ` · ${period}` : ''}`}
   description={`${t.archiveDescription}${period ? ` ${period}.` : ''}`}
   path={`${locale === 'en' ? 'en/' : ''}digests${monthKey ? `/${monthKey.replace('-', '/')}` : ''}`}
   pathMeta={pathMeta}

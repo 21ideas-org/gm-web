@@ -5,8 +5,8 @@ export const localePath = (locale: Locale, path = '') => `${locale === 'en' ? '/
 export const labels = {
   ru: {
     home: 'главная', digests: 'дайджесты', support: 'поддержать', about: 'о gm_₿', projects: 'проекты',
-    primary: 'Primary', theme: 'Переключить тему', dark: 'Включить тёмную тему', light: 'Включить светлую тему',
-    breadcrumbs: 'Хлебные крошки', topics: 'Темы выпуска', adjacent: 'Adjacent posts', prev: 'предыдущий выпуск', next: 'следующий выпуск',
+    primary: 'Основная навигация', theme: 'Переключить тему', dark: 'Включить тёмную тему', light: 'Включить светлую тему',
+    breadcrumbs: 'Хлебные крошки', topics: 'Темы выпуска', adjacent: 'Соседние выпуски', prev: 'предыдущий выпуск', next: 'следующий выпуск',
     supportProject: 'Поддержать проект', postSupport: 'На сегодня всё. Дайджест оказался полезным? Поддержи проект!',
     recent: 'последние выпуски', all: 'все выпуски', empty: 'Пока нет опубликованных выпусков.',
     archiveDescription: 'Все выпуски. В хронологическом порядке.',
@@ -16,7 +16,7 @@ export const labels = {
     primary: 'Primary navigation', theme: 'Toggle theme', dark: 'Switch to dark theme', light: 'Switch to light theme',
     breadcrumbs: 'Breadcrumbs', topics: 'Edition topics', adjacent: 'Adjacent editions', prev: 'previous', next: 'next',
     supportProject: 'Support the project', postSupport: "That’s all for today. Found this digest useful? Support the project!",
-    recent: 'latest editions', all: 'all editions', empty: 'No English editions have been published yet. Please check back soon.',
-    archiveDescription: 'All English editions, newest first.',
+    recent: 'latest editions', all: 'all editions', empty: 'No editions have been published yet.',
+    archiveDescription: 'All editions, newest first.',
   },
 } as const;

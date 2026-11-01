@@ -9,7 +9,7 @@ const en = locale === 'en';
   locale={locale}
   noindex={en}
   title={en ? '404 — page not found' : '404 — страница не найдена'}
-  description={en ? 'The page you requested could not be found.' : 'То, что вы искали, здесь не найдено.'}
+  description={en ? 'Page not found.' : 'Страница не найдена.'}
   path={en ? 'en/404' : '404'}
   pathMeta={en ? 'Page not found' : 'Страница не найдена'}
 >
@@ -27,11 +27,10 @@ const en = locale === 'en';
     <header class="notfound-heading">
       <p class="notfound-code">404</p>
       <div>
-        <p class="notfound-kicker">{en ? 'A note to our readers' : 'Сообщение читателю'}</p>
         <h1 id="notfound-title">{en ? 'Page not found' : 'Страница не найдена'}</h1>
       </div>
     </header>
-    <p class="notfound-lead">{en ? 'The page you requested could not be found. It may have moved or never existed.' : 'По этому адресу нет страницы. Возможно, она переехала или в ссылке оказалась опечатка.'}</p>
+    <p class="notfound-lead">{en ? 'There is no page at this address. It may have moved, or the link may be incorrect.' : 'По этому адресу нет страницы. Возможно, она перемещена или в ссылке есть ошибка.'}</p>
     <p class="notfound-address"><span>{en ? 'Requested address' : 'Запрошенный адрес'}</span><span class="req-path">/</span></p>
     <nav aria-labelledby="notfound-links">
       <h2 id="notfound-links">{en ? 'Continue reading' : 'Продолжить чтение'}</h2>

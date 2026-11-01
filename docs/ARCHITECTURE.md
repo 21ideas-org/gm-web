@@ -16,8 +16,9 @@ compatible with that bot.
 
 ## Naming
 
-- **Wordmark** — `gm_₿` (underscore; canonical). Used in display/chrome: nav, footer, the
-  page-`<title>` suffix, the OG path strip. The underscore matches the site's terminal aesthetic.
+- **Wordmark** — `gm_₿` (underscore; canonical). Used for display branding in navigation, the
+  footer and inline marks. Page metadata titles do not include the wordmark. The underscore matches
+  the site's terminal aesthetic.
 - **Editorial / publisher name** — «Доброе утро, биткоинер». Used in machine-read metadata
   (`schema.org` `name`, `og:site_name`, RSS/Yandex feed titles) that engines and feed readers
   display literally, and as the OG card title.

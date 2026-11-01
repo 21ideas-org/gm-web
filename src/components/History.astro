@@ -24,7 +24,7 @@ const events = eventsForDay(await historyByDay(locale), formatMonthDay(pubDate))
         {e.paragraphs.map((p) => <p class="faq-a">{p}</p>)}
         {e.eventUrl && (
           <div class="history-actions">
-            <a class="cta-btn" href={e.eventUrl}>{locale === 'en' ? 'Open in Bitcoin Calendar' : 'Открыть в Биткоин календаре'}</a>
+            <a class="cta-btn" href={e.eventUrl}>{locale === 'en' ? 'Open in Bitcoin Calendar' : 'Открыть в Биткоин-календаре'}</a>
           </div>
         )}
       </details>
