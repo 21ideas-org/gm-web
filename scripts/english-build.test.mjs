@@ -19,6 +19,32 @@ const switchLink = html => {
 };
 const internalLinks = html => [...html.matchAll(/\b(?:href|src)="(\/[^" ]*)"/g)].map(match => match[1]);
 
+function validatePageMetadata(root) {
+  const languageNote = /\b(?:in (?:English|Russian)|(?:English|Russian) (?:editions?|digests?|news))\b|на (?:русском|английском)(?: языке)?/iu;
+  for (const file of allHtml(join(root, 'dist'))) {
+    const page = readFileSync(file, 'utf8');
+    const title = /<title>([^<]+)<\/title>/.exec(page)?.[1];
+    const metadata = [...page.matchAll(/<meta (?:name|property)="((?:(?:og|twitter):)?(?:title|description))" content="([^"]*)"/g)];
+    assert.ok(title, `Missing title in ${file}`);
+    assert.equal(metadata.length, 6, `Missing share metadata in ${file}`);
+    for (const value of [title, ...metadata.map(match => match[2])]) {
+      assert.doesNotMatch(value, languageNote, `Redundant language note in ${file}`);
+    }
+  }
+  for (const [path, title] of [['', 'Доброе утро, биткоинер — ежедневный биткоин-дайджест'], ['en', 'GM, bitcoiner — daily bitcoin-only digest']]) {
+    const page = html(root, path);
+    assert.ok(page.includes(`<title>${title}</title>`));
+    for (const name of ['title', 'og:title', 'twitter:title']) {
+      assert.ok(page.includes(`="${name}" content="${title}"`), `${path} ${name}`);
+    }
+  }
+  for (const file of ['rss.xml', 'en/rss.xml', 'yandex-news.xml']) {
+    const description = /<description>([^<]+)<\/description>/.exec(readFileSync(join(root, 'dist', file), 'utf8'))?.[1];
+    assert.ok(description, `Missing feed description in ${file}`);
+    assert.doesNotMatch(description, languageNote, `Redundant language note in ${file}`);
+  }
+}
+
 function validateProjects(root, locale) {
   const prefix = locale === 'en' ? 'en/' : '';
   const home = html(root, prefix);
@@ -366,6 +392,7 @@ test('isolated EN/RU builds cover empty, published, draft, malformed, missing-pa
         assert.equal(history.requests() - before, scenario.populated ? 2 : 1, 'History is fetched once per rendered locale per build');
         assert.match(output, /\[history\] fetch ok/);
         assert.doesNotMatch(output, /unmapped H2 \"Network Stats\"/);
+        validatePageMetadata(root);
         validateEnglish(root, Boolean(scenario.public), scenario.populated);
         validateRussian(root, Boolean(scenario.public), scenario.populated);
       });

@@ -9,7 +9,7 @@ export async function GET(context) {
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) : [];
 	return rss({
 		title: 'GM, bitcoiner',
-		description: 'Daily Bitcoin-only news digest in English',
+		description: 'Daily Bitcoin-only news digest',
 		site: new URL('en/', context.site),
 		xmlns: { atom: 'http://www.w3.org/2005/Atom' },
 		customData: `<language>en-US</language><atom:link href="${context.site}en/rss.xml" rel="self" type="application/rss+xml" />`,

@@ -5,7 +5,7 @@ import PodcastFeed from '../components/PodcastFeed.astro';
 import { listeningState } from '../lib/listen-state';
 const state = await listeningState();
 ---
-<Base title="Доброе утро, биткоинер" description="Аудиоверсия ежедневного биткоин-дайджеста на русском. Слушай на сайте или подпишись в любимом приложении." path="listen" activeNav="listen">
+<Base title="Доброе утро, биткоинер" description="Аудиоверсия ежедневного биткоин-дайджеста. Слушай на сайте или подпишись в любимом приложении." path="listen" activeNav="listen">
   {state.ready && <PodcastFeed url={state.feedUrl!} />}
   {state.episodes.length > 0 ? (
     <div class="listen-episodes">

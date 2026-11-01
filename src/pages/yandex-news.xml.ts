@@ -47,7 +47,7 @@ export async function GET() {
   <channel>
     <title>Доброе утро, биткоинер</title>
     <link>${SITE}/</link>
-    <description>Ежедневные биткоин-онли дайджесты на русском</description>
+    <description>Ежедневные биткоин-онли дайджесты</description>
     <language>ru</language>${items}
   </channel>
 </rss>`;
