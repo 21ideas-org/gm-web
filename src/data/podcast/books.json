@@ -33,6 +33,21 @@
           "byteLength": 14212893,
           "durationSeconds": 527.860771,
           "sha256": "32676f8c3f970f16facd950e29ef3de55963c6181b49609773f628b3c382f209"
+        },
+        {
+          "number": 2,
+          "guid": "21ideas:book:sovereignty-through-math:chapter-2",
+          "title": "Финансовый атеизм. «Суверенитет посредством математики» Глава 2",
+          "description": "«Суверенитет посредством математики». Глава 2: Финансовый атеизм.\n\n«Суверенитет посредством математики» Кнута Сванхольма — книга о Биткоине, деньгах и личной свободе. Автор связывает устройство Биткоина с экономическими и социальными проблемами современного общества и объясняет, как деньги с независимыми правилами меняют отношения человека с государством и окружающим миром.\n\nАвтор объясняет, как проверяемые вычисления, затраты энергии и ограниченная эмиссия позволяют говорить о деньгах без необходимости верить обещаниям их создателей.\n\n«Биткоин-системой управляет красота математики.»\n\nТекстовая версия: https://21ideas.org/suverenitet-posredstvom-matematiki/glava-2/\n\nПоддержите работу над переводом и озвучкой книг: https://21ideas.org/contribute/",
+          "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-2/",
+          "publishedAt": "2026-11-04T13:25:10Z",
+          "published": true,
+          "mediaVersion": 1,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-02.mp3",
+          "mimeType": "audio/mpeg",
+          "byteLength": 24496569,
+          "durationSeconds": 956.347302,
+          "sha256": "fb2e0c207774d6ade2ca1ebd0629dd5de8eda73e93e5c4a9293dba70a695da49"
         }
       ]
     }
