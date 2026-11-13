@@ -53,8 +53,9 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
     textContent = '';
     title = '';
     hidden = false;
+    removeAttribute(name) { this[name] = ''; }
   }
-  const status = new Element();
+  const status = Object.assign(new Element(), { title: 'Issue snapshot' });
   const label = Object.assign(new Element(), { textContent: locale === 'en' ? 'October 21, 2026' : '21 октября 2026' });
   const dot = Object.assign(new Element(), { hidden: true });
   const fields = ['price', 'block', 'hashrate', 'fee'].map(key => Object.assign(new Element(), { getAttribute: () => key }));
@@ -70,9 +71,16 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: new Date('2026-10-21T12:00:00Z') });
   let requests = 0;
   let fail = false;
-  t.mock.method(globalThis, 'fetch', async url => {
+  let primaryTimesOut = false;
+  const hosts = [];
+  t.mock.method(globalThis, 'fetch', async (url, { signal }) => {
     requests++;
-    return fail ? { ok: false, status: 429 } : response(payloads[new URL(url).pathname]);
+    const { hostname, pathname } = new URL(url);
+    hosts.push(hostname);
+    if (primaryTimesOut && hostname === 'mempool.space') {
+      return new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }));
+    }
+    return fail ? { ok: false, status: 429 } : response(payloads[pathname]);
   });
   const settled = () => new Promise(resolve => setImmediate(resolve));
 
@@ -82,7 +90,7 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   assert.equal(status.dataset.state, 'live');
   assert.equal(label.textContent, 'live');
   assert.equal(dot.hidden, false);
-  assert.match(status.title, locale === 'en' ? /Updated/ : /Обновлено/);
+  assert.equal(status.title, '');
   assert.equal(fields[3].textContent, locale === 'en' ? '1 sat/vB' : '1 сат/vB');
   const lastValues = fields.map(field => field.textContent);
 
@@ -93,20 +101,30 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   assert.equal(requests, 4, 'a hidden tab makes no further requests');
 
   doc.hidden = false;
+  primaryTimesOut = true;
   doc.dispatchEvent(new Event('visibilitychange'));
   t.mock.timers.tick(0);
   await settled();
   assert.equal(requests, 8, 'returning to the tab refreshes expired data');
+  t.mock.timers.tick(8_000);
+  await settled();
+  assert.equal(requests, 12);
+  assert.deepEqual(hosts.slice(-4), Array(4).fill('mempool.emzy.de'));
+  assert.equal(status.dataset.state, 'live');
+  assert.equal(status.title, '');
 
   fail = true;
   t.mock.timers.tick(60_000);
+  await settled();
+  assert.deepEqual(hosts.slice(12, 16), Array(4).fill('mempool.emzy.de'));
+  t.mock.timers.tick(8_000);
   await settled();
   assert.equal(status.dataset.state, 'stale');
   assert.equal(dot.hidden, true);
   assert.deepEqual(fields.map(field => field.textContent), lastValues);
   assert.equal(label.textContent, locale === 'en' ? 'update unavailable' : 'нет обновления');
-  assert.match(status.title, locale === 'en' ? /Last updated/ : /Последнее обновление/);
+  assert.equal(status.title, '');
   t.mock.timers.tick(60_000);
   await settled();
-  assert.equal(requests, 12, 'failed refreshes back off instead of retrying every minute');
+  assert.equal(requests, 20, 'failed refreshes back off instead of retrying every minute');
 });

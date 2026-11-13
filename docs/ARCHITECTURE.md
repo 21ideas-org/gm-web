@@ -79,7 +79,9 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
   The English homepage keeps `GM, bitcoiner` on one line and labels the issue with a month-first date.
 - **`NetworkStats.astro` / `network-stats.mjs`** — progressively enhances the homepage snapshot
   with public mempool.space prices, tip height, three-day hashrate and recommended fees. Refreshes
-  every minute while visible, backs off on errors and retains the last valid snapshot. The `live`
+  every minute while visible. If a source fails, it tries the other Mempool instance (`mempool.space`
+  or `mempool.emzy.de`) and prefers the last successful source for the rest of the page visit.
+  If both fail, it backs off and retains the last valid snapshot. The `live`
   indicator appears only after all four responses validate. Both homepages share this component,
   with localized labels, number formatting, fee units and update/error text. With JavaScript disabled
   or the API unavailable, the published snapshot remains readable; archived edition bodies remain unchanged.
