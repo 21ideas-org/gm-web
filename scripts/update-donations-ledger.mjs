@@ -109,7 +109,7 @@ export function utcDate(ms) {
 }
 
 // Strict projection: CONSTRUCT the entry — never spread the unprojected row.
-export function projectEntry(row, now) {
+export function projectEntry(row) {
   const sats = netSats(row);
   return {
     id: hashId(String(row.id)),
@@ -137,7 +137,7 @@ export function buildLedger(payments, existingLedger, now, quarantineMs = QUARAN
     if (excluded.has(id)) continue; // honor excludeIds (hashed)
     if (known.has(id)) continue; // dedup
     known.add(id);
-    entries.push(projectEntry(row, now));
+    entries.push(projectEntry(row));
   }
 
   return {
