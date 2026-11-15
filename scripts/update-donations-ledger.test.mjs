@@ -95,7 +95,7 @@ test('projectEntry never spreads source fields (memo/hash/ref/path/with stripped
     path: 'm/0/1',
     with: 'someuser',
   };
-  const entry = projectEntry(dirty, NOW);
+  const entry = projectEntry(dirty);
   assert.deepEqual(Object.keys(entry).sort(), [...ENTRY_KEYS].sort());
   assert.equal(entry.id, hashId('raw-id-xyz')); // hash-only id
 });
@@ -105,7 +105,7 @@ test('projectEntry stores ts as a UTC date only — no HH:MM:SS (privacy, §6)',
     id: 'x', amount: 5000, tip: 0, fee: 0, ourfee: 0,
     created: 1781857860000, rate: 60000, currency: 'USD', confirmed: true,
   };
-  const entry = projectEntry(row, NOW);
+  const entry = projectEntry(row);
   assert.match(entry.ts, /^\d{4}-\d{2}-\d{2}$/); // date only — no time component to fingerprint against
   assert.equal(entry.ts, new Date(1781857860000).toISOString().slice(0, 10));
 });

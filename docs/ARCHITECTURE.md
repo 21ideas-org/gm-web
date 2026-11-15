@@ -86,8 +86,8 @@ podcast modules and re-exported by `src/consts.ts` for Astro consumers. Avoid th
   with localized labels, number formatting, fee units and update/error text. With JavaScript disabled
   or the API unavailable, the published snapshot remains readable; archived edition bodies remain unchanged.
 - **`Post.astro`** — wraps `Base`, adds the post header (title + clickable topic chips), the
-  «Сегодня в истории» rubric (`History.astro`) + prev/next nav. (The Giscus `<Comments />` slot
-  exists but is not imported in v1.) Visible breadcrumbs and the repeated numeric date are omitted;
+  «Сегодня в истории» rubric (`History.astro`) + prev/next nav.
+  Visible breadcrumbs and the repeated numeric date are omitted;
   the `BreadcrumbList` structured data remains in the page metadata.
 - **`ArchivePage.astro` / `archive-months.mjs`** — the full archive and static monthly pages share
   one list layout. Only months with published editions generate `/digests/YYYY/MM/` or
