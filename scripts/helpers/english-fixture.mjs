@@ -41,7 +41,8 @@ export function fixtureSite() {
   for (const name of ['digests', 'digests-en']) mkdirSync(join(root, 'src/content', name), { recursive: true });
   mkdirSync(join(root, 'src/data/audio'), { recursive: true });
   for (const id of ['2026-10-04', '2026-10-03', '2026-10-02', '2026-09-30']) {
-    writeFileSync(join(root, 'src/content/digests', `${id}.md`), editionMarkdown(id, 'ru'));
+    const note = id === '2026-10-04' ? '\nНа 21ideas [объясняем](https://21ideas.org/passphrase/ "Материал 21ideas по теме"), зачем нужна парольная фраза.\n' : '';
+    writeFileSync(join(root, 'src/content/digests', `${id}.md`), editionMarkdown(id, 'ru') + note);
   }
   writeFileSync(join(root, 'src/content/digests/2026-10-05.md'), editionMarkdown('2026-10-05', 'ru', { draft: true }));
   writeFileSync(join(root, 'src/content/digests/unknown.md'), editionMarkdown('unknown', 'ru', { pubDate: '2026-10-06' }));

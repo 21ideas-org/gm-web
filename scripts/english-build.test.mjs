@@ -348,6 +348,8 @@ function validateRussian(root, isPublic, populated) {
   assert.match(post, /Сегодня в истории/);
   assert.match(post, /Синтетическая история/);
   assert.match(post, /<audio\b/);
+  assert.match(post, /<aside class="reading-note"><p>На 21ideas <a href="https:\/\/21ideas\.org\/passphrase\/">объясняем<\/a>, зачем нужна парольная фраза\.<\/p><\/aside>/);
+  assert.match(readFileSync(join(root, 'dist/rss.xml'), 'utf8'), /https:\/\/21ideas\.org\/passphrase\/[\s\S]*?зачем нужна парольная фраза\./);
   assert.match(post, /preload="none"/);
   assert.match(post, /class="audio-toggle"/);
   assert.match(post, /href="\/tags\/tech"/);

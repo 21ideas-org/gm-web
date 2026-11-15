@@ -597,6 +597,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .prose .buy-bitcoin-cta .cta-btn:hover { color: var(--accent); }
 .prose strong { color: var(--text); font-weight: 700; }
 .prose em { font-style: italic; color: var(--text); }
+.prose .reading-note { margin-block-start: .8em; padding: .48em .8em .52em; border-inline-start: 2px solid var(--accent); background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .94em; line-height: 1.55; overflow-wrap: break-word; scroll-margin-top: 1.5em; }
+.prose .reading-note a { font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .15em; border-bottom: 0; }
 .prose blockquote {
   margin: 0;
   padding: 4px 0 4px 20px;

@@ -6,6 +6,7 @@ import { defineConfig } from 'astro/config';
 import { rehypeCodeCopy } from './src/plugins/rehype-code-copy.mjs';
 import { rehypeBuyBitcoin } from './src/plugins/rehype-buy-bitcoin.mjs';
 import { rehypeHeadingAnchor } from './src/plugins/rehype-heading-anchor.mjs';
+import { rehypeDigestReading } from './src/plugins/rehype-digest-reading.mjs';
 import { TAGS, anchorFor } from './src/lib/topics';
 import { editionPublic } from './src/lib/editions.mjs';
 import { TOPICS_EN } from './src/lib/topics-en';
@@ -54,6 +55,7 @@ export default defineConfig({
 			rehypeHeadingIds,
 			rehypeCodeCopy,
 			rehypeBuyBitcoin,
+		rehypeDigestReading,
 			[rehypeHeadingAnchor, { topicSlugs: TOPIC_SLUGS, anchorFor }],
 		],
 		shikiConfig: {
