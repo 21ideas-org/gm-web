@@ -48,6 +48,21 @@
           "byteLength": 24496569,
           "durationSeconds": 956.347302,
           "sha256": "fb2e0c207774d6ade2ca1ebd0629dd5de8eda73e93e5c4a9293dba70a695da49"
+        },
+        {
+          "number": 3,
+          "guid": "21ideas:book:sovereignty-through-math:chapter-3",
+          "title": "Доверчивость. «Суверенитет посредством математики» Глава 3",
+          "description": "«Суверенитет посредством математики». Глава 3: Доверчивость.\n\n«Суверенитет посредством математики» Кнута Сванхольма — книга о Биткоине, деньгах и личной свободе. Автор связывает устройство Биткоина с экономическими и социальными проблемами современного общества и объясняет, как деньги с независимыми правилами меняют отношения человека с государством и окружающим миром.\n\nВ третьей главе Сванхольм разбирает, как когнитивные предубеждения и привычка доверять авторитетам мешают нам замечать недостатки денежных и политических систем.\n\n«Мы — люди — необъективны по своей природе.»\n\nТекстовая версия: https://21ideas.org/suverenitet-posredstvom-matematiki/glava-3/\n\nПоддержите работу над переводом и озвучкой книг: https://21ideas.org/contribute/",
+          "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-3/",
+          "publishedAt": "2026-11-19T14:26:46Z",
+          "published": true,
+          "mediaVersion": 1,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-03.mp3",
+          "mimeType": "audio/mpeg",
+          "byteLength": 19287335,
+          "durationSeconds": 739.295873,
+          "sha256": "a4f37dda41ee7ef817640c5e6657442be9ed1abcc99489bcb69d6723906c2e23"
         }
       ]
     }
