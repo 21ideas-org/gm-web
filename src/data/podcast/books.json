@@ -63,6 +63,21 @@
           "byteLength": 19287335,
           "durationSeconds": 739.295873,
           "sha256": "a4f37dda41ee7ef817640c5e6657442be9ed1abcc99489bcb69d6723906c2e23"
+        },
+        {
+          "number": 4,
+          "guid": "21ideas:book:sovereignty-through-math:chapter-4",
+          "title": "Непорочное зачатие. «Суверенитет посредством математики» Глава 4",
+          "description": "«Суверенитет посредством математики». Глава 4: Непорочное зачатие.\n\n«Суверенитет посредством математики» Кнута Сванхольма — книга о Биткоине, деньгах и личной свободе. Автор связывает устройство Биткоина с экономическими и социальными проблемами современного общества и объясняет, как деньги с независимыми правилами меняют отношения человека с государством и окружающим миром.\n\nВ четвёртой главе Сванхольм объясняет, как из простых правил возникают сложные системы и почему обстоятельства рождения Биткоина важны для его децентрализации.\n\n«Цифровую редкость можно изобрести всего лишь один раз.»\n\nТекстовая версия: https://21ideas.org/suverenitet-posredstvom-matematiki/glava-4/\n\nПоддержите работу над переводом и озвучкой книг: https://21ideas.org/contribute/",
+          "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-4/",
+          "publishedAt": "2026-11-24T14:53:26Z",
+          "published": true,
+          "mediaVersion": 1,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-04.mp3",
+          "mimeType": "audio/mpeg",
+          "byteLength": 19002711,
+          "durationSeconds": 727.436281,
+          "sha256": "5cef779ea0b8e9856d1d33cf37d1e59e8f5c19fa9b2fd003d23ae656db694f9a"
         }
       ]
     }
