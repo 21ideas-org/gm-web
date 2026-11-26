@@ -12,9 +12,15 @@ export const repository = fileURLToPath(new URL('../../', import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 export function editionMarkdown(id, locale, { draft = false, pubDate = id } = {}) {
   const title = locale === 'en' ? `GM, bitcoiner — ${id}` : `Доброе утро, биткоинер — ${id}`;
+  const enStats = id === '2026-10-04'
+    ? 'As of 2026-10-04 09:55 UTC\nMarket   $82,000 · +2.00% over 24h\nNetwork  Block #970,000 · 1,040 EH/s\nMempool  Next block ≈ 2 sat/vB'
+    : 'MARKET\n  Price  $82,000\nNETWORK\n  Block  #970,000\n  Hashrate  1,040 EH/s\nMEMPOOL\n  Fee  1 sat/vB';
+  const ruStats = id === '2026-10-04'
+    ? 'Замер: 2026-10-04 00:55 UTC\nРынок    $82 000 · +2,00% за 24 ч\nСеть     Блок #970 000'
+    : 'fixture stats';
   const body = locale === 'en'
-    ? `Intro with [original source](https://example.org/story).\n\n## Network Stats\n\n\`\`\`text\nMARKET\n  Price  $82,000\nNETWORK\n  Block  #970,000\n  Hashrate  1,040 EH/s\nMEMPOOL\n  Fee  1 sat/vB\n\`\`\`\n\n## Technology & Development\n\n#### Synthetic protocol news\n\nA fixture story with a [source](https://example.org/source).\n\n## Price & Market\n\n#### Synthetic market news\n\nAnother fixture story.\n\n## Bitcoin Rap Sheet\n\n#### Synthetic investigation\n\nA final fixture story.\n\n\`\`\`text\nfixture code\n\`\`\`\n`
-    : `Синтетическое введение.\n\n## Статистика сети\n\n\`\`\`text\nfixture stats\n\`\`\`\n\n## Технологии и разработка\n\n#### Синтетическая новость\n\n[Источник](https://example.org/source).\n`;
+    ? `Intro with [original source](https://example.org/story).\n\n## Network Stats\n\n\`\`\`text\n${enStats}\n\`\`\`\n\n## Technology & Development\n\n#### Synthetic protocol news\n\nA fixture story with a [source](https://example.org/source).\n\n## Price & Market\n\n#### Synthetic market news\n\nAnother fixture story.\n\n## Bitcoin Rap Sheet\n\n#### Synthetic investigation\n\nA final fixture story.\n\n\`\`\`text\nfixture code\n\`\`\`\n`
+    : `Синтетическое введение.\n\n## Статистика сети\n\n\`\`\`text\n${ruStats}\n\`\`\`\n\n## Технологии и разработка\n\n#### Синтетическая новость\n\n[Источник](https://example.org/source).\n`;
   return `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(locale === 'en' ? `Synthetic English headlines ${id}` : `Синтетический выпуск ${id}`)}\npubDate: ${JSON.stringify(pubDate)}\ndraft: ${draft}\ntags: [tech${locale === 'en' ? ', market, scandals, unknown-future-topic' : ''}]\n---\n\n${body}`;
 }
 export async function historyFixture() {

@@ -30,6 +30,36 @@ test('reads the English edition snapshot with stable metric keys and English lab
   assert.deepEqual(digestStatistics(source, 'ru'), []);
 });
 
+test('reads all four metrics from three compact rows in both languages', () => {
+  const ru = '## Статистика сети\n\n```\nЗамер: 2026-11-24 00:55 UTC\nРынок    $64 850 · +2,00% за 24 ч\nСеть     Блок #976 041 · 1 033 EH/s\nМемпул   Следующий блок ≈ 2,25 сат/vB\n```';
+  const en = '## Network Stats\n\n```\nAs of 2026-11-24 00:55 UTC\nMarket   $64,850 · +2.00% over 24h\nNetwork  Block #976,041 · 1,033 EH/s\nMempool  Next block ≈ 2.25 sat/vB\n```';
+  assert.deepEqual(digestStatistics(ru), [
+    { key: 'price', label: 'Цена', value: '$64 850 · +2,00% за 24 ч' },
+    { key: 'block', label: 'Блок', value: '#976 041' },
+    { key: 'hashrate', label: 'Хешрейт', value: '1 033 EH/s' },
+    { key: 'fee', label: 'Комиссия', value: '2,25 сат/vB' },
+  ]);
+  assert.deepEqual(digestStatistics(en, 'en'), [
+    { key: 'price', label: 'Price', value: '$64,850 · +2.00% over 24h' },
+    { key: 'block', label: 'Block', value: '#976,041' },
+    { key: 'hashrate', label: 'Hashrate', value: '1,033 EH/s' },
+    { key: 'fee', label: 'Fee', value: '2.25 sat/vB' },
+  ]);
+});
+
+test('reads compact rows with independently missing metrics', () => {
+  const ru = '## Статистика сети\n\n```\nЗамер: 2026-11-24 00:55 UTC\nРынок    $64 850\nСеть     Блок #976 041\n```';
+  const en = '## Network Stats\n\n```\nAs of 2026-11-24 00:55 UTC\nNetwork  933 EH/s\nMempool  Next block ≈ 0 sat/vB\n```';
+  assert.deepEqual(digestStatistics(ru), [
+    { key: 'price', label: 'Цена', value: '$64 850' },
+    { key: 'block', label: 'Блок', value: '#976 041' },
+  ]);
+  assert.deepEqual(digestStatistics(en, 'en'), [
+    { key: 'hashrate', label: 'Hashrate', value: '933 EH/s' },
+    { key: 'fee', label: 'Fee', value: '0 sat/vB' },
+  ]);
+});
+
 test('handles an empty edition or an edition without a published snapshot', () => {
   assert.deepEqual(digestStatistics(), []);
   assert.deepEqual(digestStatistics('## Сообщество\n\n#### Новость\n\nТекст новости.'), []);

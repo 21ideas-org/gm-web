@@ -18,17 +18,18 @@ export async function fetchNetworkStats(fetcher = fetch, signal, locale = 'ru', 
     return path.endsWith('/height') ? response.text() : response.json();
   }));
   const height = /^\d+$/.test(heightText.trim()) ? Number(heightText) : NaN;
+  const feeRate = fees?.fastestFee;
   if (typeof prices.USD !== 'number' || !Number.isFinite(prices.USD) || prices.USD <= 0 ||
       !Number.isSafeInteger(height) || height <= 0 ||
       typeof mining.currentHashrate !== 'number' || !Number.isFinite(mining.currentHashrate) || mining.currentHashrate <= 0 ||
-      typeof fees.halfHourFee !== 'number' || !Number.isFinite(fees.halfHourFee) || fees.halfHourFee < 0) {
+      typeof feeRate !== 'number' || !Number.isFinite(feeRate) || feeRate < 0) {
     throw new Error('Invalid network statistics');
   }
   return {
     price: '$' + number.format(prices.USD),
     block: '#' + number.format(height),
     hashrate: number.format(mining.currentHashrate / 1e18) + ' EH/s',
-    fee: feeNumber.format(fees.halfHourFee) + ' ' + feeUnit,
+    fee: feeNumber.format(feeRate) + ' ' + feeUnit,
   };
 }
 
@@ -82,6 +83,8 @@ export function initializeNetworkStats(root) {
       }
       if (signal.aborted || !root.isConnected || document.hidden) return;
       preferred = source;
+      const missingRows = /** @type {NodeListOf<HTMLTemplateElement>} */ (root.querySelectorAll('template[data-stat-row]'));
+      missingRows.forEach(template => template.replaceWith(template.content));
       root.querySelectorAll('[data-stat-field]').forEach(field => {
         const value = values[field.getAttribute('data-stat-field')];
         if (value !== undefined) field.textContent = value;
