@@ -135,9 +135,10 @@ function validateEnglish(root, isPublic, populated) {
     assert.doesNotMatch(visible(home), /Synthetic protocol|Synthetic market news|Synthetic investigation/);
     assert.match(home, /data-network-stats data-stats-locale="en"/);
     assert.match(home, /<h3[^>]*>Network stats<\/h3>/);
-    for (const [key, label, value] of [['price', 'Price', '$82,000'], ['block', 'Block', '#970,000'], ['hashrate', 'Hashrate', '1,040 EH/s'], ['fee', 'Fee', '1 sat/vB']]) {
+    for (const [key, label, value] of [['price', 'Price', '$82,000 · +2.00% over 24h'], ['block', 'Block', '#970,000'], ['hashrate', 'Hashrate', '1,040 EH/s'], ['fee', 'Fee', '2 sat/vB']]) {
       assert.ok(home.includes(`<dt>${label}</dt><dd data-stat-field="${key}">${value}</dd>`), `Published English ${key} snapshot is visible before JS`);
     }
+    assert.doesNotMatch(home, /<template data-stat-row/);
     assert.match(home, /data-state="snapshot" title="Issue snapshot/);
     assert.match(home, /class="edition-block">Block 970,000<\/span>/);
     assert.match(archive, /2 editions/);
@@ -161,6 +162,8 @@ function validateEnglish(root, isPublic, populated) {
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-04')), ['/digests/2026-10-04/', 'Russian edition']);
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-01')), ['/digests/', 'Russian archive']);
     const edition = html(root, 'en/digests/2026-10-04');
+    assert.match(edition, /Network Stats<\/h2>/);
+    assert.match(visible(edition), /Next block ≈ 2 sat\/vB/);
     assert.match(edition, /Today in history/);
     assert.match(edition, /Synthetic history/);
     assert.match(edition, /A historical fixture event\./);
@@ -341,6 +344,8 @@ function validateRussian(root, isPublic, populated) {
   assert.doesNotMatch(october, /href="\/digests\/2026-09-30\/"/);
   assert.equal(switchLink(month)?.[0], isPublic ? '/en/digests/' : undefined);
   const post = html(root, 'digests/2026-10-04');
+  assert.match(post, /Статистика сети<\/h2>/);
+  assert.match(visible(post), /Замер: 2026-10-04 00:55 UTC/);
   assert.match(post, /<html lang="ru"/);
   assert.doesNotMatch(post, /04-10-2026/);
   assert.match(post, /property="article:published_time" content="2026-10-04T00:00:00.000Z"/);
@@ -361,6 +366,11 @@ function validateRussian(root, isPublic, populated) {
   assert.match(home, /<h2 id="fresh-edition"><time datetime="2026-10-04T00:00:00.000Z">4 октября<\/time><\/h2>/);
   assert.match(home, /Синтетический выпуск 2026-10-04/);
   assert.doesNotMatch(visible(home), /Синтетическая новость/);
+  assert.match(home, /class="edition-block">Блок 970 000<\/span>/);
+  assert.match(home, /<dt>Цена<\/dt><dd data-stat-field="price">\$82 000 · \+2,00% за 24 ч<\/dd>/);
+  for (const [key, label] of [['hashrate', 'Хешрейт'], ['fee', 'Комиссия']]) {
+    assert.ok(home.includes(`<template data-stat-row><div><dt>${label}</dt><dd data-stat-field="${key}"></dd></div></template>`), `Missing Russian ${key} is inert before JS`);
+  }
   const podcast = readFileSync(join(root, 'dist/podcast.xml'), 'utf8');
   assert.match(podcast, /<guid isPermaLink="false">gm-audio:2026-10-04<\/guid>/);
   assert.match(podcast, /https:\/\/audio.21ideas.org\/podcasts\/2026-10-04.mp3/);

@@ -6,7 +6,7 @@ const payloads = {
   '/api/v1/prices': { USD: 83073 },
   '/api/blocks/tip/height': 972398,
   '/api/v1/mining/hashrate/3d': { currentHashrate: 1.048e21 },
-  '/api/v1/fees/recommended': { halfHourFee: 1 },
+  '/api/v1/fees/recommended': { fastestFee: 2, halfHourFee: 1 },
 };
 const response = value => ({ ok: true, text: async () => String(value), json: async () => value });
 
@@ -22,14 +22,14 @@ test('reads the four public metrics without credentials and formats their actual
   assert.equal(plain(data.price), '$83 073');
   assert.equal(plain(data.block), '#972 398');
   assert.equal(plain(data.hashrate), '1 048 EH/s');
-  assert.equal(data.fee, '1 сат/vB');
+  assert.equal(data.fee, '2 сат/vB');
 });
 
 test('formats the same live metrics with English numbers and fee units', async () => {
   const data = await fetchNetworkStats(async url => response(payloads[new URL(url).pathname]), undefined, 'en');
-  assert.deepEqual(data, { price: '$83,073', block: '#972,398', hashrate: '1,048 EH/s', fee: '1 sat/vB' });
+  assert.deepEqual(data, { price: '$83,073', block: '#972,398', hashrate: '1,048 EH/s', fee: '2 sat/vB' });
   const fractional = await fetchNetworkStats(async url => response(new URL(url).pathname.includes('fees')
-    ? { halfHourFee: 1.25 } : payloads[new URL(url).pathname]), undefined, 'en');
+    ? { fastestFee: 1.25, halfHourFee: 1 } : payloads[new URL(url).pathname]), undefined, 'en');
   assert.equal(fractional.fee, '1.25 sat/vB');
 });
 
@@ -43,7 +43,11 @@ test('rejects missing, nonnumeric, and impossible values while accepting zero fe
   for (const invalid of [{ USD: null }, { USD: '83073' }, { USD: -1 }]) {
     await assert.rejects(fetchNetworkStats(async url => response(new URL(url).pathname === '/api/v1/prices' ? invalid : payloads[new URL(url).pathname])), /Invalid/);
   }
-  const data = await fetchNetworkStats(async url => response(new URL(url).pathname.includes('fees') ? { halfHourFee: 0 } : payloads[new URL(url).pathname]));
+  for (const fastestFee of [undefined, null, '2', -1, Infinity]) {
+    await assert.rejects(fetchNetworkStats(async url => response(new URL(url).pathname.includes('fees')
+      ? { fastestFee, halfHourFee: 1 } : payloads[new URL(url).pathname])), /Invalid/);
+  }
+  const data = await fetchNetworkStats(async url => response(new URL(url).pathname.includes('fees') ? { fastestFee: 0 } : payloads[new URL(url).pathname]));
   assert.equal(data.fee, '0 сат/vB');
 });
 
@@ -58,9 +62,22 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   const status = Object.assign(new Element(), { title: 'Issue snapshot' });
   const label = Object.assign(new Element(), { textContent: locale === 'en' ? 'October 21, 2026' : '21 октября 2026' });
   const dot = Object.assign(new Element(), { hidden: true });
-  const fields = ['price', 'block', 'hashrate', 'fee'].map(key => Object.assign(new Element(), { getAttribute: () => key }));
+  const field = key => Object.assign(new Element(), { getAttribute: () => key });
+  const fields = ['price', 'block'].map(field);
+  const templates = ['hashrate', 'fee'].map(key => ({
+    content: field(key),
+    replaceWith(content) {
+      fields.push(content);
+      templates.splice(templates.indexOf(this), 1);
+    },
+  }));
   const nodes = { '[data-stats-status]': status, '[data-stats-label]': label, '[data-stats-dot]': dot };
-  const root = Object.assign(new Element(), { isConnected: true, querySelector: selector => nodes[selector], querySelectorAll: () => fields });
+  const groups = { '[data-stat-field]': fields, 'template[data-stat-row]': templates };
+  const root = Object.assign(new Element(), {
+    isConnected: true,
+    querySelector: selector => nodes[selector],
+    querySelectorAll: selector => [...(groups[selector] ?? [])],
+  });
   root.dataset.statsLocale = locale;
   const doc = Object.assign(new EventTarget(), { hidden: false });
   const previousElement = globalThis.HTMLElement;
@@ -80,6 +97,7 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
     if (primaryTimesOut && hostname === 'mempool.space') {
       return new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }));
     }
+    if (!fail && hostname === 'mempool.emzy.de' && pathname.includes('fees')) return response({ fastestFee: 3, halfHourFee: 1 });
     return fail ? { ok: false, status: 429 } : response(payloads[pathname]);
   });
   const settled = () => new Promise(resolve => setImmediate(resolve));
@@ -91,8 +109,9 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   assert.equal(label.textContent, 'live');
   assert.equal(dot.hidden, false);
   assert.equal(status.title, '');
-  assert.equal(fields[3].textContent, locale === 'en' ? '1 sat/vB' : '1 сат/vB');
-  const lastValues = fields.map(field => field.textContent);
+  assert.deepEqual(fields.map(node => node.getAttribute()), ['price', 'block', 'hashrate', 'fee']);
+  assert.equal(templates.length, 0);
+  assert.equal(fields[3].textContent, locale === 'en' ? '2 sat/vB' : '2 сат/vB');
 
   doc.hidden = true;
   doc.dispatchEvent(new Event('visibilitychange'));
@@ -112,6 +131,8 @@ for (const locale of ['ru', 'en']) test(`${locale}: pauses hidden polling and st
   assert.deepEqual(hosts.slice(-4), Array(4).fill('mempool.emzy.de'));
   assert.equal(status.dataset.state, 'live');
   assert.equal(status.title, '');
+  assert.equal(fields[3].textContent, locale === 'en' ? '3 sat/vB' : '3 сат/vB');
+  const lastValues = fields.map(field => field.textContent);
 
   fail = true;
   t.mock.timers.tick(60_000);

@@ -1,11 +1,13 @@
 ---
 import type { Locale } from '../lib/locale';
+import { networkStatLabels } from '../lib/digest-statistics.mjs';
 interface Props {
   statistics: { key: string; label: string; value: string }[];
   date: string;
   locale?: Locale;
 }
 const { statistics, date, locale = 'ru' } = Astro.props;
+const values = new Map(statistics.map(item => [item.key, item.value]));
 ---
 <section class="front-statistics" aria-labelledby="front-statistics" data-network-stats data-stats-locale={locale}>
   <div class="front-section-heading">
@@ -14,7 +16,9 @@ const { statistics, date, locale = 'ru' } = Astro.props;
       <span data-stats-label>{date}</span><span class="live-dot" data-stats-dot hidden aria-hidden="true">•</span>
     </p>
   </div>
-  <dl>{statistics.map(item => <div><dt>{item.label}</dt><dd data-stat-field={item.key}>{item.value}</dd></div>)}</dl>
+  <dl>{Object.entries(networkStatLabels[locale]).map(([key, label]) => values.has(key)
+    ? <div><dt>{label}</dt><dd data-stat-field={key}>{values.get(key)}</dd></div>
+    : <template data-stat-row><div><dt>{label}</dt><dd data-stat-field={key}></dd></div></template>)}</dl>
 </section>
 <script>
   import { initializeNetworkStats } from '../lib/network-stats.mjs';
