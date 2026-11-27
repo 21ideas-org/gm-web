@@ -78,6 +78,21 @@
           "byteLength": 19002711,
           "durationSeconds": 727.436281,
           "sha256": "5cef779ea0b8e9856d1d33cf37d1e59e8f5c19fa9b2fd003d23ae656db694f9a"
+        },
+        {
+          "number": 5,
+          "guid": "21ideas:book:sovereignty-through-math:chapter-5",
+          "title": "Proof of Work. «Суверенитет посредством математики» Глава 5",
+          "description": "«Суверенитет посредством математики». Глава 5: Proof of Work.\n\n«Суверенитет посредством математики» Кнута Сванхольма — книга о Биткоине, деньгах и личной свободе. Автор связывает устройство Биткоина с экономическими и социальными проблемами современного общества и объясняет, как деньги с независимыми правилами меняют отношения человека с государством и окружающим миром.\n\nВ пятой главе Сванхольм объясняет, зачем Биткоину доказательство работы и как реальные затраты энергии превращаются в проверяемое условие добавления новых блоков.\n\n«Без затрат нет доказательства выполнения обязательства.»\n\nТекстовая версия: https://21ideas.org/suverenitet-posredstvom-matematiki/glava-5/\n\nПоддержите работу над переводом и озвучкой книг: https://21ideas.org/contribute/",
+          "link": "https://21ideas.org/suverenitet-posredstvom-matematiki/glava-5/",
+          "publishedAt": "2026-11-27T08:38:30Z",
+          "published": true,
+          "mediaVersion": 1,
+          "url": "https://audio.21ideas.org/podcasts/books/sovereignty-through-math/chapter-05.mp3",
+          "mimeType": "audio/mpeg",
+          "byteLength": 20868882,
+          "durationSeconds": 483.098526,
+          "sha256": "f41e3599919391e22110b070b8c4a25821a258d5c4f104f106347591e84e05f2"
         }
       ]
     }
