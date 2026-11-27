@@ -163,7 +163,9 @@ function validateEnglish(root, isPublic, populated) {
     assert.deepEqual(switchLink(html(root, 'en/digests/2026-10-01')), ['/digests/', 'Russian archive']);
     const edition = html(root, 'en/digests/2026-10-04');
     assert.match(edition, /Network Stats<\/h2>/);
-    assert.match(visible(edition), /Next block ≈ 2 sat\/vB/);
+    assert.match(edition, /<time class="code-time" datetime="2026-10-04T09:55:00Z">Oct 4 09:55 UTC<\/time>/);
+    assert.match(visible(edition), /Market: +\$82,000 · \+2\.00%\nNetwork: +Block #970,000 · 1,040 EH\/s\nNext block: 2 sat\/vB/);
+    assert.doesNotMatch(edition, /As of 2026-10-04 09:55 UTC/);
     assert.match(edition, /Today in history/);
     assert.match(edition, /Synthetic history/);
     assert.match(edition, /A historical fixture event\./);
@@ -345,7 +347,10 @@ function validateRussian(root, isPublic, populated) {
   assert.equal(switchLink(month)?.[0], isPublic ? '/en/digests/' : undefined);
   const post = html(root, 'digests/2026-10-04');
   assert.match(post, /Статистика сети<\/h2>/);
-  assert.match(visible(post), /Замер: 2026-10-04 00:55 UTC/);
+  assert.match(post, /<time class="code-time" datetime="2026-10-04T00:55:00Z">4 Октября 00:55 UTC<\/time>/);
+  assert.match(visible(post), /Рынок: +\$82 000 · \+2,00%\nСеть: +Блок #970 000/);
+  assert.doesNotMatch(post, /Замер: 2026-10-04 00:55 UTC|Следующий блок:/);
+  assert.match(post, /class="buy-bitcoin-cta"/);
   assert.match(post, /<html lang="ru"/);
   assert.doesNotMatch(post, /04-10-2026/);
   assert.match(post, /property="article:published_time" content="2026-10-04T00:00:00.000Z"/);

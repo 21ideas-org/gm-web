@@ -156,7 +156,8 @@ const schema = [
     const wrap = btn.closest('.code-wrap');
     const pre = wrap?.querySelector('pre');
     if (!pre) return;
-    const text = pre.innerText;
+    const timestamp = wrap?.querySelector('.code-time')?.textContent;
+    const text = timestamp ? `${timestamp}\n${pre.innerText}` : pre.innerText;
     const restore = () => {
       btn.removeAttribute('data-state');
       btn.textContent = 'copy';
